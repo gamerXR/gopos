@@ -607,7 +607,6 @@ export default function DashboardScreen() {
                   setShowAddItem(false);
                   setItemName('');
                   setItemPrice('');
-                  setItemStock('');
                   setItemCategoryId('');
                 }}
               >
