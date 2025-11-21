@@ -126,22 +126,38 @@ class OrderResponse(BaseModel):
     created_at: datetime
     order_number: str
 
-# Initialize default user on startup
+# Initialize default users on startup
 @app.on_event("startup")
 async def startup_event():
-    # Check if default user exists
+    # Check if default staff user exists
     existing_user = await db.users.find_one({"phone": "8889999"})
     if not existing_user:
-        # Create default user
+        # Create default staff user
         default_user = {
             "phone": "8889999",
             "password": hash_password("123456"),
-            "role": "admin",
-            "name": "Admin User",
+            "role": "staff",
+            "name": "Staff User",
+            "company_name": "Demo Company",
             "created_at": datetime.utcnow()
         }
         await db.users.insert_one(default_user)
-        logger.info("Default user created")
+        logger.info("Default staff user created")
+    
+    # Check if super admin exists
+    existing_admin = await db.users.find_one({"phone": "6737165617"})
+    if not existing_admin:
+        # Create super admin
+        super_admin = {
+            "phone": "6737165617",
+            "password": hash_password("448613"),
+            "role": "super_admin",
+            "name": "Super Admin",
+            "company_name": "Super Admin",
+            "created_at": datetime.utcnow()
+        }
+        await db.users.insert_one(super_admin)
+        logger.info("Super admin created")
     
     # Create unique indexes (if not exists)
     try:
