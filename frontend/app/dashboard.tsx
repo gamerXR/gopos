@@ -490,6 +490,9 @@ export default function DashboardScreen() {
         </View>
         <View style={styles.headerRight}>
           <Text style={styles.headerUser}>{user?.name}</Text>
+          <TouchableOpacity onPress={loadSalesReport} style={styles.reportButton}>
+            <Ionicons name="stats-chart" size={24} color="#fff" />
+          </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
             <Ionicons name="log-out" size={24} color="#fff" />
           </TouchableOpacity>
