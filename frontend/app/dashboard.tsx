@@ -573,7 +573,7 @@ export default function DashboardScreen() {
           <Text style={styles.headerTitle}>F&B POS</Text>
         </View>
         <View style={styles.headerRight}>
-          <Text style={styles.headerUser}>{user?.name}</Text>
+          <Text style={styles.headerUser}>Welcome, {user?.company_name || user?.name}</Text>
           <TouchableOpacity onPress={loadSalesReport} style={styles.reportButton}>
             <Ionicons name="stats-chart" size={24} color="#fff" />
           </TouchableOpacity>
