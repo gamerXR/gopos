@@ -877,6 +877,7 @@ export default function DashboardScreen() {
                   setShowCheckout(false);
                   setPaymentMethod('cash');
                   setCashAmount('');
+                  setDiscountPercent('');
                   setQrImage(null);
                 }}
               >
