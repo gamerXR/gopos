@@ -369,7 +369,6 @@ export default function DashboardScreen() {
       
       // Clear cart and reset
       setCart([]);
-      setQrImage(null);
       setCashAmount('');
       setDiscountPercent('');
       setShowCheckout(false);
