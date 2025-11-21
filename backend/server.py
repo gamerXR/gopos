@@ -265,19 +265,23 @@ async def delete_category(category_id: str, user = Depends(get_current_user)):
 # Item Routes
 @api_router.post("/items", response_model=ItemResponse)
 async def create_item(item: Item, user = Depends(get_current_user)):
+    collections = get_client_collections(str(user['_id']))
+    items_coll = db[collections['items']]
+    categories_coll = db[collections['categories']]
+    
     # Check for duplicate
-    existing = await db.items.find_one({"name": item.name})
+    existing = await items_coll.find_one({"name": item.name})
     if existing:
         raise HTTPException(status_code=400, detail="Item name already exists")
     
     # Verify category exists
-    category = await db.categories.find_one({"_id": ObjectId(item.category_id)})
+    category = await categories_coll.find_one({"_id": ObjectId(item.category_id)})
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     
     item_dict = item.dict()
     item_dict['created_at'] = datetime.utcnow()
-    result = await db.items.insert_one(item_dict)
+    result = await items_coll.insert_one(item_dict)
     
     return ItemResponse(
         id=str(result.inserted_id),
@@ -290,17 +294,21 @@ async def create_item(item: Item, user = Depends(get_current_user)):
 
 @api_router.get("/items", response_model=List[ItemResponse])
 async def get_items(category_id: Optional[str] = None, user = Depends(get_current_user)):
+    collections = get_client_collections(str(user['_id']))
+    items_coll = db[collections['items']]
+    categories_coll = db[collections['categories']]
+    
     query = {}
     if category_id:
         query['category_id'] = category_id
     
-    items = await db.items.find(query).to_list(1000)
+    items = await items_coll.find(query).to_list(1000)
     
     # Get category names
     category_ids = list(set([item['category_id'] for item in items]))
     categories = {}
     for cat_id in category_ids:
-        cat = await db.categories.find_one({"_id": ObjectId(cat_id)})
+        cat = await categories_coll.find_one({"_id": ObjectId(cat_id)})
         if cat:
             categories[cat_id] = cat['name']
     
