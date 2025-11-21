@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
@@ -66,8 +67,11 @@ export default function LoginScreen() {
     >
       <View style={styles.content}>
         <View style={styles.header}>
-          <Ionicons name="restaurant" size={60} color="#4CAF50" />
-          <Text style={styles.title}>F&B POS System</Text>
+          <Image
+            source={{ uri: 'https://customer-assets.emergentagent.com/job_cafe-pos-android/artifacts/mxh0h7s6_gopos%20green.png' }}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>Staff Login</Text>
         </View>
 
@@ -156,11 +160,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 16,
+  logo: {
+    height: 100,
+    width: 250,
+    marginBottom: 16,
   },
   subtitle: {
     fontSize: 16,
