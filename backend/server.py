@@ -116,6 +116,9 @@ class OrderResponse(BaseModel):
     id: str
     items: List[OrderItem]
     subtotal: float
+    discount_percentage: Optional[float] = 0
+    discount_amount: Optional[float] = 0
+    total: float
     payment_method: str
     cash_amount: Optional[float] = None
     change_amount: Optional[float] = None
