@@ -227,8 +227,7 @@ def test_items(client: POSTestClient, categories: List[Dict]):
         new_stock = 75
         try:
             response = client.session.put(
-                f"{BACKEND_URL}/items/{item_to_update['id']}/stock",
-                json=new_stock
+                f"{BACKEND_URL}/items/{item_to_update['id']}/stock?stock={new_stock}"
             )
             if response.status_code == 200:
                 print(f"✅ Updated stock for {item_to_update['name']} to {new_stock}")
