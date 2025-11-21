@@ -314,10 +314,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Return Item API Endpoint"
-    - "Refund Order API Endpoint"
-    - "Enhanced Order Model"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -329,3 +326,5 @@ agent_communication:
       message: "Multi-tenancy and Super Admin functionality testing completed successfully. All 11 test scenarios passed: ✅ Super admin login/logout ✅ Client creation (Restaurant A & B) ✅ Client logins ✅ Data isolation between clients (each client only sees their own categories/items) ✅ Super admin client management ✅ Password reset functionality. Multi-tenancy system working perfectly - each client has separate database collections and cannot access other clients' data."
     - agent: "main"
       message: "Implemented new features: 1) Added GoPos logo to login page (index.tsx) 2) Created sales-details.tsx page with full order history display 3) Added backend endpoints for item return and full order refund 4) Orders now include sales_person_name, created_at timestamp, and status tracking 5) Sales Details page shows orders sorted by time with date/time, payment method, sales person name, and item details 6) Return and refund functionality fully integrated with UI. Need to test these new endpoints and features."
+    - agent: "testing"
+      message: "NEW FEATURES TESTING COMPLETED ✅ All 3 new backend features tested and working perfectly: 1) Enhanced Order Model - Orders include sales_person_name, status fields, GET /api/orders returns enhanced data with ISO timestamps, sorted by created_at descending 2) Return Item API - Successfully returns individual items, prevents duplicates, prevents returns from refunded orders 3) Refund Order API - Successfully refunds entire orders, changes status to 'refunded', prevents duplicate refunds, prevents item returns from refunded orders. All business logic and edge cases working correctly. 100% test success rate (11/11 tests passed)."
