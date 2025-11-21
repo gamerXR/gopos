@@ -1214,9 +1214,16 @@ export default function DashboardScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>About Us</Text>
+            
+            <View style={styles.aboutLogoContainer}>
+              <Image
+                source={{ uri: 'https://customer-assets.emergentagent.com/job_cafe-pos-android/artifacts/mxh0h7s6_gopos%20green.png' }}
+                style={styles.aboutLogo}
+                resizeMode="contain"
+              />
+            </View>
+
             <Text style={styles.modalText}>
-              GoPos
-              {'\n\n'}
               Version 1.0.0
               {'\n\n'}
               Developed by MHK
