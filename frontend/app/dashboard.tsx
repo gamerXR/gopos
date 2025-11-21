@@ -134,7 +134,7 @@ export default function DashboardScreen() {
   };
 
   const handleAddItem = async () => {
-    if (!itemName.trim() || !itemPrice || !itemStock || !itemCategoryId) {
+    if (!itemName.trim() || !itemPrice || !itemCategoryId) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
@@ -147,19 +147,18 @@ export default function DashboardScreen() {
           name: itemName,
           category_id: itemCategoryId,
           price: parseFloat(itemPrice),
-          stock: parseInt(itemStock),
         },
         { headers: getAuthHeaders() }
       );
       Alert.alert('Success', 'Item added successfully');
       setItemName('');
       setItemPrice('');
-      setItemStock('');
       setItemCategoryId('');
       setShowAddItem(false);
       loadItems();
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to add item');
+      const message = error.response?.data?.detail || 'Failed to add item';
+      Alert.alert('Error', message);
     } finally {
       setLoading(false);
     }
