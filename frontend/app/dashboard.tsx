@@ -354,8 +354,6 @@ export default function DashboardScreen() {
       if (paymentMethod === 'cash') {
         orderData.cash_amount = parseFloat(cashAmount);
         orderData.change_amount = getChange();
-      } else {
-        orderData.qr_image = qrImage;
       }
 
       const response = await axios.post(
