@@ -232,35 +232,56 @@ export default function DashboardScreen() {
       return;
     }
 
-    if (paymentMethod === 'qr' && !qrImage) {
+    const subtotal = getSubtotal();
+
+    if (paymentMethod === 'cash') {
+      const cash = parseFloat(cashAmount);
+      if (!cashAmount || isNaN(cash)) {
+        Alert.alert('Invalid Amount', 'Please enter cash amount');
+        return;
+      }
+      if (cash < subtotal) {
+        Alert.alert('Insufficient Amount', `Cash amount must be at least $${subtotal.toFixed(2)}`);
+        return;
+      }
+    } else if (paymentMethod === 'qr' && !qrImage) {
       Alert.alert('QR Image Required', 'Please upload QR payment proof');
       return;
     }
 
     setLoading(true);
     try {
+      const orderData: any = {
+        items: cart,
+        subtotal: subtotal,
+        payment_method: paymentMethod,
+      };
+
+      if (paymentMethod === 'cash') {
+        orderData.cash_amount = parseFloat(cashAmount);
+        orderData.change_amount = getChange();
+      } else {
+        orderData.qr_image = qrImage;
+      }
+
       const response = await axios.post(
         `${BACKEND_URL}/api/orders`,
-        {
-          items: cart,
-          subtotal: getSubtotal(),
-          payment_method: paymentMethod,
-          qr_image: qrImage,
-        },
+        orderData,
         { headers: getAuthHeaders() }
       );
 
       const order = response.data;
       
-      // Generate receipt
+      // Generate and print receipt
       await printReceipt(order);
       
-      // Clear cart
+      // Clear cart and reset
       setCart([]);
       setQrImage(null);
+      setCashAmount('');
       setShowCheckout(false);
       
-      // Reload items to update stock
+      // Reload items
       loadItems();
       
       Alert.alert('Success', `Order ${order.order_number} placed successfully!`);
