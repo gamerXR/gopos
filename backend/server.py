@@ -224,20 +224,25 @@ async def login(request: LoginRequest):
 # Category Routes
 @api_router.post("/categories", response_model=CategoryResponse)
 async def create_category(category: Category, user = Depends(get_current_user)):
+    collections = get_client_collections(str(user['_id']))
+    categories_coll = db[collections['categories']]
+    
     # Check for duplicate
-    existing = await db.categories.find_one({"name": category.name})
+    existing = await categories_coll.find_one({"name": category.name})
     if existing:
         raise HTTPException(status_code=400, detail="Category name already exists")
     
     category_dict = category.dict()
     category_dict['created_at'] = datetime.utcnow()
-    result = await db.categories.insert_one(category_dict)
+    result = await categories_coll.insert_one(category_dict)
     category_dict['id'] = str(result.inserted_id)
     return CategoryResponse(**category_dict)
 
 @api_router.get("/categories", response_model=List[CategoryResponse])
 async def get_categories(user = Depends(get_current_user)):
-    categories = await db.categories.find().to_list(1000)
+    collections = get_client_collections(str(user['_id']))
+    categories_coll = db[collections['categories']]
+    categories = await categories_coll.find().to_list(1000)
     return [CategoryResponse(
         id=str(cat['_id']),
         name=cat['name'],
@@ -246,11 +251,15 @@ async def get_categories(user = Depends(get_current_user)):
 
 @api_router.delete("/categories/{category_id}")
 async def delete_category(category_id: str, user = Depends(get_current_user)):
-    result = await db.categories.delete_one({"_id": ObjectId(category_id)})
+    collections = get_client_collections(str(user['_id']))
+    categories_coll = db[collections['categories']]
+    items_coll = db[collections['items']]
+    
+    result = await categories_coll.delete_one({"_id": ObjectId(category_id)})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Category not found")
     # Also delete all items in this category
-    await db.items.delete_many({"category_id": category_id})
+    await items_coll.delete_many({"category_id": category_id})
     return {"message": "Category deleted"}
 
 # Item Routes
