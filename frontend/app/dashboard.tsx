@@ -469,6 +469,86 @@ export default function DashboardScreen() {
     }
   };
 
+  const printSalesReport = async (report: any) => {
+    if (!report) return;
+
+    const html = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { text-align: center; margin-bottom: 10px; color: #4CAF50; }
+            .report-date { text-align: center; margin-bottom: 20px; font-size: 14px; color: #666; }
+            .summary { margin-bottom: 30px; }
+            .summary-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+            .summary-label { font-weight: 600; }
+            .summary-value { color: #4CAF50; font-weight: bold; }
+            h2 { color: #333; margin-top: 30px; margin-bottom: 15px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+            th { background-color: #4CAF50; color: white; }
+            .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #999; }
+          </style>
+        </head>
+        <body>
+          <h1>Daily Sales Report</h1>
+          <div class="report-date">${new Date(report.date).toLocaleDateString()}</div>
+          
+          <div class="summary">
+            <div class="summary-row">
+              <span class="summary-label">Total Sales:</span>
+              <span class="summary-value">$${report.total_sales.toFixed(2)}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Total Orders:</span>
+              <span class="summary-value">${report.total_orders}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Cash Sales:</span>
+              <span class="summary-value">$${report.cash_sales.toFixed(2)}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">QR Sales:</span>
+              <span class="summary-value">$${report.qr_sales.toFixed(2)}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Total Discount Given:</span>
+              <span class="summary-value">$${report.total_discount.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <h2>Top Selling Items</h2>
+          <table>
+            <tr>
+              <th>Item Name</th>
+              <th>Quantity Sold</th>
+              <th>Revenue</th>
+            </tr>
+            ${report.top_items.map((item: any) => `
+              <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>$${item.revenue.toFixed(2)}</td>
+              </tr>
+            `).join('')}
+          </table>
+
+          <div class="footer">
+            <p>End of Day Closing Report</p>
+            <p>Generated: ${new Date().toLocaleString()}</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    try {
+      await Print.printAsync({ html });
+    } catch (error) {
+      console.error('Print error:', error);
+      Alert.alert('Note', 'Report generated but printer not available');
+    }
+  };
+
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
