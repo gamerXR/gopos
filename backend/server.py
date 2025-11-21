@@ -374,7 +374,9 @@ async def create_order(order: Order, user = Depends(get_current_user)):
     order_dict = order.dict()
     order_dict['created_at'] = datetime.utcnow()
     order_dict['created_by'] = str(user['_id'])
+    order_dict['sales_person_name'] = user.get('name', 'Staff')
     order_dict['order_number'] = order_number
+    order_dict['status'] = 'completed'  # completed, refunded
     
     result = await orders_coll.insert_one(order_dict)
     
