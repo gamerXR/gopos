@@ -1096,7 +1096,6 @@ export default function DashboardScreen() {
                   setPaymentMethod('cash');
                   setCashAmount('');
                   setDiscountPercent('');
-                  setQrImage(null);
                 }}
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>
