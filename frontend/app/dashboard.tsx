@@ -1118,37 +1118,170 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  menuButton: {
+    padding: 4,
   },
   headerTitle: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerUser: {
-    color: '#fff',
-    marginRight: 12,
-    fontSize: 14,
+    flex: 1,
+    textAlign: 'center',
   },
   logoutButton: {
     padding: 4,
   },
-  mainContent: {
+  mainContainer: {
     flex: 1,
     flexDirection: 'row',
   },
-  categoriesSection: {
-    width: 120,
+  sidebar: {
+    width: 200,
     backgroundColor: '#fff',
     borderRightWidth: 1,
     borderRightColor: '#e0e0e0',
+  },
+  sidebarHeader: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    backgroundColor: '#f9f9f9',
+  },
+  sidebarWelcome: {
+    fontSize: 12,
+    color: '#666',
+  },
+  sidebarCompany: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 4,
+  },
+  sidebarContent: {
+    flex: 1,
+  },
+  sidebarItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  sidebarItemText: {
+    fontSize: 14,
+    color: '#333',
+    marginLeft: 12,
+  },
+  contentArea: {
+    flex: 1,
+  },
+  categoriesBar: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingVertical: 12,
+  },
+  categoriesScroll: {
+    paddingHorizontal: 12,
+  },
+  categoryChipHorizontal: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginRight: 8,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
+  },
+  categoryChipActive: {
+    backgroundColor: '#4CAF50',
+  },
+  categoryChipTextHorizontal: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  categoryChipTextActive: {
+    color: '#fff',
+  },
+  itemsGridNew: {
+    padding: 12,
+  },
+  itemCardNew: {
+    flex: 1,
+    margin: 6,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    minHeight: 90,
+    maxWidth: '30%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  itemNameNew: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  itemPriceNew: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+  },
+  totalPanel: {
+    width: 180,
+    backgroundColor: '#fff',
+    borderLeftWidth: 1,
+    borderLeftColor: '#e0e0e0',
+    padding: 16,
+  },
+  totalPanelTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  totalDisplay: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 16,
+  },
+  totalAmount: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    marginBottom: 4,
+  },
+  totalItems: {
+    fontSize: 12,
+    color: '#666',
+  },
+  checkoutButtonNew: {
+    backgroundColor: '#4CAF50',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  clearCartButton: {
+    backgroundColor: '#f0f0f0',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  clearCartText: {
+    color: '#666',
+    fontSize: 14,
+    fontWeight: '600',
   },
   sectionHeader: {
     flexDirection: 'row',
