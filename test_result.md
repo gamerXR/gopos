@@ -227,39 +227,48 @@ backend:
 
   - task: "Return Item API Endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented POST /api/orders/{order_id}/return-item endpoint to return individual items from an order. Marks items as returned and prevents returning already refunded items."
+        - working: true
+          agent: "testing"
+          comment: "✅ Return Item API fully working - Successfully tested returning individual items from orders. Correctly marks items as returned, prevents duplicate returns (400 error), and prevents returning items from refunded orders (400 error). All edge cases handled properly."
 
   - task: "Refund Order API Endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented POST /api/orders/{order_id}/refund endpoint to refund entire orders. Updates order status to 'refunded' and marks all items as returned."
+        - working: true
+          agent: "testing"
+          comment: "✅ Refund Order API fully working - Successfully tested full order refunds. Correctly changes order status to 'refunded', marks all items as returned, prevents duplicate refunds (400 error), and prevents item returns from refunded orders (400 error). All business logic working correctly."
 
   - task: "Enhanced Order Model"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Updated order creation to include sales_person_name, status field (completed/refunded), and modified GET /api/orders to return enhanced order data with timestamps in ISO format."
+        - working: true
+          agent: "testing"
+          comment: "✅ Enhanced Order Model fully working - Order creation includes sales_person_name and status fields. GET /api/orders returns enhanced data with sales_person_name, status, created_at in ISO format, and orders are correctly sorted by created_at descending (most recent first). All enhanced features working as expected."
 
 frontend:
   - task: "Login Page Logo"
