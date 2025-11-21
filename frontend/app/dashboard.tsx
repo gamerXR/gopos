@@ -1489,6 +1489,20 @@ const styles = StyleSheet.create({
     color: '#333',
     marginLeft: 12,
   },
+  sidebarSubItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 48,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f9f9f9',
+  },
+  sidebarSubItemText: {
+    fontSize: 13,
+    color: '#666',
+    marginLeft: 12,
+  },
   contentArea: {
     flex: 1,
   },
