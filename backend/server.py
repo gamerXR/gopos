@@ -323,17 +323,21 @@ async def get_items(category_id: Optional[str] = None, user = Depends(get_curren
 
 @api_router.put("/items/{item_id}")
 async def update_item(item_id: str, item: Item, user = Depends(get_current_user)):
+    collections = get_client_collections(str(user['_id']))
+    items_coll = db[collections['items']]
+    categories_coll = db[collections['categories']]
+    
     # Check for duplicate name (excluding current item)
-    existing = await db.items.find_one({"name": item.name, "_id": {"$ne": ObjectId(item_id)}})
+    existing = await items_coll.find_one({"name": item.name, "_id": {"$ne": ObjectId(item_id)}})
     if existing:
         raise HTTPException(status_code=400, detail="Item name already exists")
     
     # Verify category exists
-    category = await db.categories.find_one({"_id": ObjectId(item.category_id)})
+    category = await categories_coll.find_one({"_id": ObjectId(item.category_id)})
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     
-    result = await db.items.update_one(
+    result = await items_coll.update_one(
         {"_id": ObjectId(item_id)},
         {"$set": {
             "name": item.name,
@@ -349,7 +353,10 @@ async def update_item(item_id: str, item: Item, user = Depends(get_current_user)
 
 @api_router.delete("/items/{item_id}")
 async def delete_item(item_id: str, user = Depends(get_current_user)):
-    result = await db.items.delete_one({"_id": ObjectId(item_id)})
+    collections = get_client_collections(str(user['_id']))
+    items_coll = db[collections['items']]
+    
+    result = await items_coll.delete_one({"_id": ObjectId(item_id)})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Item not found")
     return {"message": "Item deleted"}
