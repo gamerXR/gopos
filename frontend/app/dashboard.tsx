@@ -56,7 +56,11 @@ export default function DashboardScreen() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [showEditItem, setShowEditItem] = useState(false);
   const [showSalesReport, setShowSalesReport] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showPrinterConfig, setShowPrinterConfig] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   
   const [categoryName, setCategoryName] = useState('');
   const [itemName, setItemName] = useState('');
