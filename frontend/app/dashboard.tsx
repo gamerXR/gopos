@@ -1363,55 +1363,109 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4CAF50',
   },
-  totalPanel: {
-    width: 180,
+  cartPanel: {
+    width: 220,
     backgroundColor: '#fff',
     borderLeftWidth: 1,
     borderLeftColor: '#e0e0e0',
-    padding: 16,
   },
-  totalPanelTitle: {
-    fontSize: 16,
+  cartPanelTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  totalDisplay: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    borderTopWidth: 1,
+    padding: 16,
     borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
+    borderBottomColor: '#e0e0e0',
+  },
+  cartItemsList: {
+    flex: 1,
+    padding: 12,
+  },
+  cartItemRow: {
     marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
-  totalAmount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-    marginBottom: 4,
+  cartItemLeft: {
+    marginBottom: 8,
   },
-  totalItems: {
+  cartItemNameNew: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
+  },
+  cartItemPriceNew: {
     fontSize: 12,
     color: '#666',
   },
-  checkoutButtonNew: {
+  cartItemRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  cartQuantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityButtonNew: {
     backgroundColor: '#4CAF50',
-    padding: 16,
+    width: 24,
+    height: 24,
     borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 12,
+    justifyContent: 'center',
   },
-  clearCartButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  clearCartText: {
-    color: '#666',
+  cartQuantityText: {
     fontSize: 14,
     fontWeight: '600',
+    marginHorizontal: 12,
+  },
+  deleteButtonNew: {
+    padding: 4,
+  },
+  cartItemTotalNew: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    textAlign: 'right',
+  },
+  emptyCart: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyCartText: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 8,
+  },
+  cartFooterNew: {
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    padding: 16,
+  },
+  subtotalRowNew: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  subtotalLabelNew: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  subtotalValueNew: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+  },
+  checkoutButtonNew: {
+    backgroundColor: '#4CAF50',
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
   },
   sectionHeader: {
     flexDirection: 'row',
