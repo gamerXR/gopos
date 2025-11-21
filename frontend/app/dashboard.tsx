@@ -53,6 +53,9 @@ export default function DashboardScreen() {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [showAddItem, setShowAddItem] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showEditItem, setShowEditItem] = useState(false);
+  const [showSalesReport, setShowSalesReport] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   
   const [categoryName, setCategoryName] = useState('');
   const [itemName, setItemName] = useState('');
@@ -61,7 +64,10 @@ export default function DashboardScreen() {
   
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'qr'>('cash');
   const [cashAmount, setCashAmount] = useState('');
+  const [discountPercent, setDiscountPercent] = useState('');
   const [qrImage, setQrImage] = useState<string | null>(null);
+  
+  const [salesReport, setSalesReport] = useState<any>(null);
   
   const [loading, setLoading] = useState(false);
 
