@@ -711,6 +711,29 @@ export default function DashboardScreen() {
               </TouchableOpacity>
             </View>
             
+            {paymentMethod === 'cash' && (
+              <View style={styles.cashSection}>
+                <TextInput
+                  style={styles.modalInput}
+                  placeholder="Cash Amount"
+                  value={cashAmount}
+                  onChangeText={setCashAmount}
+                  keyboardType="decimal-pad"
+                />
+                {cashAmount && !isNaN(parseFloat(cashAmount)) && (
+                  <View style={styles.changeDisplay}>
+                    <Text style={styles.changeLabel}>Change:</Text>
+                    <Text style={[
+                      styles.changeValue,
+                      getChange() < 0 && styles.changeNegative
+                    ]}>
+                      ${getChange().toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+            
             {paymentMethod === 'qr' && (
               <View style={styles.qrSection}>
                 <TouchableOpacity
