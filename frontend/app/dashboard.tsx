@@ -66,7 +66,6 @@ export default function DashboardScreen() {
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'qr'>('cash');
   const [cashAmount, setCashAmount] = useState('');
   const [discountPercent, setDiscountPercent] = useState('');
-  const [qrImage, setQrImage] = useState<string | null>(null);
   
   const [salesReport, setSalesReport] = useState<any>(null);
   
