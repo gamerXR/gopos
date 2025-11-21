@@ -2410,6 +2410,47 @@ const styles = StyleSheet.create({
   cashPaymentSection: {
     marginBottom: 20,
   },
+  quickAmountLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  quickAmountGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  quickAmountButton: {
+    minWidth: '30%',
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#f0f0f0',
+  },
+  quickAmountButtonActive: {
+    backgroundColor: '#E8F5E9',
+    borderColor: '#4CAF50',
+  },
+  quickAmountButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#666',
+  },
+  quickAmountButtonTextActive: {
+    color: '#4CAF50',
+  },
+  orText: {
+    fontSize: 13,
+    color: '#999',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
   cashInput: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
