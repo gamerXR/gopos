@@ -1424,12 +1424,10 @@ const styles = StyleSheet.create({
   menuButton: {
     padding: 4,
   },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
+  headerLogo: {
+    height: 40,
+    width: 120,
     flex: 1,
-    textAlign: 'center',
   },
   logoutButton: {
     padding: 4,
