@@ -338,9 +338,6 @@ export default function DashboardScreen() {
         Alert.alert('Insufficient Amount', `Cash amount must be at least $${total.toFixed(2)}`);
         return;
       }
-    } else if (paymentMethod === 'qr' && !qrImage) {
-      Alert.alert('QR Image Required', 'Please upload QR payment proof');
-      return;
     }
 
     setLoading(true);
