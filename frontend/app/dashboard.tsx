@@ -775,8 +775,29 @@ export default function DashboardScreen() {
             <Text style={styles.modalTitle}>Checkout</Text>
             
             <View style={styles.checkoutSummary}>
-              <Text style={styles.checkoutLabel}>Total Amount:</Text>
-              <Text style={styles.checkoutAmount}>${subtotal.toFixed(2)}</Text>
+              <Text style={styles.checkoutLabel}>Subtotal:</Text>
+              <Text style={styles.checkoutSubtotal}>${getSubtotal().toFixed(2)}</Text>
+            </View>
+
+            <View style={styles.discountSection}>
+              <Text style={styles.discountLabel}>Discount %:</Text>
+              <TextInput
+                style={styles.discountInput}
+                placeholder="0"
+                value={discountPercent}
+                onChangeText={setDiscountPercent}
+                keyboardType="decimal-pad"
+              />
+              {discountPercent && !isNaN(parseFloat(discountPercent)) && (
+                <Text style={styles.discountAmount}>
+                  -${getDiscountAmount().toFixed(2)}
+                </Text>
+              )}
+            </View>
+
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Total:</Text>
+              <Text style={styles.totalAmount}>${getTotal().toFixed(2)}</Text>
             </View>
             
             <Text style={styles.paymentLabel}>Payment Method:</Text>
