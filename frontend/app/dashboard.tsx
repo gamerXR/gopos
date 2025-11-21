@@ -1670,4 +1670,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#666',
   },
+  qrDisplayContainer: {
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+  },
+  qrLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  qrCodeImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+  },
+  noQrText: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    padding: 20,
+  },
 });
