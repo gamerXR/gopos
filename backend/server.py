@@ -328,6 +328,9 @@ async def get_orders(user = Depends(get_current_user)):
         id=str(order['_id']),
         items=order['items'],
         subtotal=order['subtotal'],
+        discount_percentage=order.get('discount_percentage', 0),
+        discount_amount=order.get('discount_amount', 0),
+        total=order.get('total', order['subtotal']),
         payment_method=order['payment_method'],
         cash_amount=order.get('cash_amount'),
         change_amount=order.get('change_amount'),
@@ -335,6 +338,80 @@ async def get_orders(user = Depends(get_current_user)):
         created_at=order['created_at'],
         order_number=order['order_number']
     ) for order in orders]
+
+# Sales Report Route
+@api_router.get("/sales-report")
+async def get_sales_report(date: Optional[str] = None, user = Depends(get_current_user)):
+    # If date not provided, use today
+    if date:
+        report_date = datetime.fromisoformat(date)
+    else:
+        report_date = datetime.utcnow()
+    
+    # Get start and end of the day
+    start_of_day = report_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_of_day = report_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+    
+    # Get all orders for the day
+    orders = await db.orders.find({
+        "created_at": {"$gte": start_of_day, "$lte": end_of_day}
+    }).to_list(1000)
+    
+    if not orders:
+        return {
+            "date": report_date.isoformat(),
+            "total_sales": 0,
+            "total_orders": 0,
+            "cash_sales": 0,
+            "qr_sales": 0,
+            "total_discount": 0,
+            "top_items": []
+        }
+    
+    # Calculate totals
+    total_sales = sum(order.get('total', order['subtotal']) for order in orders)
+    total_discount = sum(order.get('discount_amount', 0) for order in orders)
+    
+    # Sales by payment method
+    cash_sales = sum(order.get('total', order['subtotal']) for order in orders if order['payment_method'] == 'cash')
+    qr_sales = sum(order.get('total', order['subtotal']) for order in orders if order['payment_method'] == 'qr')
+    
+    # Top items
+    item_sales = {}
+    for order in orders:
+        for item in order['items']:
+            item_id = item['item_id']
+            item_name = item['name']
+            quantity = item['quantity']
+            revenue = item['price'] * quantity
+            
+            if item_id not in item_sales:
+                item_sales[item_id] = {
+                    'name': item_name,
+                    'quantity': 0,
+                    'revenue': 0
+                }
+            
+            item_sales[item_id]['quantity'] += quantity
+            item_sales[item_id]['revenue'] += revenue
+    
+    # Sort by quantity and get top 10
+    top_items = sorted(
+        [{'name': data['name'], 'quantity': data['quantity'], 'revenue': data['revenue']} 
+         for data in item_sales.values()],
+        key=lambda x: x['quantity'],
+        reverse=True
+    )[:10]
+    
+    return {
+        "date": report_date.isoformat(),
+        "total_sales": total_sales,
+        "total_orders": len(orders),
+        "cash_sales": cash_sales,
+        "qr_sales": qr_sales,
+        "total_discount": total_discount,
+        "top_items": top_items
+    }
 
 # Include the router in the main app
 app.include_router(api_router)
