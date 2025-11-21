@@ -557,7 +557,11 @@ export default function DashboardScreen() {
         <TouchableOpacity onPress={() => setSidebarOpen(!sidebarOpen)} style={styles.menuButton}>
           <Ionicons name="menu" size={28} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>F&B POS</Text>
+        <Image
+          source={{ uri: 'https://customer-assets.emergentagent.com/job_cafe-pos-android/artifacts/75ob9989_gopos%20white.png' }}
+          style={styles.headerLogo}
+          resizeMode="contain"
+        />
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Ionicons name="log-out" size={24} color="#fff" />
         </TouchableOpacity>
