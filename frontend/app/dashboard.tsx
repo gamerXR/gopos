@@ -600,14 +600,6 @@ export default function DashboardScreen() {
               keyboardType="decimal-pad"
             />
             
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Stock"
-              value={itemStock}
-              onChangeText={setItemStock}
-              keyboardType="number-pad"
-            />
-            
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.modalButtonCancel]}
