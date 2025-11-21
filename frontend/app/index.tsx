@@ -204,6 +204,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
+  adminButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingVertical: 14,
+    marginTop: 12,
+    borderWidth: 2,
+    borderColor: '#FF9800',
+  },
+  adminButtonText: {
+    color: '#FF9800',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
   footer: {
     alignItems: 'center',
   },
