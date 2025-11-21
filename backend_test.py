@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 """
-Multi-Tenancy and Super Admin Functionality Test Suite
-Tests the complete multi-tenancy system and super admin features
+Backend API Testing for F&B POS System
+Testing new features: Enhanced Order Model, Return Item API, Refund Order API
 """
 
 import requests
 import json
-import sys
 from datetime import datetime
+import sys
 
-# Get backend URL from frontend .env
-BACKEND_URL = "https://gopos-app.preview.emergentagent.com/api"
+# Configuration
+BASE_URL = "https://gopos-app.preview.emergentagent.com/api"
+TEST_USER = {
+    "phone": "8889999",
+    "password": "123456"
+}
 
-class MultiTenancyTester:
+class BackendTester:
     def __init__(self):
         self.super_admin_token = None
         self.client1_token = None
