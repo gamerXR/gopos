@@ -1092,15 +1092,18 @@ export default function DashboardScreen() {
             
             {paymentMethod === 'qr' && (
               <View style={styles.qrSection}>
-                <TouchableOpacity
-                  style={styles.uploadButton}
-                  onPress={pickQRImage}
-                >
-                  <Ionicons name="cloud-upload" size={24} color="#4CAF50" />
-                  <Text style={styles.uploadButtonText}>
-                    {qrImage ? 'QR Image Uploaded' : 'Upload QR Payment Proof'}
-                  </Text>
-                </TouchableOpacity>
+                {user?.qr_payment_image ? (
+                  <View style={styles.qrDisplayContainer}>
+                    <Text style={styles.qrLabel}>Scan QR Code to Pay:</Text>
+                    <Image
+                      source={{ uri: user.qr_payment_image }}
+                      style={styles.qrCodeImage}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : (
+                  <Text style={styles.noQrText}>QR payment not configured by admin</Text>
+                )}
               </View>
             )}
             
