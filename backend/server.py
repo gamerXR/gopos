@@ -86,7 +86,6 @@ class Item(BaseModel):
     name: str
     category_id: str
     price: float
-    stock: int
 
 class ItemResponse(BaseModel):
     id: str
@@ -94,7 +93,6 @@ class ItemResponse(BaseModel):
     category_id: str
     category_name: str
     price: float
-    stock: int
     created_at: datetime
 
 class OrderItem(BaseModel):
@@ -107,6 +105,8 @@ class Order(BaseModel):
     items: List[OrderItem]
     subtotal: float
     payment_method: str  # "cash" or "qr"
+    cash_amount: Optional[float] = None  # Amount customer gave
+    change_amount: Optional[float] = None  # Change to return
     qr_image: Optional[str] = None  # base64 image for QR payment
 
 class OrderResponse(BaseModel):
@@ -114,6 +114,8 @@ class OrderResponse(BaseModel):
     items: List[OrderItem]
     subtotal: float
     payment_method: str
+    cash_amount: Optional[float] = None
+    change_amount: Optional[float] = None
     qr_image: Optional[str] = None
     created_at: datetime
     order_number: str
@@ -134,6 +136,10 @@ async def startup_event():
         }
         await db.users.insert_one(default_user)
         logger.info("Default user created")
+    
+    # Create unique indexes
+    await db.categories.create_index("name", unique=True)
+    await db.items.create_index("name", unique=True)
 
 # Routes
 @api_router.get("/")
@@ -160,6 +166,11 @@ async def login(request: LoginRequest):
 # Category Routes
 @api_router.post("/categories", response_model=CategoryResponse)
 async def create_category(category: Category, user = Depends(get_current_user)):
+    # Check for duplicate
+    existing = await db.categories.find_one({"name": category.name})
+    if existing:
+        raise HTTPException(status_code=400, detail="Category name already exists")
+    
     category_dict = category.dict()
     category_dict['created_at'] = datetime.utcnow()
     result = await db.categories.insert_one(category_dict)
@@ -187,6 +198,11 @@ async def delete_category(category_id: str, user = Depends(get_current_user)):
 # Item Routes
 @api_router.post("/items", response_model=ItemResponse)
 async def create_item(item: Item, user = Depends(get_current_user)):
+    # Check for duplicate
+    existing = await db.items.find_one({"name": item.name})
+    if existing:
+        raise HTTPException(status_code=400, detail="Item name already exists")
+    
     # Verify category exists
     category = await db.categories.find_one({"_id": ObjectId(item.category_id)})
     if not category:
@@ -202,7 +218,6 @@ async def create_item(item: Item, user = Depends(get_current_user)):
         category_id=item_dict['category_id'],
         category_name=category['name'],
         price=item_dict['price'],
-        stock=item_dict['stock'],
         created_at=item_dict['created_at']
     )
 
@@ -228,19 +243,8 @@ async def get_items(category_id: Optional[str] = None, user = Depends(get_curren
         category_id=item['category_id'],
         category_name=categories.get(item['category_id'], 'Unknown'),
         price=item['price'],
-        stock=item['stock'],
         created_at=item['created_at']
     ) for item in items]
-
-@api_router.put("/items/{item_id}/stock")
-async def update_item_stock(item_id: str, stock: int, user = Depends(get_current_user)):
-    result = await db.items.update_one(
-        {"_id": ObjectId(item_id)},
-        {"$set": {"stock": stock}}
-    )
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return {"message": "Stock updated"}
 
 @api_router.delete("/items/{item_id}")
 async def delete_item(item_id: str, user = Depends(get_current_user)):
@@ -252,21 +256,6 @@ async def delete_item(item_id: str, user = Depends(get_current_user)):
 # Order Routes
 @api_router.post("/orders", response_model=OrderResponse)
 async def create_order(order: Order, user = Depends(get_current_user)):
-    # Update stock for each item
-    for item in order.items:
-        db_item = await db.items.find_one({"_id": ObjectId(item.item_id)})
-        if not db_item:
-            raise HTTPException(status_code=404, detail=f"Item {item.name} not found")
-        
-        new_stock = db_item['stock'] - item.quantity
-        if new_stock < 0:
-            raise HTTPException(status_code=400, detail=f"Insufficient stock for {item.name}")
-        
-        await db.items.update_one(
-            {"_id": ObjectId(item.item_id)},
-            {"$set": {"stock": new_stock}}
-        )
-    
     # Get order number (count + 1)
     order_count = await db.orders.count_documents({})
     order_number = f"ORD{str(order_count + 1).zfill(5)}"
@@ -283,6 +272,8 @@ async def create_order(order: Order, user = Depends(get_current_user)):
         items=order.items,
         subtotal=order.subtotal,
         payment_method=order.payment_method,
+        cash_amount=order.cash_amount,
+        change_amount=order.change_amount,
         qr_image=order.qr_image,
         created_at=order_dict['created_at'],
         order_number=order_number
@@ -296,6 +287,8 @@ async def get_orders(user = Depends(get_current_user)):
         items=order['items'],
         subtotal=order['subtotal'],
         payment_method=order['payment_method'],
+        cash_amount=order.get('cash_amount'),
+        change_amount=order.get('change_amount'),
         qr_image=order.get('qr_image'),
         created_at=order['created_at'],
         order_number=order['order_number']
