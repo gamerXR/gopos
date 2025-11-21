@@ -74,6 +74,24 @@ class LoginResponse(BaseModel):
     token: str
     user: dict
 
+class Client(BaseModel):
+    company_name: str
+    phone: str
+    password: str
+    qr_payment_image: Optional[str] = None  # base64 or URL
+
+class ClientResponse(BaseModel):
+    id: str
+    company_name: str
+    phone: str
+    qr_payment_image: Optional[str] = None
+    created_at: datetime
+
+class ClientUpdate(BaseModel):
+    company_name: str
+    phone: str
+    qr_payment_image: Optional[str] = None
+
 class Category(BaseModel):
     name: str
 
