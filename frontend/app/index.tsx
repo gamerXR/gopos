@@ -114,10 +114,22 @@ export default function LoginScreen() {
               <Text style={styles.loginButtonText}>Login</Text>
             )}
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.adminButton}
+            onPress={() => setIsAdminLogin(!isAdminLogin)}
+          >
+            <Ionicons name="shield-checkmark" size={20} color="#FF9800" />
+            <Text style={styles.adminButtonText}>
+              {isAdminLogin ? 'Staff Login' : 'Admin Login'}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Default: 8889999 / 123456</Text>
+          <Text style={styles.footerText}>
+            {isAdminLogin ? 'Admin: 6737165617 / 448613' : 'Staff: 8889999 / 123456'}
+          </Text>
         </View>
       </View>
     </KeyboardAvoidingView>
