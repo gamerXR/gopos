@@ -189,6 +189,94 @@ export default function DashboardScreen() {
     }
   };
 
+  const handleItemLongPress = (item: Item) => {
+    setSelectedItem(item);
+    setItemName(item.name);
+    setItemPrice(item.price.toString());
+    setItemCategoryId(item.category_id);
+    setShowEditItem(true);
+  };
+
+  const handleUpdateItem = async () => {
+    if (!selectedItem || !itemName.trim() || !itemPrice || !itemCategoryId) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/items/${selectedItem.id}`,
+        {
+          name: itemName,
+          category_id: itemCategoryId,
+          price: parseFloat(itemPrice),
+        },
+        { headers: getAuthHeaders() }
+      );
+      Alert.alert('Success', 'Item updated successfully');
+      setItemName('');
+      setItemPrice('');
+      setItemCategoryId('');
+      setSelectedItem(null);
+      setShowEditItem(false);
+      loadItems();
+    } catch (error: any) {
+      const message = error.response?.data?.detail || 'Failed to update item';
+      Alert.alert('Error', message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteItem = () => {
+    if (!selectedItem) return;
+
+    Alert.alert(
+      'Delete Item',
+      `Are you sure you want to delete "${selectedItem.name}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            setLoading(true);
+            try {
+              await axios.delete(
+                `${BACKEND_URL}/api/items/${selectedItem.id}`,
+                { headers: getAuthHeaders() }
+              );
+              Alert.alert('Success', 'Item deleted successfully');
+              setSelectedItem(null);
+              setShowEditItem(false);
+              loadItems();
+            } catch (error: any) {
+              Alert.alert('Error', error.response?.data?.detail || 'Failed to delete item');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const loadSalesReport = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/sales-report`, {
+        headers: getAuthHeaders(),
+      });
+      setSalesReport(response.data);
+      setShowSalesReport(true);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to load sales report');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const updateCartQuantity = (item_id: string, delta: number) => {
     const cartItem = cart.find(i => i.item_id === item_id);
     
