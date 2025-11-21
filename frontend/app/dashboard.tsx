@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
   FlatList,
+  Image,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
