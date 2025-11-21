@@ -43,7 +43,7 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(phone, password);
-      router.replace('/dashboard');
+      // Router redirect handled in useEffect based on user role
     } catch (error: any) {
       Alert.alert('Login Failed', error.message);
     } finally {
