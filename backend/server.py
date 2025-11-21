@@ -206,7 +206,9 @@ async def login(request: LoginRequest):
             "id": str(user['_id']),
             "phone": user['phone'],
             "role": user['role'],
-            "name": user['name']
+            "name": user['name'],
+            "company_name": user.get('company_name', ''),
+            "qr_payment_image": user.get('qr_payment_image', '')
         }
     )
 
