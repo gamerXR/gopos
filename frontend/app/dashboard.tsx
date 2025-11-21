@@ -317,19 +317,6 @@ export default function DashboardScreen() {
     return cash - total;
   };
 
-  const pickQRImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: 'images',
-      allowsEditing: true,
-      quality: 0.5,
-      base64: true,
-    });
-
-    if (!result.canceled && result.assets[0].base64) {
-      setQrImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
-    }
-  };
-
   const handleCheckout = async () => {
     if (cart.length === 0) {
       Alert.alert('Empty Cart', 'Please add items to cart');
