@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://cafe-pos-android.preview.emergentagent.com/api"
+BACKEND_URL = "https://gopos-app.preview.emergentagent.com/api"
 
 class MultiTenancyTester:
     def __init__(self):
