@@ -375,6 +375,102 @@ async def get_orders(user = Depends(get_current_user)):
         order_number=order['order_number']
     ) for order in orders]
 
+# Client Management Routes (Super Admin Only)
+@api_router.post("/clients", response_model=ClientResponse)
+async def create_client(client: Client, user = Depends(get_current_user)):
+    if user['role'] != 'super_admin':
+        raise HTTPException(status_code=403, detail="Only super admin can create clients")
+    
+    # Check if phone already exists
+    existing = await db.users.find_one({"phone": client.phone})
+    if existing:
+        raise HTTPException(status_code=400, detail="Phone number already exists")
+    
+    client_dict = {
+        "phone": client.phone,
+        "password": hash_password(client.password),
+        "role": "client",
+        "name": client.company_name,
+        "company_name": client.company_name,
+        "qr_payment_image": client.qr_payment_image,
+        "created_at": datetime.utcnow()
+    }
+    
+    result = await db.users.insert_one(client_dict)
+    
+    return ClientResponse(
+        id=str(result.inserted_id),
+        company_name=client.company_name,
+        phone=client.phone,
+        qr_payment_image=client.qr_payment_image,
+        created_at=client_dict['created_at']
+    )
+
+@api_router.get("/clients", response_model=List[ClientResponse])
+async def get_clients(user = Depends(get_current_user)):
+    if user['role'] != 'super_admin':
+        raise HTTPException(status_code=403, detail="Only super admin can view clients")
+    
+    clients = await db.users.find({"role": "client"}).to_list(1000)
+    return [ClientResponse(
+        id=str(client['_id']),
+        company_name=client['company_name'],
+        phone=client['phone'],
+        qr_payment_image=client.get('qr_payment_image'),
+        created_at=client['created_at']
+    ) for client in clients]
+
+@api_router.put("/clients/{client_id}")
+async def update_client(client_id: str, client_update: ClientUpdate, user = Depends(get_current_user)):
+    if user['role'] != 'super_admin':
+        raise HTTPException(status_code=403, detail="Only super admin can update clients")
+    
+    # Check if phone is taken by another user
+    existing = await db.users.find_one({"phone": client_update.phone, "_id": {"$ne": ObjectId(client_id)}})
+    if existing:
+        raise HTTPException(status_code=400, detail="Phone number already exists")
+    
+    result = await db.users.update_one(
+        {"_id": ObjectId(client_id)},
+        {"$set": {
+            "company_name": client_update.company_name,
+            "name": client_update.company_name,
+            "phone": client_update.phone,
+            "qr_payment_image": client_update.qr_payment_image
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Client not found")
+    
+    return {"message": "Client updated successfully"}
+
+@api_router.delete("/clients/{client_id}")
+async def delete_client(client_id: str, user = Depends(get_current_user)):
+    if user['role'] != 'super_admin':
+        raise HTTPException(status_code=403, detail="Only super admin can delete clients")
+    
+    result = await db.users.delete_one({"_id": ObjectId(client_id), "role": "client"})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Client not found")
+    
+    return {"message": "Client deleted successfully"}
+
+@api_router.put("/clients/{client_id}/reset-password")
+async def reset_client_password(client_id: str, user = Depends(get_current_user)):
+    if user['role'] != 'super_admin':
+        raise HTTPException(status_code=403, detail="Only super admin can reset passwords")
+    
+    result = await db.users.update_one(
+        {"_id": ObjectId(client_id), "role": "client"},
+        {"$set": {"password": hash_password("123456")}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Client not found")
+    
+    return {"message": "Password reset to 123456 successfully"}
+
 # Sales Report Route
 @api_router.get("/sales-report")
 async def get_sales_report(date: Optional[str] = None, user = Depends(get_current_user)):
