@@ -337,6 +337,9 @@ export default function DashboardScreen() {
     }
 
     const subtotal = getSubtotal();
+    const discountPercentage = parseFloat(discountPercent) || 0;
+    const discountAmount = getDiscountAmount();
+    const total = getTotal();
 
     if (paymentMethod === 'cash') {
       const cash = parseFloat(cashAmount);
@@ -344,8 +347,8 @@ export default function DashboardScreen() {
         Alert.alert('Invalid Amount', 'Please enter cash amount');
         return;
       }
-      if (cash < subtotal) {
-        Alert.alert('Insufficient Amount', `Cash amount must be at least $${subtotal.toFixed(2)}`);
+      if (cash < total) {
+        Alert.alert('Insufficient Amount', `Cash amount must be at least $${total.toFixed(2)}`);
         return;
       }
     } else if (paymentMethod === 'qr' && !qrImage) {
@@ -358,6 +361,9 @@ export default function DashboardScreen() {
       const orderData: any = {
         items: cart,
         subtotal: subtotal,
+        discount_percentage: discountPercentage,
+        discount_amount: discountAmount,
+        total: total,
         payment_method: paymentMethod,
       };
 
@@ -383,6 +389,7 @@ export default function DashboardScreen() {
       setCart([]);
       setQrImage(null);
       setCashAmount('');
+      setDiscountPercent('');
       setShowCheckout(false);
       
       // Reload items
