@@ -1549,4 +1549,121 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     marginLeft: 8,
   },
+  reportButton: {
+    padding: 4,
+    marginRight: 12,
+  },
+  modalButtonDelete: {
+    backgroundColor: '#f44336',
+  },
+  salesModalContent: {
+    maxHeight: '85%',
+  },
+  salesReportScroll: {
+    maxHeight: 400,
+  },
+  salesSummary: {
+    marginBottom: 20,
+  },
+  salesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  salesLabel: {
+    fontSize: 15,
+    color: '#666',
+    fontWeight: '600',
+  },
+  salesValue: {
+    fontSize: 16,
+    color: '#4CAF50',
+    fontWeight: 'bold',
+  },
+  topItemsTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  topItemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  topItemName: {
+    fontSize: 14,
+    color: '#333',
+    flex: 1,
+  },
+  topItemStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  topItemQty: {
+    fontSize: 13,
+    color: '#666',
+    marginRight: 12,
+  },
+  topItemRevenue: {
+    fontSize: 14,
+    color: '#4CAF50',
+    fontWeight: '600',
+  },
+  discountSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 12,
+  },
+  discountLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginRight: 8,
+  },
+  discountInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 16,
+  },
+  discountAmount: {
+    fontSize: 14,
+    color: '#f44336',
+    marginLeft: 8,
+    fontWeight: '600',
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: '#E8F5E9',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  totalAmount: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+  },
+  checkoutSubtotal: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#666',
+  },
 });
