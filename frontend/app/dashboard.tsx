@@ -965,6 +965,74 @@ export default function DashboardScreen() {
         </View>
       </Modal>
 
+      {/* Settings Modal */}
+      <Modal visible={showSettings} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Settings</Text>
+            <Text style={styles.modalText}>Settings configuration coming soon...</Text>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.modalButtonSave]}
+              onPress={() => setShowSettings(false)}
+            >
+              <Text style={[styles.modalButtonText, { color: '#fff' }]}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Printer Config Modal */}
+      <Modal visible={showPrinterConfig} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Printer Configuration</Text>
+            <Text style={styles.modalText}>
+              The system automatically detects and connects to your device's default printer.
+              {'\n\n'}
+              Make sure your printer is:
+              {'\n'}• Powered on
+              {'\n'}• Connected to the same network (for network printers)
+              {'\n'}• Set as the default printer in your device settings
+            </Text>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.modalButtonSave]}
+              onPress={() => setShowPrinterConfig(false)}
+            >
+              <Text style={[styles.modalButtonText, { color: '#fff' }]}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* About Us Modal */}
+      <Modal visible={showAbout} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>About Us</Text>
+            <Text style={styles.modalText}>
+              F&B POS System
+              {'\n\n'}
+              Version 1.0.0
+              {'\n\n'}
+              A modern point-of-sale system designed for restaurants and food businesses.
+              {'\n\n'}
+              Features:
+              {'\n'}• Multi-client support
+              {'\n'}• Real-time inventory
+              {'\n'}• Sales reporting
+              {'\n'}• Multiple payment methods
+              {'\n'}• Receipt printing
+            </Text>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.modalButtonSave]}
+              onPress={() => setShowAbout(false)}
+            >
+              <Text style={[styles.modalButtonText, { color: '#fff' }]}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Checkout Modal */}
       <Modal visible={showCheckout} transparent animationType="slide">
         <View style={styles.modalOverlay}>
