@@ -137,9 +137,16 @@ async def startup_event():
         await db.users.insert_one(default_user)
         logger.info("Default user created")
     
-    # Create unique indexes
-    await db.categories.create_index("name", unique=True)
-    await db.items.create_index("name", unique=True)
+    # Create unique indexes (if not exists)
+    try:
+        await db.categories.create_index("name", unique=True)
+    except Exception as e:
+        logger.warning(f"Category index already exists: {e}")
+    
+    try:
+        await db.items.create_index("name", unique=True)
+    except Exception as e:
+        logger.warning(f"Item index already exists: {e}")
 
 # Routes
 @api_router.get("/")
