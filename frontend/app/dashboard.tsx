@@ -671,34 +671,77 @@ export default function DashboardScreen() {
           />
         </View>
 
-        {/* Right Total Panel */}
-        <View style={styles.totalPanel}>
-          <Text style={styles.totalPanelTitle}>Order Total</Text>
+        {/* Right Cart Panel */}
+        <View style={styles.cartPanel}>
+          <Text style={styles.cartPanelTitle}>Cart</Text>
           
-          <View style={styles.totalDisplay}>
-            <Text style={styles.totalAmount}>${subtotal.toFixed(2)}</Text>
-            <Text style={styles.totalItems}>{cart.length} item(s)</Text>
-          </View>
+          <ScrollView style={styles.cartItemsList}>
+            {cart.map(item => (
+              <View key={item.item_id} style={styles.cartItemRow}>
+                <View style={styles.cartItemLeft}>
+                  <Text style={styles.cartItemNameNew} numberOfLines={1}>
+                    {item.name}
+                  </Text>
+                  <Text style={styles.cartItemPriceNew}>
+                    ${item.price.toFixed(2)}
+                  </Text>
+                </View>
+                
+                <View style={styles.cartItemRight}>
+                  <View style={styles.cartQuantityControls}>
+                    <TouchableOpacity
+                      onPress={() => updateCartQuantity(item.item_id, -1)}
+                      style={styles.quantityButtonNew}
+                    >
+                      <Ionicons name="remove" size={14} color="#fff" />
+                    </TouchableOpacity>
+                    
+                    <Text style={styles.cartQuantityText}>{item.quantity}</Text>
+                    
+                    <TouchableOpacity
+                      onPress={() => updateCartQuantity(item.item_id, 1)}
+                      style={styles.quantityButtonNew}
+                    >
+                      <Ionicons name="add" size={14} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                  
+                  <TouchableOpacity
+                    onPress={() => removeFromCart(item.item_id)}
+                    style={styles.deleteButtonNew}
+                  >
+                    <Ionicons name="trash" size={16} color="#f44336" />
+                  </TouchableOpacity>
+                </View>
+                
+                <Text style={styles.cartItemTotalNew}>
+                  ${(item.price * item.quantity).toFixed(2)}
+                </Text>
+              </View>
+            ))}
+            
+            {cart.length === 0 && (
+              <View style={styles.emptyCart}>
+                <Ionicons name="cart-outline" size={48} color="#ccc" />
+                <Text style={styles.emptyCartText}>Cart is empty</Text>
+              </View>
+            )}
+          </ScrollView>
           
-          <TouchableOpacity
-            style={[styles.checkoutButtonNew, cart.length === 0 && styles.checkoutButtonDisabled]}
-            onPress={() => setShowCheckout(true)}
-            disabled={cart.length === 0}
-          >
-            <Text style={styles.checkoutButtonText}>Checkout</Text>
-          </TouchableOpacity>
-
-          {cart.length > 0 && (
+          <View style={styles.cartFooterNew}>
+            <View style={styles.subtotalRowNew}>
+              <Text style={styles.subtotalLabelNew}>Subtotal:</Text>
+              <Text style={styles.subtotalValueNew}>${subtotal.toFixed(2)}</Text>
+            </View>
+            
             <TouchableOpacity
-              style={styles.clearCartButton}
-              onPress={() => Alert.alert('Clear Cart', 'Remove all items?', [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Clear', onPress: () => setCart([]) }
-              ])}
+              style={[styles.checkoutButtonNew, cart.length === 0 && styles.checkoutButtonDisabled]}
+              onPress={() => setShowCheckout(true)}
+              disabled={cart.length === 0}
             >
-              <Text style={styles.clearCartText}>Clear Cart</Text>
+              <Text style={styles.checkoutButtonText}>Checkout</Text>
             </TouchableOpacity>
-          )}
+          </View>
         </View>
       </View>
 
