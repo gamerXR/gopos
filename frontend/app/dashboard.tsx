@@ -754,6 +754,7 @@ export default function DashboardScreen() {
                 onPress={() => {
                   setShowCheckout(false);
                   setPaymentMethod('cash');
+                  setCashAmount('');
                   setQrImage(null);
                 }}
               >
