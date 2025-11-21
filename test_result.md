@@ -236,6 +236,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Multi-tenancy and Super Admin testing completed successfully"
     - "All backend testing completed successfully"
   stuck_tasks: []
   test_all: false
