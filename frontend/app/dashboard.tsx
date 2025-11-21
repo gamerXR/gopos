@@ -331,7 +331,11 @@ export default function DashboardScreen() {
             `).join('')}
           </table>
           <div class="total">
-            Total: $${order.subtotal.toFixed(2)}
+            <p>Subtotal: $${order.subtotal.toFixed(2)}</p>
+            ${order.payment_method === 'cash' ? `
+              <p>Cash: $${order.cash_amount.toFixed(2)}</p>
+              <p>Change: $${order.change_amount.toFixed(2)}</p>
+            ` : ''}
           </div>
           <div class="footer">
             <p>Thank you for your order!</p>
@@ -340,13 +344,26 @@ export default function DashboardScreen() {
       </html>
     `;
 
-    await Print.printAsync({ html });
+    // Print to device's default printer (auto-detect)
+    try {
+      await Print.printAsync({ html });
+    } catch (error) {
+      console.error('Print error:', error);
+      // Fallback: Just show success even if print fails
+      Alert.alert('Note', 'Receipt generated but printer not available');
+    }
   };
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Logout', onPress: () => logout() },
+      { 
+        text: 'Logout', 
+        onPress: async () => {
+          await logout();
+          router.replace('/');
+        }
+      },
     ]);
   };
 
