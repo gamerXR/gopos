@@ -1567,6 +1567,12 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 16,
   },
+  modalText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 22,
+    marginBottom: 20,
+  },
   modalInput: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
