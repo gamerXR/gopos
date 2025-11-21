@@ -1350,9 +1350,45 @@ export default function DashboardScreen() {
               {/* Cash Payment Details */}
               {paymentMethod === 'cash' && (
                 <View style={styles.cashPaymentSection}>
+                  {/* Quick Amount Buttons */}
+                  <Text style={styles.quickAmountLabel}>Quick Select Amount:</Text>
+                  <View style={styles.quickAmountGrid}>
+                    {(() => {
+                      const total = getTotal();
+                      const amounts = [
+                        total,
+                        Math.ceil(total / 5) * 5,
+                        Math.ceil(total / 10) * 10,
+                        Math.ceil(total / 20) * 20,
+                        Math.ceil(total / 50) * 50,
+                        Math.ceil(total / 100) * 100,
+                      ].filter((val, idx, arr) => arr.indexOf(val) === idx && val >= total);
+                      
+                      return amounts.slice(0, 6).map((amount, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          style={[
+                            styles.quickAmountButton,
+                            cashAmount === amount.toFixed(2) && styles.quickAmountButtonActive
+                          ]}
+                          onPress={() => setCashAmount(amount.toFixed(2))}
+                        >
+                          <Text style={[
+                            styles.quickAmountButtonText,
+                            cashAmount === amount.toFixed(2) && styles.quickAmountButtonTextActive
+                          ]}>
+                            ${amount.toFixed(2)}
+                          </Text>
+                        </TouchableOpacity>
+                      ));
+                    })()}
+                  </View>
+
+                  <Text style={styles.orText}>or enter custom amount:</Text>
+                  
                   <TextInput
                     style={styles.cashInput}
-                    placeholder="Cash Amount"
+                    placeholder="Enter Cash Amount"
                     value={cashAmount}
                     onChangeText={setCashAmount}
                     keyboardType="decimal-pad"
