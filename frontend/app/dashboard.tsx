@@ -59,6 +59,7 @@ export default function DashboardScreen() {
   const [showSettings, setShowSettings] = useState(false);
   const [showPrinterConfig, setShowPrinterConfig] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [showReportMenu, setShowReportMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
