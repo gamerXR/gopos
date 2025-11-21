@@ -513,6 +513,9 @@ async def reset_client_password(client_id: str, user = Depends(get_current_user)
 # Sales Report Route
 @api_router.get("/sales-report")
 async def get_sales_report(date: Optional[str] = None, user = Depends(get_current_user)):
+    collections = get_client_collections(str(user['_id']))
+    orders_coll = db[collections['orders']]
+    
     # If date not provided, use today
     if date:
         report_date = datetime.fromisoformat(date)
@@ -524,7 +527,7 @@ async def get_sales_report(date: Optional[str] = None, user = Depends(get_curren
     end_of_day = report_date.replace(hour=23, minute=59, second=59, microsecond=999999)
     
     # Get all orders for the day
-    orders = await db.orders.find({
+    orders = await orders_coll.find({
         "created_at": {"$gte": start_of_day, "$lte": end_of_day}
     }).to_list(1000)
     
