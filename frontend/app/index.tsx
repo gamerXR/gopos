@@ -19,12 +19,18 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
   const router = useRouter();
   const { login, user, isLoading } = useAuth();
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.replace('/dashboard');
+      // Route based on role
+      if (user.role === 'super_admin') {
+        router.replace('/admin-dashboard');
+      } else {
+        router.replace('/dashboard');
+      }
     }
   }, [user, isLoading]);
 
