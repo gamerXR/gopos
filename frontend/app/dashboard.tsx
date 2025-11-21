@@ -443,6 +443,10 @@ export default function DashboardScreen() {
           </table>
           <div class="total">
             <p>Subtotal: $${order.subtotal.toFixed(2)}</p>
+            ${order.discount_percentage > 0 ? `
+              <p>Discount (${order.discount_percentage}%): -$${order.discount_amount.toFixed(2)}</p>
+              <p style="font-size: 20px; color: #4CAF50;">Total: $${order.total.toFixed(2)}</p>
+            ` : ''}
             ${order.payment_method === 'cash' ? `
               <p>Cash: $${order.cash_amount.toFixed(2)}</p>
               <p>Change: $${order.change_amount.toFixed(2)}</p>
