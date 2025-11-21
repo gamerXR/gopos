@@ -253,6 +253,32 @@ async def get_items(category_id: Optional[str] = None, user = Depends(get_curren
         created_at=item['created_at']
     ) for item in items]
 
+@api_router.put("/items/{item_id}")
+async def update_item(item_id: str, item: Item, user = Depends(get_current_user)):
+    # Check for duplicate name (excluding current item)
+    existing = await db.items.find_one({"name": item.name, "_id": {"$ne": ObjectId(item_id)}})
+    if existing:
+        raise HTTPException(status_code=400, detail="Item name already exists")
+    
+    # Verify category exists
+    category = await db.categories.find_one({"_id": ObjectId(item.category_id)})
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    result = await db.items.update_one(
+        {"_id": ObjectId(item_id)},
+        {"$set": {
+            "name": item.name,
+            "category_id": item.category_id,
+            "price": item.price
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return {"message": "Item updated successfully"}
+
 @api_router.delete("/items/{item_id}")
 async def delete_item(item_id: str, user = Depends(get_current_user)):
     result = await db.items.delete_one({"_id": ObjectId(item_id)})
