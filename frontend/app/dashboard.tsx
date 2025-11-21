@@ -1079,136 +1079,155 @@ export default function DashboardScreen() {
       {/* Checkout Modal */}
       <Modal visible={showCheckout} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Checkout</Text>
-            
-            <View style={styles.checkoutSummary}>
-              <Text style={styles.checkoutLabel}>Subtotal:</Text>
-              <Text style={styles.checkoutSubtotal}>${getSubtotal().toFixed(2)}</Text>
-            </View>
+          <ScrollView contentContainerStyle={styles.checkoutScrollContent}>
+            <View style={styles.checkoutModalContent}>
+              <Text style={styles.checkoutTitle}>Order Details</Text>
+              
+              {/* Order Items Summary */}
+              <View style={styles.orderSummarySection}>
+                {cart.map(item => (
+                  <View key={item.item_id} style={styles.summaryItemRow}>
+                    <Text style={styles.summaryItemName}>{item.name} x{item.quantity}</Text>
+                    <Text style={styles.summaryItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+                  </View>
+                ))}
+              </View>
 
-            <View style={styles.discountSection}>
-              <Text style={styles.discountLabel}>Discount %:</Text>
-              <TextInput
-                style={styles.discountInput}
-                placeholder="0"
-                value={discountPercent}
-                onChangeText={setDiscountPercent}
-                keyboardType="decimal-pad"
-              />
-              {discountPercent && !isNaN(parseFloat(discountPercent)) && (
-                <Text style={styles.discountAmount}>
-                  -${getDiscountAmount().toFixed(2)}
-                </Text>
+              {/* Price Breakdown */}
+              <View style={styles.priceBreakdown}>
+                <View style={styles.priceRow}>
+                  <Text style={styles.priceLabel}>Subtotal:</Text>
+                  <Text style={styles.priceValue}>${getSubtotal().toFixed(2)}</Text>
+                </View>
+
+                <View style={styles.priceRow}>
+                  <Text style={styles.priceLabel}>Discount (%):</Text>
+                  <TextInput
+                    style={styles.discountInputSmall}
+                    placeholder="0"
+                    value={discountPercent}
+                    onChangeText={setDiscountPercent}
+                    keyboardType="decimal-pad"
+                  />
+                  <Text style={styles.priceValue}>-${getDiscountAmount().toFixed(2)}</Text>
+                </View>
+
+                <View style={styles.totalRowCheckout}>
+                  <Text style={styles.totalLabelCheckout}>Total:</Text>
+                  <Text style={styles.totalAmountCheckout}>${getTotal().toFixed(2)}</Text>
+                </View>
+              </View>
+              
+              {/* Payment Method */}
+              <Text style={styles.paymentSectionTitle}>Payment Method</Text>
+              <View style={styles.paymentMethodsRow}>
+                <TouchableOpacity
+                  style={[
+                    styles.paymentMethodButton,
+                    paymentMethod === 'cash' && styles.paymentMethodButtonActive,
+                  ]}
+                  onPress={() => setPaymentMethod('cash')}
+                >
+                  <Ionicons
+                    name="cash"
+                    size={28}
+                    color={paymentMethod === 'cash' ? '#fff' : '#4CAF50'}
+                  />
+                  <Text style={[
+                    styles.paymentMethodButtonText,
+                    paymentMethod === 'cash' && styles.paymentMethodButtonTextActive
+                  ]}>Cash</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={[
+                    styles.paymentMethodButton,
+                    paymentMethod === 'qr' && styles.paymentMethodButtonActive,
+                  ]}
+                  onPress={() => setPaymentMethod('qr')}
+                >
+                  <Ionicons
+                    name="qr-code"
+                    size={28}
+                    color={paymentMethod === 'qr' ? '#fff' : '#4CAF50'}
+                  />
+                  <Text style={[
+                    styles.paymentMethodButtonText,
+                    paymentMethod === 'qr' && styles.paymentMethodButtonTextActive
+                  ]}>QR Code</Text>
+                </TouchableOpacity>
+              </View>
+              
+              {/* Cash Payment Details */}
+              {paymentMethod === 'cash' && (
+                <View style={styles.cashPaymentSection}>
+                  <TextInput
+                    style={styles.cashInput}
+                    placeholder="Cash Amount"
+                    value={cashAmount}
+                    onChangeText={setCashAmount}
+                    keyboardType="decimal-pad"
+                  />
+                  {cashAmount && !isNaN(parseFloat(cashAmount)) && (
+                    <View style={styles.changeRow}>
+                      <Text style={styles.changeLabel}>Change:</Text>
+                      <Text style={[
+                        styles.changeValue,
+                        getChange() < 0 && styles.changeNegative
+                      ]}>
+                        ${getChange().toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+                </View>
               )}
-            </View>
-
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Total:</Text>
-              <Text style={styles.totalAmount}>${getTotal().toFixed(2)}</Text>
-            </View>
-            
-            <Text style={styles.paymentLabel}>Payment Method:</Text>
-            <View style={styles.paymentMethods}>
-              <TouchableOpacity
-                style={[
-                  styles.paymentMethod,
-                  paymentMethod === 'cash' && styles.paymentMethodActive,
-                ]}
-                onPress={() => setPaymentMethod('cash')}
-              >
-                <Ionicons
-                  name="cash"
-                  size={24}
-                  color={paymentMethod === 'cash' ? '#4CAF50' : '#666'}
-                />
-                <Text style={styles.paymentMethodText}>Cash</Text>
-              </TouchableOpacity>
               
-              <TouchableOpacity
-                style={[
-                  styles.paymentMethod,
-                  paymentMethod === 'qr' && styles.paymentMethodActive,
-                ]}
-                onPress={() => setPaymentMethod('qr')}
-              >
-                <Ionicons
-                  name="qr-code"
-                  size={24}
-                  color={paymentMethod === 'qr' ? '#4CAF50' : '#666'}
-                />
-                <Text style={styles.paymentMethodText}>QR Code</Text>
-              </TouchableOpacity>
-            </View>
-            
-            {paymentMethod === 'cash' && (
-              <View style={styles.cashSection}>
-                <TextInput
-                  style={styles.modalInput}
-                  placeholder="Cash Amount"
-                  value={cashAmount}
-                  onChangeText={setCashAmount}
-                  keyboardType="decimal-pad"
-                />
-                {cashAmount && !isNaN(parseFloat(cashAmount)) && (
-                  <View style={styles.changeDisplay}>
-                    <Text style={styles.changeLabel}>Change:</Text>
-                    <Text style={[
-                      styles.changeValue,
-                      getChange() < 0 && styles.changeNegative
-                    ]}>
-                      ${getChange().toFixed(2)}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            )}
-            
-            {paymentMethod === 'qr' && (
-              <View style={styles.qrSection}>
-                {user?.qr_payment_image ? (
-                  <View style={styles.qrDisplayContainer}>
-                    <Text style={styles.qrLabel}>Scan QR Code to Pay:</Text>
-                    <Image
-                      source={{ uri: user.qr_payment_image }}
-                      style={styles.qrCodeImage}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : (
-                  <Text style={styles.noQrText}>QR payment not configured by admin</Text>
-                )}
-              </View>
-            )}
-            
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.modalButtonCancel]}
-                onPress={() => {
-                  setShowCheckout(false);
-                  setPaymentMethod('cash');
-                  setCashAmount('');
-                  setDiscountPercent('');
-                }}
-              >
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
+              {/* QR Payment */}
+              {paymentMethod === 'qr' && (
+                <View style={styles.qrPaymentSection}>
+                  {user?.qr_payment_image ? (
+                    <View style={styles.qrDisplayContainer}>
+                      <Text style={styles.qrLabel}>Scan to Pay:</Text>
+                      <Image
+                        source={{ uri: user.qr_payment_image }}
+                        style={styles.qrCodeImageSmall}
+                        resizeMode="contain"
+                      />
+                    </View>
+                  ) : (
+                    <Text style={styles.noQrText}>QR payment not configured</Text>
+                  )}
+                </View>
+              )}
               
-              <TouchableOpacity
-                style={[styles.modalButton, styles.modalButtonSave]}
-                onPress={handleCheckout}
-                disabled={loading}
-              >
-                {loading ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>
-                    Place Order
-                  </Text>
-                )}
-              </TouchableOpacity>
+              {/* Action Buttons */}
+              <View style={styles.checkoutActions}>
+                <TouchableOpacity
+                  style={styles.cancelCheckoutButton}
+                  onPress={() => {
+                    setShowCheckout(false);
+                    setPaymentMethod('cash');
+                    setCashAmount('');
+                    setDiscountPercent('');
+                  }}
+                >
+                  <Text style={styles.cancelCheckoutText}>Cancel</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={styles.placeOrderButton}
+                  onPress={handleCheckout}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.placeOrderText}>Place Order</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </View>
       </Modal>
     </View>
