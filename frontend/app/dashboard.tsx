@@ -301,10 +301,20 @@ export default function DashboardScreen() {
     return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   };
 
+  const getDiscountAmount = () => {
+    const discount = parseFloat(discountPercent) || 0;
+    const subtotal = getSubtotal();
+    return (subtotal * discount) / 100;
+  };
+
+  const getTotal = () => {
+    return getSubtotal() - getDiscountAmount();
+  };
+
   const getChange = () => {
     const cash = parseFloat(cashAmount) || 0;
-    const subtotal = getSubtotal();
-    return cash - subtotal;
+    const total = getTotal();
+    return cash - total;
   };
 
   const pickQRImage = async () => {
