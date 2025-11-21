@@ -364,8 +364,11 @@ async def delete_item(item_id: str, user = Depends(get_current_user)):
 # Order Routes
 @api_router.post("/orders", response_model=OrderResponse)
 async def create_order(order: Order, user = Depends(get_current_user)):
+    collections = get_client_collections(str(user['_id']))
+    orders_coll = db[collections['orders']]
+    
     # Get order number (count + 1)
-    order_count = await db.orders.count_documents({})
+    order_count = await orders_coll.count_documents({})
     order_number = f"ORD{str(order_count + 1).zfill(5)}"
     
     order_dict = order.dict()
@@ -373,7 +376,7 @@ async def create_order(order: Order, user = Depends(get_current_user)):
     order_dict['created_by'] = str(user['_id'])
     order_dict['order_number'] = order_number
     
-    result = await db.orders.insert_one(order_dict)
+    result = await orders_coll.insert_one(order_dict)
     
     return OrderResponse(
         id=str(result.inserted_id),
@@ -392,7 +395,10 @@ async def create_order(order: Order, user = Depends(get_current_user)):
 
 @api_router.get("/orders", response_model=List[OrderResponse])
 async def get_orders(user = Depends(get_current_user)):
-    orders = await db.orders.find().sort("created_at", -1).to_list(100)
+    collections = get_client_collections(str(user['_id']))
+    orders_coll = db[collections['orders']]
+    
+    orders = await orders_coll.find().sort("created_at", -1).to_list(100)
     return [OrderResponse(
         id=str(order['_id']),
         items=order['items'],
