@@ -225,8 +225,78 @@ backend:
           agent: "testing"
           comment: "✅ Super admin functionality fully working - Super admin (6737165617/448613) can successfully login, create clients, list all clients, and reset client passwords. Client creation tested with Restaurant A (1111111/pass1) and Restaurant B (2222222/pass2). Password reset functionality verified - Client 1's password successfully reset to default (123456)."
 
+  - task: "Return Item API Endpoint"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented POST /api/orders/{order_id}/return-item endpoint to return individual items from an order. Marks items as returned and prevents returning already refunded items."
+
+  - task: "Refund Order API Endpoint"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented POST /api/orders/{order_id}/refund endpoint to refund entire orders. Updates order status to 'refunded' and marks all items as returned."
+
+  - task: "Enhanced Order Model"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Updated order creation to include sales_person_name, status field (completed/refunded), and modified GET /api/orders to return enhanced order data with timestamps in ISO format."
+
 frontend:
-  # No frontend testing performed as per instructions
+  - task: "Login Page Logo"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/index.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added GoPos logo to login page replacing the icon. Logo is displayed at the top of the login form."
+
+  - task: "Sales Details Page"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/sales-details.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Created comprehensive sales details page showing all orders sorted by time (most recent first). Displays order number, date, time, sales person name, payment method, total, and items. Clicking on order shows detailed view with return and refund options."
+
+  - task: "Return and Refund UI"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/sales-details.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented UI for returning individual items and refunding entire orders. Shows returned items with strikethrough styling, displays refunded badge on refunded orders, and prevents returns/refunds on already refunded orders."
 
 metadata:
   created_by: "testing_agent"
