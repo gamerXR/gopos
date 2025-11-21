@@ -2293,12 +2293,15 @@ const styles = StyleSheet.create({
   checkoutScrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 16,
   },
   checkoutModalContent: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 20,
+    width: '100%',
+    maxWidth: 500,
+    alignSelf: 'center',
   },
   checkoutTitle: {
     fontSize: 22,
