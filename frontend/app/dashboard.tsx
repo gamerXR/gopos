@@ -126,7 +126,8 @@ export default function DashboardScreen() {
       setShowAddCategory(false);
       loadCategories();
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to add category');
+      const message = error.response?.data?.detail || 'Failed to add category';
+      Alert.alert('Error', message);
     } finally {
       setLoading(false);
     }
