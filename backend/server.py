@@ -395,26 +395,29 @@ async def create_order(order: Order, user = Depends(get_current_user)):
         order_number=order_number
     )
 
-@api_router.get("/orders", response_model=List[OrderResponse])
+@api_router.get("/orders", response_model=List[dict])
 async def get_orders(user = Depends(get_current_user)):
     collections = get_client_collections(str(user['_id']))
     orders_coll = db[collections['orders']]
     
-    orders = await orders_coll.find().sort("created_at", -1).to_list(100)
-    return [OrderResponse(
-        id=str(order['_id']),
-        items=order['items'],
-        subtotal=order['subtotal'],
-        discount_percentage=order.get('discount_percentage', 0),
-        discount_amount=order.get('discount_amount', 0),
-        total=order.get('total', order['subtotal']),
-        payment_method=order['payment_method'],
-        cash_amount=order.get('cash_amount'),
-        change_amount=order.get('change_amount'),
-        qr_image=order.get('qr_image'),
-        created_at=order['created_at'],
-        order_number=order['order_number']
-    ) for order in orders]
+    orders = await orders_coll.find().sort("created_at", -1).to_list(1000)
+    return [{
+        'id': str(order['_id']),
+        'items': order['items'],
+        'subtotal': order['subtotal'],
+        'discount_percentage': order.get('discount_percentage', 0),
+        'discount_amount': order.get('discount_amount', 0),
+        'total': order.get('total', order['subtotal']),
+        'payment_method': order['payment_method'],
+        'cash_amount': order.get('cash_amount'),
+        'change_amount': order.get('change_amount'),
+        'qr_image': order.get('qr_image'),
+        'created_at': order['created_at'].isoformat(),
+        'created_by': order.get('created_by', ''),
+        'sales_person_name': order.get('sales_person_name', 'Staff'),
+        'order_number': order['order_number'],
+        'status': order.get('status', 'completed')
+    } for order in orders]
 
 # Client Management Routes (Super Admin Only)
 @api_router.post("/clients", response_model=ClientResponse)
