@@ -31,7 +31,6 @@ interface Item {
   category_id: string;
   category_name: string;
   price: number;
-  stock: number;
 }
 
 interface CartItem {
