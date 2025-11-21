@@ -104,6 +104,9 @@ class OrderItem(BaseModel):
 class Order(BaseModel):
     items: List[OrderItem]
     subtotal: float
+    discount_percentage: Optional[float] = 0  # Discount percentage
+    discount_amount: Optional[float] = 0  # Calculated discount amount
+    total: float  # Final total after discount
     payment_method: str  # "cash" or "qr"
     cash_amount: Optional[float] = None  # Amount customer gave
     change_amount: Optional[float] = None  # Change to return
