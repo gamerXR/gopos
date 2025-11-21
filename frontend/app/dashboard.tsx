@@ -772,6 +772,156 @@ export default function DashboardScreen() {
         </View>
       </Modal>
 
+      {/* Edit Item Modal */}
+      <Modal visible={showEditItem} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Item</Text>
+            
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Item Name"
+              value={itemName}
+              onChangeText={setItemName}
+            />
+            
+            <View style={styles.pickerContainer}>
+              <Text style={styles.pickerLabel}>Category:</Text>
+              <ScrollView horizontal style={styles.categoryPicker}>
+                {categories.map(cat => (
+                  <TouchableOpacity
+                    key={cat.id}
+                    style={[
+                      styles.categoryChip,
+                      itemCategoryId === cat.id && styles.categoryChipSelected,
+                    ]}
+                    onPress={() => setItemCategoryId(cat.id)}
+                  >
+                    <Text style={[
+                      styles.categoryChipText,
+                      itemCategoryId === cat.id && styles.categoryChipTextSelected,
+                    ]}>
+                      {cat.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+            
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Price"
+              value={itemPrice}
+              onChangeText={setItemPrice}
+              keyboardType="decimal-pad"
+            />
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonDelete]}
+                onPress={handleDeleteItem}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>Delete</Text>
+                )}
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => {
+                  setShowEditItem(false);
+                  setSelectedItem(null);
+                  setItemName('');
+                  setItemPrice('');
+                  setItemCategoryId('');
+                }}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonSave]}
+                onPress={handleUpdateItem}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>Update</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Sales Report Modal */}
+      <Modal visible={showSalesReport} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, styles.salesModalContent]}>
+            <Text style={styles.modalTitle}>Daily Sales Report</Text>
+            
+            {salesReport && (
+              <ScrollView style={styles.salesReportScroll}>
+                <View style={styles.salesSummary}>
+                  <View style={styles.salesRow}>
+                    <Text style={styles.salesLabel}>Total Sales:</Text>
+                    <Text style={styles.salesValue}>${salesReport.total_sales.toFixed(2)}</Text>
+                  </View>
+                  <View style={styles.salesRow}>
+                    <Text style={styles.salesLabel}>Total Orders:</Text>
+                    <Text style={styles.salesValue}>{salesReport.total_orders}</Text>
+                  </View>
+                  <View style={styles.salesRow}>
+                    <Text style={styles.salesLabel}>Cash Sales:</Text>
+                    <Text style={styles.salesValue}>${salesReport.cash_sales.toFixed(2)}</Text>
+                  </View>
+                  <View style={styles.salesRow}>
+                    <Text style={styles.salesLabel}>QR Sales:</Text>
+                    <Text style={styles.salesValue}>${salesReport.qr_sales.toFixed(2)}</Text>
+                  </View>
+                  <View style={styles.salesRow}>
+                    <Text style={styles.salesLabel}>Total Discount:</Text>
+                    <Text style={styles.salesValue}>${salesReport.total_discount.toFixed(2)}</Text>
+                  </View>
+                </View>
+
+                <Text style={styles.topItemsTitle}>Top Items:</Text>
+                {salesReport.top_items.map((item: any, index: number) => (
+                  <View key={index} style={styles.topItemRow}>
+                    <Text style={styles.topItemName}>{item.name}</Text>
+                    <View style={styles.topItemStats}>
+                      <Text style={styles.topItemQty}>Qty: {item.quantity}</Text>
+                      <Text style={styles.topItemRevenue}>${item.revenue.toFixed(2)}</Text>
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => setShowSalesReport(false)}
+              >
+                <Text style={styles.modalButtonText}>Close</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonSave]}
+                onPress={() => printSalesReport(salesReport)}
+              >
+                <Ionicons name="print" size={20} color="#fff" />
+                <Text style={[styles.modalButtonText, { color: '#fff', marginLeft: 8 }]}>Print</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Checkout Modal */}
       <Modal visible={showCheckout} transparent animationType="slide">
         <View style={styles.modalOverlay}>
