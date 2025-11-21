@@ -165,18 +165,9 @@ export default function DashboardScreen() {
   };
 
   const addToCart = (item: Item) => {
-    if (item.stock <= 0) {
-      Alert.alert('Out of Stock', `${item.name} is currently out of stock`);
-      return;
-    }
-
     const existingItem = cart.find(cartItem => cartItem.item_id === item.id);
     
     if (existingItem) {
-      if (existingItem.quantity >= item.stock) {
-        Alert.alert('Stock Limit', `Only ${item.stock} available`);
-        return;
-      }
       setCart(cart.map(cartItem =>
         cartItem.item_id === item.id
           ? { ...cartItem, quantity: cartItem.quantity + 1 }
