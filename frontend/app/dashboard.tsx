@@ -207,6 +207,12 @@ export default function DashboardScreen() {
     return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   };
 
+  const getChange = () => {
+    const cash = parseFloat(cashAmount) || 0;
+    const subtotal = getSubtotal();
+    return cash - subtotal;
+  };
+
   const pickQRImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: 'images',
