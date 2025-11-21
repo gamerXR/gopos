@@ -184,7 +184,6 @@ export default function DashboardScreen() {
   };
 
   const updateCartQuantity = (item_id: string, delta: number) => {
-    const item = items.find(i => i.id === item_id);
     const cartItem = cart.find(i => i.item_id === item_id);
     
     if (cartItem) {
@@ -192,12 +191,10 @@ export default function DashboardScreen() {
       
       if (newQuantity <= 0) {
         removeFromCart(item_id);
-      } else if (item && newQuantity <= item.stock) {
+      } else {
         setCart(cart.map(i =>
           i.item_id === item_id ? { ...i, quantity: newQuantity } : i
         ));
-      } else {
-        Alert.alert('Stock Limit', `Only ${item?.stock} available`);
       }
     }
   };
