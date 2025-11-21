@@ -1066,25 +1066,142 @@ export default function DashboardScreen() {
       </Modal>
 
       {/* Printer Config Modal */}
-      <Modal visible={showPrinterConfig} transparent animationType="fade">
+      <Modal visible={showPrinterConfig} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Printer Configuration</Text>
-            <Text style={styles.modalText}>
-              The system automatically detects and connects to your device's default printer.
-              {'\n\n'}
-              Make sure your printer is:
-              {'\n'}• Powered on
-              {'\n'}• Connected to the same network (for network printers)
-              {'\n'}• Set as the default printer in your device settings
-            </Text>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.modalButtonSave]}
-              onPress={() => setShowPrinterConfig(false)}
-            >
-              <Text style={[styles.modalButtonText, { color: '#fff' }]}>Close</Text>
-            </TouchableOpacity>
-          </View>
+          <ScrollView contentContainerStyle={styles.printerConfigScroll}>
+            <View style={styles.printerConfigContent}>
+              <View style={styles.printerHeader}>
+                <TouchableOpacity onPress={() => setShowPrinterConfig(false)}>
+                  <Ionicons name="arrow-back" size={24} color="#333" />
+                </TouchableOpacity>
+                <Text style={styles.printerHeaderTitle}>Printer Configuration</Text>
+                <View style={{ width: 24 }} />
+              </View>
+
+              <Text style={styles.printerSectionTitle}>Receipt Settings</Text>
+
+              {/* Printer Connection Options */}
+              <View style={styles.printerSection}>
+                <Text style={styles.printerLabel}>Printer</Text>
+                
+                <TouchableOpacity style={styles.printerOption}>
+                  <View style={styles.printerOptionLeft}>
+                    <View style={styles.printerIconContainer}>
+                      <Ionicons name="business" size={24} color="#2196F3" />
+                    </View>
+                    <Text style={styles.printerOptionText}>Connect to Star Micronics</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.printerOption}>
+                  <View style={styles.printerOptionLeft}>
+                    <View style={styles.printerIconContainer}>
+                      <Ionicons name="business" size={24} color="#FF9800" />
+                    </View>
+                    <Text style={styles.printerOptionText}>Connect to Sunmi</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.printerOption}>
+                  <View style={styles.printerOptionLeft}>
+                    <View style={styles.printerIconContainer}>
+                      <Ionicons name="wifi" size={24} color="#4CAF50" />
+                    </View>
+                    <Text style={styles.printerOptionText}>Connect Others (LAN, WiFi)</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.printerOption}>
+                  <View style={styles.printerOptionLeft}>
+                    <View style={styles.printerIconContainer}>
+                      <Ionicons name="bluetooth" size={24} color="#2196F3" />
+                    </View>
+                    <Text style={styles.printerOptionText}>Connect Others (Bluetooth)</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+              </View>
+
+              {/* Connected Printer Info */}
+              <View style={styles.connectedPrinterInfo}>
+                <Text style={styles.connectedNote}>
+                  Configuration for the connected printer will be saved in this device only.
+                </Text>
+                
+                <View style={styles.connectedBox}>
+                  <Ionicons name="print" size={40} color="#4CAF50" />
+                  <Text style={styles.connectedModel}>Model: Auto-Detect</Text>
+                  <Text style={styles.connectedPort}>Port: Internal Printer</Text>
+                  <View style={styles.connectedStatus}>
+                    <Text style={styles.connectedStatusText}>Online</Text>
+                  </View>
+                  
+                  <TouchableOpacity style={styles.printerActionButton}>
+                    <Text style={styles.printerActionText}>Forget Connection</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity style={styles.printerActionButton}>
+                    <Text style={styles.printerActionText}>Test print</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity style={styles.printerActionButton}>
+                    <Text style={styles.printerActionText}>Test open cash drawer</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Print Settings */}
+              <View style={styles.printSettings}>
+                <Text style={styles.settingLabel}>Print quantity per checkout</Text>
+                <View style={styles.pickerBox}>
+                  <Text style={styles.pickerText}>1</Text>
+                  <Ionicons name="chevron-down" size={20} color="#999" />
+                </View>
+
+                <Text style={styles.settingLabel}>Paper Width</Text>
+                <View style={styles.pickerBox}>
+                  <Text style={styles.pickerText}>58mm</Text>
+                  <Ionicons name="chevron-down" size={20} color="#999" />
+                </View>
+
+                <Text style={styles.settingLabel}>Chunk Size</Text>
+                <View style={styles.pickerBox}>
+                  <Text style={styles.pickerText}>60</Text>
+                  <Ionicons name="chevron-down" size={20} color="#999" />
+                </View>
+              </View>
+
+              {/* Auto Options */}
+              <View style={styles.autoOptions}>
+                <View style={styles.checkboxRow}>
+                  <View style={styles.checkbox}>
+                    <Ionicons name="checkmark" size={20} color="#fff" />
+                  </View>
+                  <Text style={styles.checkboxLabel}>Automatically print after checkout</Text>
+                </View>
+
+                <View style={styles.checkboxRow}>
+                  <View style={styles.checkbox}>
+                    <Ionicons name="checkmark" size={20} color="#fff" />
+                  </View>
+                  <Text style={styles.checkboxLabel}>Automatically open cash drawer after checkout</Text>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={styles.printerSaveButton}
+                onPress={() => {
+                  Alert.alert('Success', 'Printer settings saved');
+                  setShowPrinterConfig(false);
+                }}
+              >
+                <Text style={styles.printerSaveText}>Save Settings</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
       </Modal>
 
