@@ -583,10 +583,25 @@ export default function DashboardScreen() {
                 <Text style={styles.sidebarItemText}>Dashboard</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.sidebarItem} onPress={loadSalesReport}>
+              <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowReportMenu(!showReportMenu)}>
                 <Ionicons name="stats-chart" size={24} color="#4CAF50" />
-                <Text style={styles.sidebarItemText}>Day Closing</Text>
+                <Text style={styles.sidebarItemText}>Report</Text>
+                <Ionicons name={showReportMenu ? "chevron-up" : "chevron-down"} size={20} color="#666" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
+
+              {showReportMenu && (
+                <>
+                  <TouchableOpacity style={styles.sidebarSubItem} onPress={loadSalesReport}>
+                    <Ionicons name="calendar" size={20} color="#666" />
+                    <Text style={styles.sidebarSubItemText}>Day Closing</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/sales-details')}>
+                    <Ionicons name="receipt" size={20} color="#666" />
+                    <Text style={styles.sidebarSubItemText}>Sales Details</Text>
+                  </TouchableOpacity>
+                </>
+              )}
 
               <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowAddCategory(true)}>
                 <Ionicons name="list" size={24} color="#4CAF50" />
