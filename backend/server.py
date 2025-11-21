@@ -419,6 +419,75 @@ async def get_orders(user = Depends(get_current_user)):
         'status': order.get('status', 'completed')
     } for order in orders]
 
+@api_router.post("/orders/{order_id}/return-item")
+async def return_item(order_id: str, request: dict, user = Depends(get_current_user)):
+    """Return a specific item from an order"""
+    collections = get_client_collections(str(user['_id']))
+    orders_coll = db[collections['orders']]
+    
+    item_id = request.get('item_id')
+    if not item_id:
+        raise HTTPException(status_code=400, detail="item_id is required")
+    
+    # Get the order
+    order = await orders_coll.find_one({"_id": ObjectId(order_id)})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if order.get('status') == 'refunded':
+        raise HTTPException(status_code=400, detail="Cannot return items from refunded order")
+    
+    # Find the item in the order
+    item_found = False
+    for item in order['items']:
+        if item['item_id'] == item_id:
+            if item.get('returned'):
+                raise HTTPException(status_code=400, detail="Item already returned")
+            item['returned'] = True
+            item_found = True
+            break
+    
+    if not item_found:
+        raise HTTPException(status_code=404, detail="Item not found in order")
+    
+    # Update the order
+    await orders_coll.update_one(
+        {"_id": ObjectId(order_id)},
+        {"$set": {"items": order['items']}}
+    )
+    
+    return {"message": "Item returned successfully"}
+
+@api_router.post("/orders/{order_id}/refund")
+async def refund_order(order_id: str, user = Depends(get_current_user)):
+    """Refund an entire order"""
+    collections = get_client_collections(str(user['_id']))
+    orders_coll = db[collections['orders']]
+    
+    # Get the order
+    order = await orders_coll.find_one({"_id": ObjectId(order_id)})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if order.get('status') == 'refunded':
+        raise HTTPException(status_code=400, detail="Order already refunded")
+    
+    # Mark all items as returned and update order status
+    for item in order['items']:
+        item['returned'] = True
+    
+    await orders_coll.update_one(
+        {"_id": ObjectId(order_id)},
+        {"$set": {
+            "status": "refunded",
+            "items": order['items'],
+            "refunded_at": datetime.utcnow(),
+            "refunded_by": str(user['_id'])
+        }}
+    )
+    
+    return {"message": "Order refunded successfully"}
+
 # Client Management Routes (Super Admin Only)
 @api_router.post("/clients", response_model=ClientResponse)
 async def create_client(client: Client, user = Depends(get_current_user)):
