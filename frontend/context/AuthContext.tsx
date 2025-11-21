@@ -9,6 +9,8 @@ interface User {
   phone: string;
   role: string;
   name: string;
+  company_name: string;
+  qr_payment_image: string;
 }
 
 interface AuthContextType {
