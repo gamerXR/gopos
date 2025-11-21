@@ -568,26 +568,13 @@ export default function DashboardScreen() {
               <TouchableOpacity
                 style={styles.itemCard}
                 onPress={() => addToCart(item)}
-                disabled={item.stock <= 0}
+                onLongPress={() => handleItemLongPress(item)}
               >
                 <View style={styles.itemCardContent}>
                   <Text style={styles.itemName} numberOfLines={2}>
                     {item.name}
                   </Text>
                   <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
-                  <View style={styles.itemStock}>
-                    <Ionicons
-                      name={item.stock > 0 ? 'cube' : 'close-circle'}
-                      size={16}
-                      color={item.stock > 0 ? '#4CAF50' : '#f44336'}
-                    />
-                    <Text style={[
-                      styles.itemStockText,
-                      item.stock <= 0 && styles.outOfStock,
-                    ]}>
-                      Stock: {item.stock}
-                    </Text>
-                  </View>
                 </View>
               </TouchableOpacity>
             )}
