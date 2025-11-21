@@ -57,10 +57,10 @@ export default function DashboardScreen() {
   const [categoryName, setCategoryName] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
-  const [itemStock, setItemStock] = useState('');
   const [itemCategoryId, setItemCategoryId] = useState('');
   
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'qr'>('cash');
+  const [cashAmount, setCashAmount] = useState('');
   const [qrImage, setQrImage] = useState<string | null>(null);
   
   const [loading, setLoading] = useState(false);
