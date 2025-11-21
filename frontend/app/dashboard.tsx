@@ -672,79 +672,119 @@ export default function DashboardScreen() {
           />
         </View>
 
-        {/* Right Cart Panel */}
-        <View style={styles.cartPanel}>
-          <Text style={styles.cartPanelTitle}>Cart</Text>
+      </View>
+
+      {/* Floating Cart Button */}
+      {cart.length > 0 && (
+        <TouchableOpacity 
+          style={styles.floatingCartButton}
+          onPress={() => setShowCartDrawer(true)}
+        >
+          <View style={styles.cartBadge}>
+            <Text style={styles.cartBadgeText}>{cart.length}</Text>
+          </View>
+          <Ionicons name="cart" size={28} color="#fff" />
+          <Text style={styles.floatingCartText}>${subtotal.toFixed(2)}</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Cart Drawer */}
+      <Modal
+        visible={showCartDrawer}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowCartDrawer(false)}
+      >
+        <View style={styles.drawerOverlay}>
+          <TouchableOpacity 
+            style={styles.drawerBackdrop} 
+            activeOpacity={1}
+            onPress={() => setShowCartDrawer(false)}
+          />
           
-          <ScrollView style={styles.cartItemsList}>
-            {cart.map(item => (
-              <View key={item.item_id} style={styles.cartItemRow}>
-                <View style={styles.cartItemLeft}>
-                  <Text style={styles.cartItemNameNew} numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                  <Text style={styles.cartItemPriceNew}>
-                    ${item.price.toFixed(2)}
-                  </Text>
-                </View>
-                
-                <View style={styles.cartItemRight}>
-                  <View style={styles.cartQuantityControls}>
+          <View style={styles.drawerContent}>
+            {/* Drawer Header */}
+            <View style={styles.drawerHeader}>
+              <Text style={styles.drawerTitle}>Your Cart</Text>
+              <TouchableOpacity onPress={() => setShowCartDrawer(false)}>
+                <Ionicons name="close" size={28} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Drawer Description */}
+            <Text style={styles.drawerDescription}>
+              Review your order items
+            </Text>
+
+            {/* Cart Items */}
+            <ScrollView style={styles.drawerItemsList}>
+              {cart.map(item => (
+                <View key={item.item_id} style={styles.drawerCartItem}>
+                  <View style={styles.drawerItemInfo}>
+                    <Text style={styles.drawerItemName}>{item.name}</Text>
+                    <Text style={styles.drawerItemPrice}>${item.price.toFixed(2)} x {item.quantity}</Text>
+                  </View>
+                  
+                  <View style={styles.drawerItemActions}>
                     <TouchableOpacity
                       onPress={() => updateCartQuantity(item.item_id, -1)}
-                      style={styles.quantityButtonNew}
+                      style={styles.drawerQuantityBtn}
                     >
-                      <Ionicons name="remove" size={14} color="#fff" />
+                      <Ionicons name="remove" size={16} color="#fff" />
                     </TouchableOpacity>
                     
-                    <Text style={styles.cartQuantityText}>{item.quantity}</Text>
+                    <Text style={styles.drawerQuantity}>{item.quantity}</Text>
                     
                     <TouchableOpacity
                       onPress={() => updateCartQuantity(item.item_id, 1)}
-                      style={styles.quantityButtonNew}
+                      style={styles.drawerQuantityBtn}
                     >
-                      <Ionicons name="add" size={14} color="#fff" />
+                      <Ionicons name="add" size={16} color="#fff" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => removeFromCart(item.item_id)}
+                      style={styles.drawerDeleteBtn}
+                    >
+                      <Ionicons name="trash" size={18} color="#f44336" />
                     </TouchableOpacity>
                   </View>
-                  
-                  <TouchableOpacity
-                    onPress={() => removeFromCart(item.item_id)}
-                    style={styles.deleteButtonNew}
-                  >
-                    <Ionicons name="trash" size={16} color="#f44336" />
-                  </TouchableOpacity>
+
+                  <Text style={styles.drawerItemTotal}>
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </Text>
                 </View>
-                
-                <Text style={styles.cartItemTotalNew}>
-                  ${(item.price * item.quantity).toFixed(2)}
-                </Text>
+              ))}
+            </ScrollView>
+
+            {/* Drawer Footer */}
+            <View style={styles.drawerFooter}>
+              <View style={styles.drawerSubtotalRow}>
+                <Text style={styles.drawerSubtotalLabel}>Subtotal:</Text>
+                <Text style={styles.drawerSubtotalValue}>${subtotal.toFixed(2)}</Text>
               </View>
-            ))}
-            
-            {cart.length === 0 && (
-              <View style={styles.emptyCart}>
-                <Ionicons name="cart-outline" size={48} color="#ccc" />
-                <Text style={styles.emptyCartText}>Cart is empty</Text>
-              </View>
-            )}
-          </ScrollView>
-          
-          <View style={styles.cartFooterNew}>
-            <View style={styles.subtotalRowNew}>
-              <Text style={styles.subtotalLabelNew}>Subtotal:</Text>
-              <Text style={styles.subtotalValueNew}>${subtotal.toFixed(2)}</Text>
+
+              <TouchableOpacity
+                style={styles.drawerCheckoutButton}
+                onPress={() => {
+                  setShowCartDrawer(false);
+                  setShowCheckout(true);
+                }}
+              >
+                <Text style={styles.drawerCheckoutText}>Proceed to Checkout</Text>
+                <Ionicons name="arrow-forward" size={20} color="#fff" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerCloseButton}
+                onPress={() => setShowCartDrawer(false)}
+              >
+                <Text style={styles.drawerCloseText}>Continue Shopping</Text>
+              </TouchableOpacity>
             </View>
-            
-            <TouchableOpacity
-              style={[styles.checkoutButtonNew, cart.length === 0 && styles.checkoutButtonDisabled]}
-              onPress={() => setShowCheckout(true)}
-              disabled={cart.length === 0}
-            >
-              <Text style={styles.checkoutButtonText}>Checkout</Text>
-            </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </Modal>
 
       {/* Add Category Modal */}
       <Modal visible={showAddCategory} transparent animationType="fade">
