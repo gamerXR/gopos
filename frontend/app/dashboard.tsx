@@ -1928,6 +1928,14 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: 20,
   },
+  aboutLogoContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  aboutLogo: {
+    height: 80,
+    width: 200,
+  },
   modalInput: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
