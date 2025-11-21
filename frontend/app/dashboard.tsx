@@ -1149,6 +1149,31 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
+  cashSection: {
+    marginBottom: 16,
+  },
+  changeDisplay: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#E8F5E9',
+    borderRadius: 8,
+  },
+  changeLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  changeValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+  },
+  changeNegative: {
+    color: '#f44336',
+  },
   qrSection: {
     marginBottom: 16,
   },
