@@ -1211,9 +1211,13 @@ export default function DashboardScreen() {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>About Us</Text>
             <Text style={styles.modalText}>
-              F&B POS System
+              GoPos
               {'\n\n'}
               Version 1.0.0
+              {'\n\n'}
+              Developed by MHK
+              {'\n'}
+              Main supplier: Posx Solution Co.
               {'\n\n'}
               A modern point-of-sale system designed for restaurants and food businesses.
               {'\n\n'}
