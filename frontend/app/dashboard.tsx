@@ -553,101 +553,113 @@ export default function DashboardScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Ionicons name="restaurant" size={24} color="#fff" />
-          <Text style={styles.headerTitle}>F&B POS</Text>
-        </View>
-        <View style={styles.headerRight}>
-          <Text style={styles.headerUser}>Welcome, {user?.company_name || user?.name}</Text>
-          <TouchableOpacity onPress={loadSalesReport} style={styles.reportButton}>
-            <Ionicons name="stats-chart" size={24} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Ionicons name="log-out" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => setSidebarOpen(!sidebarOpen)} style={styles.menuButton}>
+          <Ionicons name="menu" size={28} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>F&B POS</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Ionicons name="log-out" size={24} color="#fff" />
+        </TouchableOpacity>
       </View>
 
-      {/* Main Content */}
-      <View style={styles.mainContent}>
-        {/* Categories Sidebar */}
-        <View style={styles.categoriesSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Categories</Text>
-            <TouchableOpacity onPress={() => setShowAddCategory(true)}>
-              <Ionicons name="add-circle" size={28} color="#4CAF50" />
-            </TouchableOpacity>
-          </View>
-          
-          <ScrollView style={styles.categoriesList}>
-            <TouchableOpacity
-              style={[
-                styles.categoryItem,
-                !selectedCategory && styles.categoryItemActive,
-              ]}
-              onPress={() => setSelectedCategory(null)}
-            >
-              <Text style={[
-                styles.categoryText,
-                !selectedCategory && styles.categoryTextActive,
-              ]}>
-                All Items
-              </Text>
-            </TouchableOpacity>
+      <View style={styles.mainContainer}>
+        {/* Left Sidebar */}
+        {sidebarOpen && (
+          <View style={styles.sidebar}>
+            <View style={styles.sidebarHeader}>
+              <Text style={styles.sidebarWelcome}>Welcome</Text>
+              <Text style={styles.sidebarCompany}>{user?.company_name || user?.name}</Text>
+            </View>
             
-            {categories.map(category => (
+            <ScrollView style={styles.sidebarContent}>
+              <TouchableOpacity style={styles.sidebarItem}>
+                <Ionicons name="grid" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>Dashboard</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarItem} onPress={loadSalesReport}>
+                <Ionicons name="stats-chart" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>Day Closing</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowAddCategory(true)}>
+                <Ionicons name="list" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>Categories</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowAddItem(true)}>
+                <Ionicons name="add-circle" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>Add Item</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowSettings(true)}>
+                <Ionicons name="settings" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>Settings</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowPrinterConfig(true)}>
+                <Ionicons name="print" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>Printer Config</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowAbout(true)}>
+                <Ionicons name="information-circle" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>About Us</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Main Content Area */}
+        <View style={styles.contentArea}>
+          {/* Horizontal Categories */}
+          <View style={styles.categoriesBar}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
               <TouchableOpacity
-                key={category.id}
-                style={[
-                  styles.categoryItem,
-                  selectedCategory === category.id && styles.categoryItemActive,
-                ]}
-                onPress={() => setSelectedCategory(category.id)}
+                style={[styles.categoryChipHorizontal, !selectedCategory && styles.categoryChipActive]}
+                onPress={() => setSelectedCategory(null)}
               >
-                <Text style={[
-                  styles.categoryText,
-                  selectedCategory === category.id && styles.categoryTextActive,
-                ]}>
-                  {category.name}
+                <Text style={[styles.categoryChipTextHorizontal, !selectedCategory && styles.categoryChipTextActive]}>
+                  All
                 </Text>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
-          
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => setShowAddItem(true)}
-          >
-            <Ionicons name="add" size={20} color="#fff" />
-            <Text style={styles.addButtonText}>Add Item</Text>
-          </TouchableOpacity>
-        </View>
+              
+              {categories.map(category => (
+                <TouchableOpacity
+                  key={category.id}
+                  style={[
+                    styles.categoryChipHorizontal,
+                    selectedCategory === category.id && styles.categoryChipActive,
+                  ]}
+                  onPress={() => setSelectedCategory(category.id)}
+                >
+                  <Text style={[
+                    styles.categoryChipTextHorizontal,
+                    selectedCategory === category.id && styles.categoryChipTextActive,
+                  ]}>
+                    {category.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
 
-        {/* Items Grid */}
-        <View style={styles.itemsSection}>
-          <Text style={styles.sectionTitle}>
-            {selectedCategory 
-              ? categories.find(c => c.id === selectedCategory)?.name 
-              : 'All Items'}
-          </Text>
-          
+          {/* Items Grid */}
           <FlatList
             data={filteredItems}
             keyExtractor={item => item.id}
-            numColumns={2}
-            contentContainerStyle={styles.itemsGrid}
+            numColumns={3}
+            contentContainerStyle={styles.itemsGridNew}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={styles.itemCard}
+                style={styles.itemCardNew}
                 onPress={() => addToCart(item)}
                 onLongPress={() => handleItemLongPress(item)}
               >
-                <View style={styles.itemCardContent}>
-                  <Text style={styles.itemName} numberOfLines={2}>
-                    {item.name}
-                  </Text>
-                  <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
-                </View>
+                <Text style={styles.itemNameNew} numberOfLines={2}>
+                  {item.name}
+                </Text>
+                <Text style={styles.itemPriceNew}>${item.price.toFixed(2)}</Text>
               </TouchableOpacity>
             )}
             ListEmptyComponent={
@@ -659,68 +671,34 @@ export default function DashboardScreen() {
           />
         </View>
 
-        {/* Cart Sidebar */}
-        <View style={styles.cartSection}>
-          <Text style={styles.sectionTitle}>Cart</Text>
+        {/* Right Total Panel */}
+        <View style={styles.totalPanel}>
+          <Text style={styles.totalPanelTitle}>Order Total</Text>
           
-          <ScrollView style={styles.cartList}>
-            {cart.map(item => (
-              <View key={item.item_id} style={styles.cartItem}>
-                <View style={styles.cartItemInfo}>
-                  <Text style={styles.cartItemName} numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                  <Text style={styles.cartItemPrice}>
-                    ${item.price.toFixed(2)}
-                  </Text>
-                </View>
-                
-                <View style={styles.cartItemActions}>
-                  <TouchableOpacity
-                    onPress={() => updateCartQuantity(item.item_id, -1)}
-                    style={styles.quantityButton}
-                  >
-                    <Ionicons name="remove" size={16} color="#fff" />
-                  </TouchableOpacity>
-                  
-                  <Text style={styles.cartItemQuantity}>{item.quantity}</Text>
-                  
-                  <TouchableOpacity
-                    onPress={() => updateCartQuantity(item.item_id, 1)}
-                    style={styles.quantityButton}
-                  >
-                    <Ionicons name="add" size={16} color="#fff" />
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity
-                    onPress={() => removeFromCart(item.item_id)}
-                    style={styles.deleteButton}
-                  >
-                    <Ionicons name="trash" size={16} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-                
-                <Text style={styles.cartItemTotal}>
-                  ${(item.price * item.quantity).toFixed(2)}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
-          
-          <View style={styles.cartFooter}>
-            <View style={styles.subtotalRow}>
-              <Text style={styles.subtotalLabel}>Subtotal:</Text>
-              <Text style={styles.subtotalValue}>${subtotal.toFixed(2)}</Text>
-            </View>
-            
-            <TouchableOpacity
-              style={[styles.checkoutButton, cart.length === 0 && styles.checkoutButtonDisabled]}
-              onPress={() => setShowCheckout(true)}
-              disabled={cart.length === 0}
-            >
-              <Text style={styles.checkoutButtonText}>Checkout</Text>
-            </TouchableOpacity>
+          <View style={styles.totalDisplay}>
+            <Text style={styles.totalAmount}>${subtotal.toFixed(2)}</Text>
+            <Text style={styles.totalItems}>{cart.length} item(s)</Text>
           </View>
+          
+          <TouchableOpacity
+            style={[styles.checkoutButtonNew, cart.length === 0 && styles.checkoutButtonDisabled]}
+            onPress={() => setShowCheckout(true)}
+            disabled={cart.length === 0}
+          >
+            <Text style={styles.checkoutButtonText}>Checkout</Text>
+          </TouchableOpacity>
+
+          {cart.length > 0 && (
+            <TouchableOpacity
+              style={styles.clearCartButton}
+              onPress={() => Alert.alert('Clear Cart', 'Remove all items?', [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Clear', onPress: () => setCart([]) }
+              ])}
+            >
+              <Text style={styles.clearCartText}>Clear Cart</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
