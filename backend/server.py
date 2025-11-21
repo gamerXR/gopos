@@ -65,6 +65,15 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="User not found")
     return user
 
+# Helper to get client-specific collections
+def get_client_collections(user_id: str):
+    """Get collection names specific to a client"""
+    return {
+        'categories': f'categories_{user_id}',
+        'items': f'items_{user_id}',
+        'orders': f'orders_{user_id}'
+    }
+
 # Pydantic Models
 class LoginRequest(BaseModel):
     phone: str
