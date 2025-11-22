@@ -561,25 +561,51 @@ export default function DashboardScreen() {
   const detectPrinters = async () => {
     setDetectingPrinter(true);
     try {
-      // Simulate printer detection
-      // In real implementation, use expo-print or react-native-print
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Real printer detection using expo-print
+      const { printers } = await Print.getPrintersAsync();
       
-      const mockPrinters = [
-        { id: '1', name: 'Internal Printer', type: 'Internal', status: 'Online' },
-        { id: '2', name: 'Bluetooth Printer - BT-001', type: 'Bluetooth', status: 'Online' },
-        { id: '3', name: 'Network Printer - 192.168.1.100', type: 'Network', status: 'Online' },
-      ];
+      const detectedPrinters = printers.map((printer: any, index: number) => ({
+        id: printer.name || `printer_${index}`,
+        name: printer.name || `Printer ${index + 1}`,
+        type: printer.url?.includes('bluetooth') ? 'Bluetooth' : 
+              printer.url?.includes('network') || printer.url?.includes('http') ? 'Network' : 'Internal',
+        status: 'Online',
+        url: printer.url,
+      }));
       
-      setPrinterDevices(mockPrinters);
-      if (mockPrinters.length > 0) {
-        setSelectedPrinter(mockPrinters[0]);
-        Alert.alert('Success', `Found ${mockPrinters.length} printer(s)`);
-      } else {
-        Alert.alert('No Printers', 'No printers detected');
+      // If no printers found via API, try to detect system default
+      if (detectedPrinters.length === 0) {
+        // Add system default printer option
+        const systemPrinter = {
+          id: 'system_default',
+          name: 'System Default Printer',
+          type: 'Internal',
+          status: 'Online',
+          url: null,
+        };
+        detectedPrinters.push(systemPrinter);
       }
-    } catch (error) {
-      Alert.alert('Error', 'Failed to detect printers');
+      
+      setPrinterDevices(detectedPrinters);
+      if (detectedPrinters.length > 0) {
+        setSelectedPrinter(detectedPrinters[0]);
+        Alert.alert('Success', `Found ${detectedPrinters.length} printer(s)`);
+      } else {
+        Alert.alert('No Printers', 'No printers detected. Please ensure your printer is turned on and connected.');
+      }
+    } catch (error: any) {
+      console.error('Printer detection error:', error);
+      // Fallback: add system default option
+      const systemPrinter = {
+        id: 'system_default',
+        name: 'System Default Printer',
+        type: 'Internal',
+        status: 'Available',
+        url: null,
+      };
+      setPrinterDevices([systemPrinter]);
+      setSelectedPrinter(systemPrinter);
+      Alert.alert('Info', 'Using system default printer. Make sure your Bluetooth printer is paired in device settings first.');
     } finally {
       setDetectingPrinter(false);
     }
