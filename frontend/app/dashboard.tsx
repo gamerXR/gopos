@@ -1722,8 +1722,8 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   headerLogo: {
-    height: 70,
-    width: 240,
+    height: 45,
+    width: 160,
     flex: 1,
   },
   logoutButton: {
