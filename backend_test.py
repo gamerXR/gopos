@@ -360,22 +360,46 @@ class GoPosTester:
         
         item_id = test_order["items"][0]["item_id"]
         
-        # Test return individual item
-        return_data = {"item_id": item_id}
-        response = self.make_request("POST", f"/orders/{order_id}/return-item", return_data, token=self.client_token)
-        
-        if response and response.status_code == 200:
-            self.log_test("Return Individual Item", True, "Item returned successfully")
+        # Create a fresh order specifically for return testing
+        if self.created_items:
+            item_id_for_return = self.created_items[0]
+            return_order_data = {
+                "items": [
+                    {
+                        "item_id": item_id_for_return,
+                        "name": "Test Item for Return",
+                        "price": 2.50,
+                        "quantity": 1
+                    }
+                ],
+                "subtotal": 2.50,
+                "total": 2.50,
+                "payment_method": "cash"
+            }
             
-            # Test returning same item again (should fail)
-            response = self.make_request("POST", f"/orders/{order_id}/return-item", return_data, token=self.client_token)
-            if response and response.status_code == 400:
-                self.log_test("Prevent Duplicate Return", True, "Correctly prevented duplicate return")
+            response = self.make_request("POST", "/orders", return_order_data, token=self.client_token)
+            if response and response.status_code == 200:
+                return_order = response.json()
+                return_order_id = return_order["id"]
+                
+                # Test return individual item
+                return_data = {"item_id": item_id_for_return}
+                response = self.make_request("POST", f"/orders/{return_order_id}/return-item", return_data, token=self.client_token)
+                
+                if response and response.status_code == 200:
+                    self.log_test("Return Individual Item", True, "Item returned successfully")
+                    
+                    # Test returning same item again (should fail)
+                    response = self.make_request("POST", f"/orders/{return_order_id}/return-item", return_data, token=self.client_token)
+                    if response and response.status_code == 400:
+                        self.log_test("Prevent Duplicate Return", True, "Correctly prevented duplicate return")
+                    else:
+                        self.log_test("Prevent Duplicate Return", False, "Should prevent duplicate returns")
+                else:
+                    error_msg = response.json().get("detail", "Unknown error") if response else "Connection failed"
+                    self.log_test("Return Individual Item", False, f"Failed to return item: {error_msg}")
             else:
-                self.log_test("Prevent Duplicate Return", False, "Should prevent duplicate returns")
-        else:
-            error_msg = response.json().get("detail", "Unknown error") if response else "Connection failed"
-            self.log_test("Return Individual Item", False, f"Failed to return item: {error_msg}")
+                self.log_test("Create Order for Return Test", False, "Failed to create order for return testing")
         
         # Create a new order for refund testing
         if self.created_items:
