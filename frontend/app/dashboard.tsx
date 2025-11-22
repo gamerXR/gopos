@@ -768,7 +768,7 @@ export default function DashboardScreen() {
           <Ionicons name="menu" size={28} color="#fff" />
         </TouchableOpacity>
         <Image
-          source={{ uri: 'https://customer-assets.emergentagent.com/job_cafe-pos-android/artifacts/75ob9989_gopos%20white.png' }}
+          source={{ uri: 'https://customer-assets.emergentagent.com/job_gopos-app/artifacts/nbu2lf79_gopos%20white.png' }}
           style={styles.headerLogo}
           resizeMode="contain"
         />
