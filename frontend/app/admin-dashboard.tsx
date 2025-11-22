@@ -44,6 +44,22 @@ export default function AdminDashboardScreen() {
   
   const [loading, setLoading] = useState(false);
 
+  const handleCreateBackup = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/backup/create`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      Alert.alert('Success', `Backup created: ${response.data.filename}`);
+    } catch (error: any) {
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to create backup');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user || user.role !== 'super_admin') {
       router.replace('/');
