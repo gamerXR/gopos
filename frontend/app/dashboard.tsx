@@ -404,64 +404,99 @@ export default function DashboardScreen() {
       <html>
         <head>
           <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { text-align: center; margin-bottom: 10px; }
-            .order-info { text-align: center; margin-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-            th { background-color: #4CAF50; color: white; }
-            .total { font-size: 18px; font-weight: bold; text-align: right; }
-            .footer { text-align: center; margin-top: 20px; font-size: 12px; }
+            body { 
+              font-family: 'Courier New', monospace; 
+              padding: 20px; 
+              max-width: 300px;
+              margin: 0 auto;
+            }
+            .header { text-align: center; margin-bottom: 20px; border-bottom: 2px dashed #000; padding-bottom: 15px; }
+            .logo { max-width: 200px; height: auto; margin-bottom: 10px; }
+            .company-name { font-size: 18px; font-weight: bold; margin: 10px 0; }
+            .company-address { font-size: 12px; margin: 5px 0; }
+            .divider { border-top: 1px dashed #000; margin: 15px 0; }
+            .order-info { text-align: center; margin: 15px 0; }
+            table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+            .item-row { display: flex; justify-content: space-between; margin: 8px 0; font-size: 14px; }
+            .total-section { margin-top: 15px; padding-top: 10px; border-top: 2px solid #000; }
+            .total-row { font-weight: bold; font-size: 16px; margin: 5px 0; }
+            .footer { text-align: center; margin-top: 20px; font-size: 12px; border-top: 2px dashed #000; padding-top: 15px; }
           </style>
         </head>
         <body>
-          <h1>F&B POS Receipt</h1>
+          <div class="header">
+            ${receiptLogo ? `<img src="${receiptLogo}" class="logo" alt="Logo" />` : ''}
+            <div class="company-name">${companyName || user?.company_name || 'GoPos'}</div>
+            <div class="company-address">${companyAddress || 'Address not set'}</div>
+          </div>
+          
           <div class="order-info">
-            <p>Order #: ${order.order_number}</p>
-            <p>Date: ${new Date(order.created_at).toLocaleString()}</p>
-            <p>Payment: ${order.payment_method.toUpperCase()}</p>
+            <strong>RECEIPT</strong><br/>
+            Order #: ${order.order_number}<br/>
+            Date: ${new Date(order.created_at).toLocaleString()}<br/>
+            Payment: ${order.payment_method.toUpperCase()}
           </div>
-          <table>
-            <tr>
-              <th>Item</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Total</th>
-            </tr>
+          
+          <div class="divider"></div>
+          
+          <div>
             ${order.items.map((item: any) => `
-              <tr>
-                <td>${item.name}</td>
-                <td>${item.quantity}</td>
-                <td>$${item.price.toFixed(2)}</td>
-                <td>$${(item.price * item.quantity).toFixed(2)}</td>
-              </tr>
+              <div class="item-row">
+                <span>${item.name} x${item.quantity}</span>
+                <span>$${(item.price * item.quantity).toFixed(2)}</span>
+              </div>
             `).join('')}
-          </table>
-          <div class="total">
-            <p>Subtotal: $${order.subtotal.toFixed(2)}</p>
+          </div>
+          
+          <div class="total-section">
+            <div class="item-row">
+              <span>Subtotal:</span>
+              <span>$${order.subtotal.toFixed(2)}</span>
+            </div>
             ${order.discount_percentage > 0 ? `
-              <p>Discount (${order.discount_percentage}%): -$${order.discount_amount.toFixed(2)}</p>
-              <p style="font-size: 20px; color: #4CAF50;">Total: $${order.total.toFixed(2)}</p>
+              <div class="item-row">
+                <span>Discount (${order.discount_percentage}%):</span>
+                <span>-$${order.discount_amount.toFixed(2)}</span>
+              </div>
             ` : ''}
+            <div class="total-row">
+              <div class="item-row">
+                <span>Total:</span>
+                <span>$${order.total.toFixed(2)}</span>
+              </div>
+            </div>
             ${order.payment_method === 'cash' ? `
-              <p>Cash: $${order.cash_amount.toFixed(2)}</p>
-              <p>Change: $${order.change_amount.toFixed(2)}</p>
+              <div class="item-row">
+                <span>Cash:</span>
+                <span>$${order.cash_amount.toFixed(2)}</span>
+              </div>
+              <div class="item-row">
+                <span>Change:</span>
+                <span>$${order.change_amount.toFixed(2)}</span>
+              </div>
             ` : ''}
           </div>
+          
           <div class="footer">
-            <p>Thank you for your order!</p>
+            ${receiptFooter || 'Thank you for your order!'}
           </div>
         </body>
       </html>
     `;
 
-    // Print to device's default printer (auto-detect)
+    // Print directly without preview
     try {
-      await Print.printAsync({ html });
+      const printOptions: any = { html };
+      
+      // If a printer is selected, use it
+      if (selectedPrinter?.url) {
+        printOptions.printerUrl = selectedPrinter.url;
+      }
+      
+      await Print.printAsync(printOptions);
     } catch (error) {
       console.error('Print error:', error);
-      // Fallback: Just show success even if print fails
-      Alert.alert('Note', 'Receipt generated but printer not available');
+      // Don't show error, order was successful
     }
   };
 
