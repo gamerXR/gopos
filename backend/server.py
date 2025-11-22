@@ -18,11 +18,12 @@ load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
 mongo_url = os.getenv('MONGO_URL', 'mongodb://localhost:27017')
+db_name = os.getenv('DB_NAME', 'gopos_db')
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.getenv('DB_NAME', 'gopos_db')]
+db = client[db_name]
 
 # JWT Secret
-JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key-change-in-production')
+JWT_SECRET = os.getenv('JWT_SECRET', 'gopos-super-secret-key-change-in-production-2024')
 JWT_ALGORITHM = 'HS256'
 
 # Security
