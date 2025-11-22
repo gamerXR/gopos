@@ -134,11 +134,14 @@ class GoPosTester:
             
             # Test with invalid token
             response = self.make_request("GET", "/categories", token="invalid_token")
-            if response and response.status_code == 401:
-                self.log_test("JWT Invalid Token Rejection", True, "Invalid token properly rejected")
-                return True
+            if response:
+                if response.status_code == 401:
+                    self.log_test("JWT Invalid Token Rejection", True, "Invalid token properly rejected")
+                    return True
+                else:
+                    self.log_test("JWT Invalid Token Rejection", False, f"Expected 401, got {response.status_code}")
             else:
-                self.log_test("JWT Invalid Token Rejection", False, f"Expected 401, got {response.status_code if response else 'None'}")
+                self.log_test("JWT Invalid Token Rejection", False, "No response received")
         else:
             self.log_test("JWT Token Validation", False, "Valid token rejected")
         return False
