@@ -247,13 +247,22 @@ export default function AdminDashboardScreen() {
       <View style={styles.content}>
         <View style={styles.titleRow}>
           <Text style={styles.pageTitle}>Client Management</Text>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => setShowAddClient(true)}
-          >
-            <Ionicons name="add-circle" size={24} color="#fff" />
-            <Text style={styles.addButtonText}>Add Client</Text>
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={[styles.addButton, { marginRight: 12, backgroundColor: '#FF9800' }]}
+              onPress={handleCreateBackup}
+            >
+              <Ionicons name="save" size={20} color="#fff" />
+              <Text style={styles.addButtonText}>Create Backup</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => setShowAddClient(true)}
+            >
+              <Ionicons name="add-circle" size={24} color="#fff" />
+              <Text style={styles.addButtonText}>Add Client</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <FlatList
