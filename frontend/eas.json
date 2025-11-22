@@ -39,16 +39,11 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk",
-        "gradleCommand": ":app:assembleRelease",
-        "config": {
-          "packageManager": "yarn"
-        }
+        "gradleCommand": ":app:assembleRelease"
       },
       "env": {
-        "APP_VARIANT": "release",
         "EXPO_NO_DEV_CLIENT": "1"
-      },
-      "autoIncrement": true
+      }
     }
   },
   "submit": {
