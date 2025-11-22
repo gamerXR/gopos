@@ -2162,8 +2162,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   aboutLogo: {
-    height: 80,
-    width: 200,
+    height: 120,
+    width: 280,
   },
   modalInput: {
     borderWidth: 1,
