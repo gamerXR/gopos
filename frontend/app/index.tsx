@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginTop: 8,
+    fontWeight: 'bold',
   },
   form: {
     marginBottom: 24,
