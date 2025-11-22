@@ -132,7 +132,7 @@ class GoPosTester:
                 self.log_test("JWT Invalid Token Rejection", True, "Invalid token properly rejected")
                 return True
             else:
-                self.log_test("JWT Invalid Token Rejection", False, "Invalid token not rejected")
+                self.log_test("JWT Invalid Token Rejection", False, f"Expected 401, got {response.status_code if response else 'None'}")
         else:
             self.log_test("JWT Token Validation", False, "Valid token rejected")
         return False
