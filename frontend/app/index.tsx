@@ -68,11 +68,11 @@ export default function LoginScreen() {
       <View style={styles.content}>
         <View style={styles.header}>
           <Image
-            source={{ uri: 'https://customer-assets.emergentagent.com/job_cafe-pos-android/artifacts/mxh0h7s6_gopos%20green.png' }}
+            source={{ uri: 'https://customer-assets.emergentagent.com/job_gopos-app/artifacts/te4zteds_gopos%20green.png' }}
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.subtitle}>Staff Login</Text>
+          <Text style={styles.subtitle}>Client Login</Text>
         </View>
 
         <View style={styles.form}>
