@@ -558,6 +558,124 @@ export default function DashboardScreen() {
     ]);
   };
 
+  const detectPrinters = async () => {
+    setDetectingPrinter(true);
+    try {
+      // Simulate printer detection
+      // In real implementation, use expo-print or react-native-print
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const mockPrinters = [
+        { id: '1', name: 'Internal Printer', type: 'Internal', status: 'Online' },
+        { id: '2', name: 'Bluetooth Printer - BT-001', type: 'Bluetooth', status: 'Online' },
+        { id: '3', name: 'Network Printer - 192.168.1.100', type: 'Network', status: 'Online' },
+      ];
+      
+      setPrinterDevices(mockPrinters);
+      if (mockPrinters.length > 0) {
+        setSelectedPrinter(mockPrinters[0]);
+        Alert.alert('Success', `Found ${mockPrinters.length} printer(s)`);
+      } else {
+        Alert.alert('No Printers', 'No printers detected');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to detect printers');
+    } finally {
+      setDetectingPrinter(false);
+    }
+  };
+
+  const pickReceiptLogo = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 1],
+        quality: 0.8,
+        base64: true,
+      });
+
+      if (!result.canceled && result.assets[0].base64) {
+        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        setReceiptLogo(base64Image);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to pick image');
+    }
+  };
+
+  const testPrint = async () => {
+    const testReceipt = generateReceiptPreview();
+    try {
+      await Print.printAsync({ html: testReceipt });
+      Alert.alert('Success', 'Test print sent to printer');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to print test receipt');
+    }
+  };
+
+  const generateReceiptPreview = () => {
+    return `
+      <html>
+        <head>
+          <style>
+            body { 
+              font-family: 'Courier New', monospace; 
+              padding: 20px; 
+              max-width: 300px;
+              margin: 0 auto;
+            }
+            .header { text-align: center; margin-bottom: 20px; border-bottom: 2px dashed #000; padding-bottom: 15px; }
+            .logo { max-width: 200px; height: auto; margin-bottom: 10px; }
+            .company-name { font-size: 18px; font-weight: bold; margin: 10px 0; }
+            .company-address { font-size: 12px; margin: 5px 0; }
+            .divider { border-top: 1px dashed #000; margin: 15px 0; }
+            .item-row { display: flex; justify-content: space-between; margin: 8px 0; font-size: 14px; }
+            .total-row { font-weight: bold; font-size: 16px; margin-top: 15px; padding-top: 10px; border-top: 2px solid #000; }
+            .footer { text-align: center; margin-top: 20px; font-size: 12px; border-top: 2px dashed #000; padding-top: 15px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            ${receiptLogo ? `<img src="${receiptLogo}" class="logo" alt="Logo" />` : ''}
+            <div class="company-name">${companyName || 'Your Company Name'}</div>
+            <div class="company-address">${companyAddress || 'Company Address Here'}</div>
+          </div>
+          
+          <div>
+            <div style="text-align: center; margin: 15px 0;">
+              <strong>RECEIPT</strong><br/>
+              Order #: ORD00001<br/>
+              Date: ${new Date().toLocaleString()}
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="item-row">
+              <span>Item 1 x2</span>
+              <span>$10.00</span>
+            </div>
+            <div class="item-row">
+              <span>Item 2 x1</span>
+              <span>$5.50</span>
+            </div>
+            
+            <div class="total-row">
+              <div class="item-row">
+                <span>Total:</span>
+                <span>$15.50</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="footer">
+            ${receiptFooter || 'Thank you for your order!'}
+          </div>
+        </body>
+      </html>
+    `;
+  };
+
   const subtotal = getSubtotal();
 
   return (
