@@ -129,12 +129,6 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            {isAdminLogin ? 'Admin: 6737165617 / 448613' : 'Staff: 8889999 / 123456'}
-          </Text>
-        </View>
       </View>
     </KeyboardAvoidingView>
   );
