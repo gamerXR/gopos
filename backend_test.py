@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for F&B POS System
-Testing new features: Enhanced Order Model, Return Item API, Refund Order API
+Comprehensive Backend Testing for GoPos POS Application
+Tests all backend APIs to ensure everything is working correctly before APK build.
 """
 
 import requests
 import json
 from datetime import datetime
 import sys
+import uuid
 
 # Configuration
 BASE_URL = "https://gopos-app.preview.emergentagent.com/api"
-TEST_USER = {
+SUPER_ADMIN_USER = {
+    "phone": "6737165617",
+    "password": "448613"
+}
+CLIENT_USER = {
     "phone": "8889999",
     "password": "123456"
 }
