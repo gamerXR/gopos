@@ -24,10 +24,19 @@
       }
     },
     "production": {
+      "developmentClient": false,
       "node": "20.19.4",
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "env": {
+        "EXPO_USE_DEV_CLIENT": "false"
       }
+    },
+    "preview-apk": {
+      "extends": "production",
+      "distribution": "internal"
     }
   },
   "submit": {
