@@ -521,6 +521,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
