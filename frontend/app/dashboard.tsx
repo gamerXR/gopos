@@ -1478,7 +1478,7 @@ export default function DashboardScreen() {
             
             <View style={styles.aboutLogoContainer}>
               <Image
-                source={{ uri: 'https://customer-assets.emergentagent.com/job_cafe-pos-android/artifacts/mxh0h7s6_gopos%20green.png' }}
+                source={{ uri: 'https://customer-assets.emergentagent.com/job_gopos-app/artifacts/te4zteds_gopos%20green.png' }}
                 style={styles.aboutLogo}
                 resizeMode="contain"
               />
