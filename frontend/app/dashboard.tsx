@@ -1212,11 +1212,12 @@ export default function DashboardScreen() {
         </View>
       </Modal>
 
-      {/* Printer Config Modal */}
+      {/* Enhanced Printer Config Modal */}
       <Modal visible={showPrinterConfig} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <ScrollView contentContainerStyle={styles.printerConfigScroll}>
             <View style={styles.printerConfigContent}>
+              {/* Header */}
               <View style={styles.printerHeader}>
                 <TouchableOpacity onPress={() => setShowPrinterConfig(false)}>
                   <Ionicons name="arrow-back" size={24} color="#333" />
@@ -1225,128 +1226,163 @@ export default function DashboardScreen() {
                 <View style={{ width: 24 }} />
               </View>
 
-              <Text style={styles.printerSectionTitle}>Receipt Settings</Text>
-
-              {/* Printer Connection Options */}
+              {/* Printer Detection */}
               <View style={styles.printerSection}>
-                <Text style={styles.printerLabel}>Printer</Text>
+                <Text style={styles.printerSectionTitle}>Printer Device</Text>
+                <TouchableOpacity
+                  style={styles.detectButton}
+                  onPress={detectPrinters}
+                  disabled={detectingPrinter}
+                >
+                  {detectingPrinter ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <>
+                      <Ionicons name="search" size={20} color="#fff" />
+                      <Text style={styles.detectButtonText}>Detect Printers</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+
+                {/* Detected Printers */}
+                {printerDevices.length > 0 && (
+                  <View style={styles.devicesContainer}>
+                    {printerDevices.map((printer) => (
+                      <TouchableOpacity
+                        key={printer.id}
+                        style={[
+                          styles.deviceCard,
+                          selectedPrinter?.id === printer.id && styles.deviceCardSelected
+                        ]}
+                        onPress={() => setSelectedPrinter(printer)}
+                      >
+                        <Ionicons
+                          name={printer.type === 'Internal' ? 'print' : printer.type === 'Bluetooth' ? 'bluetooth' : 'wifi'}
+                          size={24}
+                          color={selectedPrinter?.id === printer.id ? '#4CAF50' : '#666'}
+                        />
+                        <View style={styles.deviceInfo}>
+                          <Text style={styles.deviceName}>{printer.name}</Text>
+                          <Text style={styles.deviceType}>{printer.type}</Text>
+                        </View>
+                        <View style={[styles.statusDot, { backgroundColor: '#4CAF50' }]} />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+              </View>
+
+              {/* Receipt Customization */}
+              <View style={styles.printerSection}>
+                <Text style={styles.printerSectionTitle}>Receipt Customization</Text>
                 
-                <TouchableOpacity style={styles.printerOption}>
-                  <View style={styles.printerOptionLeft}>
-                    <View style={styles.printerIconContainer}>
-                      <Ionicons name="business" size={24} color="#2196F3" />
-                    </View>
-                    <Text style={styles.printerOptionText}>Connect to Star Micronics</Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={20} color="#999" />
+                {/* Logo Upload */}
+                <Text style={styles.settingLabel}>Logo</Text>
+                <TouchableOpacity style={styles.logoUploadButton} onPress={pickReceiptLogo}>
+                  {receiptLogo ? (
+                    <Image source={{ uri: receiptLogo }} style={styles.logoPreview} resizeMode="contain" />
+                  ) : (
+                    <>
+                      <Ionicons name="image-outline" size={32} color="#999" />
+                      <Text style={styles.uploadText}>Tap to upload logo</Text>
+                    </>
+                  )}
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.printerOption}>
-                  <View style={styles.printerOptionLeft}>
-                    <View style={styles.printerIconContainer}>
-                      <Ionicons name="business" size={24} color="#FF9800" />
-                    </View>
-                    <Text style={styles.printerOptionText}>Connect to Sunmi</Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={20} color="#999" />
-                </TouchableOpacity>
+                {/* Company Name */}
+                <Text style={styles.settingLabel}>Company Name</Text>
+                <TextInput
+                  style={styles.settingInput}
+                  placeholder="Enter company name"
+                  value={companyName}
+                  onChangeText={setCompanyName}
+                />
 
-                <TouchableOpacity style={styles.printerOption}>
-                  <View style={styles.printerOptionLeft}>
-                    <View style={styles.printerIconContainer}>
-                      <Ionicons name="wifi" size={24} color="#4CAF50" />
-                    </View>
-                    <Text style={styles.printerOptionText}>Connect Others (LAN, WiFi)</Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={20} color="#999" />
-                </TouchableOpacity>
+                {/* Company Address */}
+                <Text style={styles.settingLabel}>Address</Text>
+                <TextInput
+                  style={[styles.settingInput, { height: 60 }]}
+                  placeholder="Enter company address"
+                  value={companyAddress}
+                  onChangeText={setCompanyAddress}
+                  multiline
+                  numberOfLines={2}
+                />
 
-                <TouchableOpacity style={styles.printerOption}>
-                  <View style={styles.printerOptionLeft}>
-                    <View style={styles.printerIconContainer}>
-                      <Ionicons name="bluetooth" size={24} color="#2196F3" />
-                    </View>
-                    <Text style={styles.printerOptionText}>Connect Others (Bluetooth)</Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={20} color="#999" />
-                </TouchableOpacity>
+                {/* Footer Text */}
+                <Text style={styles.settingLabel}>Footer Message</Text>
+                <TextInput
+                  style={[styles.settingInput, { height: 60 }]}
+                  placeholder="Enter footer message"
+                  value={receiptFooter}
+                  onChangeText={setReceiptFooter}
+                  multiline
+                  numberOfLines={2}
+                />
               </View>
 
-              {/* Connected Printer Info */}
-              <View style={styles.connectedPrinterInfo}>
-                <Text style={styles.connectedNote}>
-                  Configuration for the connected printer will be saved in this device only.
-                </Text>
-                
-                <View style={styles.connectedBox}>
-                  <Ionicons name="print" size={40} color="#4CAF50" />
-                  <Text style={styles.connectedModel}>Model: Auto-Detect</Text>
-                  <Text style={styles.connectedPort}>Port: Internal Printer</Text>
-                  <View style={styles.connectedStatus}>
-                    <Text style={styles.connectedStatusText}>Online</Text>
-                  </View>
-                  
-                  <TouchableOpacity style={styles.printerActionButton}>
-                    <Text style={styles.printerActionText}>Forget Connection</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity style={styles.printerActionButton}>
-                    <Text style={styles.printerActionText}>Test print</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity style={styles.printerActionButton}>
-                    <Text style={styles.printerActionText}>Test open cash drawer</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* Print Settings */}
-              <View style={styles.printSettings}>
-                <Text style={styles.settingLabel}>Print quantity per checkout</Text>
-                <View style={styles.pickerBox}>
-                  <Text style={styles.pickerText}>1</Text>
-                  <Ionicons name="chevron-down" size={20} color="#999" />
-                </View>
-
-                <Text style={styles.settingLabel}>Paper Width</Text>
-                <View style={styles.pickerBox}>
-                  <Text style={styles.pickerText}>58mm</Text>
-                  <Ionicons name="chevron-down" size={20} color="#999" />
-                </View>
-
-                <Text style={styles.settingLabel}>Chunk Size</Text>
-                <View style={styles.pickerBox}>
-                  <Text style={styles.pickerText}>60</Text>
-                  <Ionicons name="chevron-down" size={20} color="#999" />
+              {/* Receipt Preview */}
+              <View style={styles.printerSection}>
+                <Text style={styles.printerSectionTitle}>Receipt Preview</Text>
+                <View style={styles.receiptPreview}>
+                  <ScrollView style={styles.receiptScroll}>
+                    {receiptLogo && (
+                      <Image source={{ uri: receiptLogo }} style={styles.receiptLogo} resizeMode="contain" />
+                    )}
+                    <Text style={styles.receiptCompanyName}>{companyName || 'Company Name'}</Text>
+                    <Text style={styles.receiptAddress}>{companyAddress || 'Company Address'}</Text>
+                    <View style={styles.receiptDivider} />
+                    
+                    <Text style={styles.receiptTitle}>RECEIPT</Text>
+                    <Text style={styles.receiptInfo}>Order #: ORD00001</Text>
+                    <Text style={styles.receiptInfo}>Date: {new Date().toLocaleString()}</Text>
+                    
+                    <View style={styles.receiptDivider} />
+                    
+                    <View style={styles.receiptItemRow}>
+                      <Text style={styles.receiptItemText}>Item 1 x2</Text>
+                      <Text style={styles.receiptItemText}>$10.00</Text>
+                    </View>
+                    <View style={styles.receiptItemRow}>
+                      <Text style={styles.receiptItemText}>Item 2 x1</Text>
+                      <Text style={styles.receiptItemText}>$5.50</Text>
+                    </View>
+                    
+                    <View style={styles.receiptDivider} />
+                    
+                    <View style={styles.receiptTotalRow}>
+                      <Text style={styles.receiptTotalText}>Total:</Text>
+                      <Text style={styles.receiptTotalText}>$15.50</Text>
+                    </View>
+                    
+                    <View style={styles.receiptDivider} />
+                    
+                    <Text style={styles.receiptFooter}>{receiptFooter || 'Thank you!'}</Text>
+                  </ScrollView>
                 </View>
               </View>
 
-              {/* Auto Options */}
-              <View style={styles.autoOptions}>
-                <View style={styles.checkboxRow}>
-                  <View style={styles.checkbox}>
-                    <Ionicons name="checkmark" size={20} color="#fff" />
-                  </View>
-                  <Text style={styles.checkboxLabel}>Automatically print after checkout</Text>
-                </View>
+              {/* Action Buttons */}
+              <View style={styles.printerActions}>
+                <TouchableOpacity
+                  style={[styles.printerActionButtonNew, { flex: 1 }]}
+                  onPress={testPrint}
+                  disabled={!selectedPrinter}
+                >
+                  <Ionicons name="print-outline" size={20} color="#4CAF50" />
+                  <Text style={styles.printerActionTextNew}>Test Print</Text>
+                </TouchableOpacity>
 
-                <View style={styles.checkboxRow}>
-                  <View style={styles.checkbox}>
-                    <Ionicons name="checkmark" size={20} color="#fff" />
-                  </View>
-                  <Text style={styles.checkboxLabel}>Automatically open cash drawer after checkout</Text>
-                </View>
+                <TouchableOpacity
+                  style={[styles.printerSaveButton, { flex: 2 }]}
+                  onPress={() => {
+                    Alert.alert('Success', 'Printer settings saved');
+                    setShowPrinterConfig(false);
+                  }}
+                >
+                  <Text style={styles.printerSaveText}>Save Settings</Text>
+                </TouchableOpacity>
               </View>
-
-              <TouchableOpacity
-                style={styles.printerSaveButton}
-                onPress={() => {
-                  Alert.alert('Success', 'Printer settings saved');
-                  setShowPrinterConfig(false);
-                }}
-              >
-                <Text style={styles.printerSaveText}>Save Settings</Text>
-              </TouchableOpacity>
             </View>
           </ScrollView>
         </View>
