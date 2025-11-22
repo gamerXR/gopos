@@ -313,11 +313,18 @@ class GoPosTester:
                 orders = response.json()
                 self.log_test("Get All Orders", True, f"Retrieved {len(orders)} orders")
                 
-                # Verify timestamps in ISO format
+                # Verify timestamps in ISO format and sales person name
                 if orders and "created_at" in orders[0]:
                     try:
                         datetime.fromisoformat(orders[0]["created_at"].replace('Z', '+00:00'))
                         self.log_test("Order Timestamp Format", True, "Timestamps in ISO format")
+                        
+                        # Check for sales_person_name in GET response
+                        if "sales_person_name" in orders[0]:
+                            self.log_test("Order Sales Person", True, f"Sales person: {orders[0]['sales_person_name']}")
+                        else:
+                            self.log_test("Order Sales Person", False, "Missing sales_person_name in GET response")
+                        
                         return True
                     except ValueError:
                         self.log_test("Order Timestamp Format", False, "Invalid timestamp format")
