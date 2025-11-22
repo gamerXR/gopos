@@ -64,6 +64,15 @@ export default function DashboardScreen() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   
+  // Printer configuration states
+  const [printerDevices, setPrinterDevices] = useState<any[]>([]);
+  const [selectedPrinter, setSelectedPrinter] = useState<any>(null);
+  const [detectingPrinter, setDetectingPrinter] = useState(false);
+  const [receiptLogo, setReceiptLogo] = useState<string>('');
+  const [companyName, setCompanyName] = useState(user?.company_name || '');
+  const [companyAddress, setCompanyAddress] = useState('');
+  const [receiptFooter, setReceiptFooter] = useState('Thank you for your order!');
+  
   const [categoryName, setCategoryName] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
