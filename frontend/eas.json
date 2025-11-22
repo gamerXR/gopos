@@ -36,7 +36,19 @@
     },
     "preview-apk": {
       "extends": "production",
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease",
+        "config": {
+          "packageManager": "yarn"
+        }
+      },
+      "env": {
+        "APP_VARIANT": "release",
+        "EXPO_NO_DEV_CLIENT": "1"
+      },
+      "autoIncrement": true
     }
   },
   "submit": {
