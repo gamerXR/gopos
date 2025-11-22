@@ -631,12 +631,33 @@ export default function DashboardScreen() {
   };
 
   const testPrint = async () => {
+    if (!selectedPrinter) {
+      Alert.alert('No Printer', 'Please select a printer first');
+      return;
+    }
+
     const testReceipt = generateReceiptPreview();
     try {
-      await Print.printAsync({ html: testReceipt });
-      Alert.alert('Success', 'Test print sent to printer');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to print test receipt');
+      // Direct print without preview dialog
+      const printOptions: any = {
+        html: testReceipt,
+        printerUrl: selectedPrinter.url,
+      };
+
+      // If printer has a URL, use it directly
+      if (selectedPrinter.url) {
+        await Print.printAsync(printOptions);
+      } else {
+        // For system default, print without printer selection
+        await Print.printAsync({ 
+          html: testReceipt,
+        });
+      }
+      
+      Alert.alert('Success', `Test receipt sent to ${selectedPrinter.name}`);
+    } catch (error: any) {
+      console.error('Print error:', error);
+      Alert.alert('Print Error', `Failed to print: ${error.message || 'Unknown error'}\n\nMake sure your Bluetooth printer is:\n1. Turned on\n2. Paired in device Bluetooth settings\n3. Set as default printer`);
     }
   };
 
