@@ -73,7 +73,13 @@ class GoPosTester:
             return response
         except requests.exceptions.RequestException as e:
             print(f"Request error: {e}")
-            return None
+            # Return a mock response object for timeout/connection errors
+            class MockResponse:
+                def __init__(self):
+                    self.status_code = 0
+                def json(self):
+                    return {"detail": "Connection error"}
+            return MockResponse()
     
     def test_super_admin_login(self):
         """Test Super Admin Login: 6737165617 / 448613"""
