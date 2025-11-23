@@ -1490,6 +1490,8 @@ export default function DashboardScreen() {
               Developed by MHK
               {'\n'}
               Main supplier: Posx Solution Co.
+              {'\n'}
+              Contact: +6738184877
               {'\n\n'}
               A modern point-of-sale system designed for restaurants and food businesses.
               {'\n\n'}
