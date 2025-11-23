@@ -35,14 +35,22 @@
       }
     },
     "preview-apk": {
-      "extends": "production",
       "distribution": "internal",
+      "node": "20.19.4",
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
       },
       "env": {
-        "EXPO_NO_DEV_CLIENT": "1"
+        "EXPO_NO_DEV_CLIENT": "1",
+        "EXPO_USE_DEV_CLIENT": "false"
+      }
+    },
+    "production-apk": {
+      "distribution": "internal",
+      "node": "20.19.4",
+      "android": {
+        "buildType": "apk"
       }
     }
   },
