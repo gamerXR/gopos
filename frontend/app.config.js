@@ -1,6 +1,4 @@
-const IS_DEV = process.env.EXPO_NO_DEV_CLIENT !== "1";
-
-export default {
+module.exports = {
   name: "GoPos",
   slug: "gopos",
   version: "1.0.0",
@@ -41,10 +39,14 @@ export default {
     backgroundColor: "#4CAF50"
   },
   plugins: [
-    "expo-router",
-    ...(IS_DEV ? ["expo-dev-launcher", "expo-dev-client"] : [])
+    "expo-router"
   ],
   experiments: {
     typedRoutes: true
+  },
+  extra: {
+    eas: {
+      projectId: "5db1bef7-dfa4-4b66-b4de-a385efef27c4"
+    }
   }
 };
