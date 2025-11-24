@@ -29,7 +29,7 @@ interface Client {
 }
 
 export default function AdminDashboardScreen() {
-  const { user, token, logout } = useAuth();
+  const { user, token, logout, isLoading } = useAuth();
   const router = useRouter();
   
   const [clients, setClients] = useState<Client[]>([]);
@@ -61,12 +61,14 @@ export default function AdminDashboardScreen() {
   };
 
   useEffect(() => {
+    if (isLoading) return;
+    
     if (!user || user.role !== 'super_admin') {
       router.replace('/');
     } else {
       loadClients();
     }
-  }, [user]);
+  }, [user, isLoading]);
 
   const getAuthHeaders = () => ({
     Authorization: `Bearer ${token}`,
