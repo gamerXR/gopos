@@ -4,7 +4,7 @@ module.exports = {
   version: "1.0.0",
   orientation: "portrait",
   icon: "https://customer-assets.emergentagent.com/job_gopos-app/artifacts/lsx46vaz_gopos%20green%202.jpg",
-  scheme: "pos-foodbev",
+  scheme: "gopos",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
   ios: {
