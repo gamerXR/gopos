@@ -77,6 +77,8 @@ export default function DashboardScreen() {
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
   const [itemCategoryId, setItemCategoryId] = useState('');
+  const [selectedCategoryForEdit, setSelectedCategoryForEdit] = useState<Category | null>(null);
+  const [showEditCategory, setShowEditCategory] = useState(false);
   
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'qr'>('cash');
   const [cashAmount, setCashAmount] = useState('');
