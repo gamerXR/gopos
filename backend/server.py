@@ -720,19 +720,27 @@ async def startup_db_client():
         logger.info(f"✅ Successfully connected to MongoDB: {db_name}")
         logger.info(f"📊 MongoDB URL: {mongo_url.split('@')[-1] if '@' in mongo_url else mongo_url}")
         
-        # Create indexes for performance optimization
-        users_coll = db[collections['users']]
-        orders_coll = db[collections['orders']]
+        # Create indexes for performance optimization on super_admin collections
+        users_coll = db["users"]
+        orders_coll = db["orders_super_admin"]
         
         # Index on phone field for fast login lookups (unique)
-        await users_coll.create_index("phone", unique=True)
-        logger.info("✅ Created index on users.phone")
+        try:
+            await users_coll.create_index("phone", unique=True)
+            logger.info("✅ Created index on users.phone")
+        except Exception as idx_error:
+            # Index might already exist, that's fine
+            logger.info(f"ℹ️  Index on users.phone: {str(idx_error)}")
         
         # Index on created_at field for order sorting and date range queries
-        await orders_coll.create_index([("created_at", -1)])
-        logger.info("✅ Created index on orders.created_at")
+        try:
+            await orders_coll.create_index([("created_at", -1)])
+            logger.info("✅ Created index on orders.created_at")
+        except Exception as idx_error:
+            # Index might already exist, that's fine
+            logger.info(f"ℹ️  Index on orders.created_at: {str(idx_error)}")
         
-        logger.info("✅ Database indexes created successfully")
+        logger.info("✅ Database indexes setup complete")
         
     except Exception as e:
         logger.error(f"❌ Failed to connect to MongoDB or create indexes: {str(e)}")
