@@ -586,8 +586,13 @@ export default function DashboardScreen() {
       { 
         text: 'Logout', 
         onPress: async () => {
-          await logout();
-          router.replace('/');
+          try {
+            await logout();
+            router.replace('/');
+          } catch (error) {
+            console.error('Logout error:', error);
+            router.replace('/');
+          }
         }
       },
     ]);
