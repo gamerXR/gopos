@@ -935,6 +935,7 @@ export default function DashboardScreen() {
                     selectedCategory === category.id && styles.categoryChipActive,
                   ]}
                   onPress={() => setSelectedCategory(category.id)}
+                  onLongPress={() => handleCategoryLongPress(category)}
                 >
                   <Text style={[
                     styles.categoryChipTextHorizontal,
