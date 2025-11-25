@@ -713,14 +713,29 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup_db_client():
-    """Verify MongoDB connection on startup"""
+    """Verify MongoDB connection on startup and create indexes"""
     try:
         # Test database connection
         await db.command('ping')
         logger.info(f"✅ Successfully connected to MongoDB: {db_name}")
         logger.info(f"📊 MongoDB URL: {mongo_url.split('@')[-1] if '@' in mongo_url else mongo_url}")
+        
+        # Create indexes for performance optimization
+        users_coll = db[collections['users']]
+        orders_coll = db[collections['orders']]
+        
+        # Index on phone field for fast login lookups (unique)
+        await users_coll.create_index("phone", unique=True)
+        logger.info("✅ Created index on users.phone")
+        
+        # Index on created_at field for order sorting and date range queries
+        await orders_coll.create_index([("created_at", -1)])
+        logger.info("✅ Created index on orders.created_at")
+        
+        logger.info("✅ Database indexes created successfully")
+        
     except Exception as e:
-        logger.error(f"❌ Failed to connect to MongoDB: {str(e)}")
+        logger.error(f"❌ Failed to connect to MongoDB or create indexes: {str(e)}")
         logger.error("Application will continue but may not function properly")
 
 @app.on_event("shutdown")
