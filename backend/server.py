@@ -305,13 +305,15 @@ async def get_items(category_id: Optional[str] = None, user = Depends(get_curren
     
     items = await items_coll.find(query).to_list(1000)
     
-    # Get category names
+    # Get category names - Fixed N+1 query by fetching all categories in one query
     category_ids = list(set([item['category_id'] for item in items]))
     categories = {}
-    for cat_id in category_ids:
-        cat = await categories_coll.find_one({"_id": ObjectId(cat_id)})
-        if cat:
-            categories[cat_id] = cat['name']
+    if category_ids:
+        # Fetch all categories in a single query using $in operator
+        categories_list = await categories_coll.find({
+            "_id": {"$in": [ObjectId(cid) for cid in category_ids]}
+        }).to_list(len(category_ids))
+        categories = {str(cat['_id']): cat['name'] for cat in categories_list}
     
     return [ItemResponse(
         id=str(item['_id']),
