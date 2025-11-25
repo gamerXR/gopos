@@ -16,10 +16,23 @@ import jwt
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
+# MongoDB connection - supports both local and Atlas
 mongo_url = os.getenv('MONGO_URL', 'mongodb://localhost:27017')
 db_name = os.getenv('DB_NAME', 'gopos_db')
-client = AsyncIOMotorClient(mongo_url)
+
+# Configure connection parameters for production Atlas
+client_params = {
+    'serverSelectionTimeoutMS': 5000,  # 5 second timeout for production
+    'connectTimeoutMS': 10000,
+    'socketTimeoutMS': 45000,
+}
+
+# For Atlas connections, enable retryWrites
+if 'mongodb+srv://' in mongo_url or 'mongodb.net' in mongo_url:
+    client_params['retryWrites'] = True
+    client_params['w'] = 'majority'
+
+client = AsyncIOMotorClient(mongo_url, **client_params)
 db = client[db_name]
 
 # JWT Secret
