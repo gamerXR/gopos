@@ -835,6 +835,15 @@ export default function DashboardScreen() {
 
   const subtotal = getSubtotal();
 
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <Text style={{ marginTop: 16, color: '#666' }}>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* Header */}
