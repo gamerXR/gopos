@@ -110,8 +110,10 @@ APP_VERSION="1.0.0"
 
 ### Frontend Configuration (`frontend/.env`)
 ```env
-# Expo Configuration
+# Expo Configuration (COMPLETE - Ready for Deployment)
+EXPO_TUNNEL_SUBDOMAIN=resto-pos-hub
 EXPO_PACKAGER_HOSTNAME=https://resto-pos-hub.preview.emergentagent.com
+EXPO_PACKAGER_PROXY_URL=https://resto-pos-hub.ngrok.io
 EXPO_PUBLIC_BACKEND_URL=https://resto-pos-hub.preview.emergentagent.com
 EXPO_USE_FAST_RESOLVER="1"
 
