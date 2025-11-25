@@ -156,6 +156,72 @@ export default function DashboardScreen() {
     }
   };
 
+  const handleCategoryLongPress = (category: Category) => {
+    setSelectedCategoryForEdit(category);
+    setCategoryName(category.name);
+    setShowEditCategory(true);
+  };
+
+  const handleUpdateCategory = async () => {
+    if (!selectedCategoryForEdit || !categoryName.trim()) {
+      Alert.alert('Error', 'Please enter category name');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/categories/${selectedCategoryForEdit.id}`,
+        { name: categoryName },
+        { headers: getAuthHeaders() }
+      );
+      Alert.alert('Success', 'Category updated successfully');
+      setCategoryName('');
+      setSelectedCategoryForEdit(null);
+      setShowEditCategory(false);
+      loadCategories();
+    } catch (error: any) {
+      const message = error.response?.data?.detail || 'Failed to update category';
+      Alert.alert('Error', message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteCategory = () => {
+    if (!selectedCategoryForEdit) return;
+
+    Alert.alert(
+      'Delete Category',
+      `Are you sure you want to delete "${selectedCategoryForEdit.name}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            setLoading(true);
+            try {
+              await axios.delete(
+                `${BACKEND_URL}/api/categories/${selectedCategoryForEdit.id}`,
+                { headers: getAuthHeaders() }
+              );
+              Alert.alert('Success', 'Category deleted successfully');
+              setCategoryName('');
+              setSelectedCategoryForEdit(null);
+              setShowEditCategory(false);
+              loadCategories();
+            } catch (error: any) {
+              Alert.alert('Error', error.response?.data?.detail || 'Failed to delete category');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const handleAddItem = async () => {
     if (!itemName.trim() || !itemPrice || !itemCategoryId) {
       Alert.alert('Error', 'Please fill all fields');
