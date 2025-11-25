@@ -42,7 +42,7 @@ interface CartItem {
 }
 
 export default function DashboardScreen() {
-  const { user, token, logout } = useAuth();
+  const { user, token, logout, isLoading } = useAuth();
   const router = useRouter();
   
   const [categories, setCategories] = useState<Category[]>([]);
@@ -89,13 +89,15 @@ export default function DashboardScreen() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (isLoading) return;
+    
     if (!user) {
       router.replace('/');
     } else {
       loadCategories();
       loadItems();
     }
-  }, [user]);
+  }, [user, isLoading]);
 
   useEffect(() => {
     if (selectedCategory) {
