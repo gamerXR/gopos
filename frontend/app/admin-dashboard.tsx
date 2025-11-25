@@ -87,7 +87,7 @@ export default function AdminDashboardScreen() {
 
   const pickQRImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: 'images',
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.5,
       base64: true,
