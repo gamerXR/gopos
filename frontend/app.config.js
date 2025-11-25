@@ -1,10 +1,10 @@
 module.exports = {
   name: "GoPos",
-  slug: "gopos",
+  slug: "pos-foodbev",
   version: "1.0.0",
   orientation: "portrait",
   icon: "https://customer-assets.emergentagent.com/job_gopos-app/artifacts/lsx46vaz_gopos%20green%202.jpg",
-  scheme: "gopos",
+  scheme: "pos-foodbev",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
   ios: {
