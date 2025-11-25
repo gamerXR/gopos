@@ -662,6 +662,22 @@ async def get_sales_report(date: Optional[str] = None, user = Depends(get_curren
         "top_items": top_items
     }
 
+# Health check endpoint for deployment (must be before include_router)
+@api_router.get("/health")
+async def health_check():
+    """Health check endpoint for Kubernetes liveness/readiness probes"""
+    try:
+        # Check MongoDB connection
+        await db.command('ping')
+        return {
+            "status": "healthy",
+            "service": "gopos-backend",
+            "database": "connected"
+        }
+    except Exception as e:
+        logging.error(f"Health check failed: {str(e)}")
+        raise HTTPException(status_code=503, detail="Service unavailable")
+
 # Include the router in the main app
 app.include_router(api_router)
 
@@ -679,22 +695,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# Health check endpoint for deployment
-@api_router.get("/health")
-async def health_check():
-    """Health check endpoint for Kubernetes liveness/readiness probes"""
-    try:
-        # Check MongoDB connection
-        await db.command('ping')
-        return {
-            "status": "healthy",
-            "service": "gopos-backend",
-            "database": "connected"
-        }
-    except Exception as e:
-        logger.error(f"Health check failed: {str(e)}")
-        raise HTTPException(status_code=503, detail="Service unavailable")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
