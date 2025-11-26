@@ -650,6 +650,12 @@ class GoPosTester:
         """Clean up created test data"""
         print("\n🧹 Cleaning up test data...")
         
+        # Delete created modifiers
+        for modifier_id in self.created_modifiers:
+            response = self.make_request("DELETE", f"/modifiers/{modifier_id}", token=self.client_token)
+            if response and response.status_code == 200:
+                print(f"   Deleted modifier: {modifier_id}")
+        
         # Delete created items
         for item_id in self.created_items:
             response = self.make_request("DELETE", f"/items/{item_id}", token=self.client_token)
