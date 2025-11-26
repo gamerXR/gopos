@@ -710,6 +710,10 @@ class GoPosTester:
         print("\n📊 Sales Reports Tests")
         self.test_sales_reports()
         
+        # NEW FEATURE: Modifier Management Tests
+        print("\n🔧 Modifier Management Tests (NEW FEATURE)")
+        self.test_modifier_management()
+        
         # Cleanup
         self.cleanup()
         
