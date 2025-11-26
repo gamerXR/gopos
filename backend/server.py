@@ -396,6 +396,11 @@ async def delete_item(item_id: str, user = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Item not found")
     return {"message": "Item deleted"}
 
+# Test route for debugging
+@api_router.get("/test-modifiers")
+async def test_modifiers():
+    return {"message": "Modifier routes are working"}
+
 # Modifier Routes
 @api_router.post("/modifiers", response_model=ModifierResponse)
 async def create_modifier(modifier: Modifier, user = Depends(get_current_user)):
