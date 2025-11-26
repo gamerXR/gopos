@@ -96,6 +96,13 @@ export default function DashboardScreen() {
   const [selectedCategoryForEdit, setSelectedCategoryForEdit] = useState<Category | null>(null);
   const [showEditCategory, setShowEditCategory] = useState(false);
   
+  // Modifier states
+  const [modifiers, setModifiers] = useState<Modifier[]>([]);
+  const [modifierName, setModifierName] = useState('');
+  const [modifierCost, setModifierCost] = useState('');
+  const [modifierCategoryId, setModifierCategoryId] = useState('');
+  const [selectedModifier, setSelectedModifier] = useState<Modifier | null>(null);
+  
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'qr'>('cash');
   const [cashAmount, setCashAmount] = useState('');
   const [discountPercent, setDiscountPercent] = useState('');
