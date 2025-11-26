@@ -270,6 +270,18 @@ backend:
           agent: "testing"
           comment: "✅ Enhanced Order Model fully working - Order creation includes sales_person_name and status fields. GET /api/orders returns enhanced data with sales_person_name, status, created_at in ISO format, and orders are correctly sorted by created_at descending (most recent first). All enhanced features working as expected."
 
+  - task: "Modifier Management API"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented complete CRUD API for modifiers. Added Modifier and ModifierResponse Pydantic models. Modifiers are category-specific. Created endpoints: POST /api/modifiers (create modifier for a category), GET /api/modifiers?category_id=xyz (list modifiers, optionally filtered by category), PUT /api/modifiers/{modifier_id} (update modifier), DELETE /api/modifiers/{modifier_id} (delete modifier). Each modifier has name, cost, and category_id. Prevents duplicate modifier names within the same category. Updated OrderItem model to include optional modifiers list (OrderItemModifier with modifier_id, name, cost)."
+
 frontend:
   - task: "Login Page Logo"
     implemented: true
