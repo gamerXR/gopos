@@ -3570,4 +3570,44 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 6,
   },
+  existingModifiersSection: {
+    marginTop: 16,
+    marginBottom: 8,
+    maxHeight: 200,
+  },
+  existingModifiersTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+    marginBottom: 8,
+  },
+  existingModifiersList: {
+    maxHeight: 160,
+  },
+  existingModifierItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 6,
+    marginBottom: 6,
+  },
+  existingModifierName: {
+    fontSize: 13,
+    color: '#333',
+    flex: 1,
+  },
+  existingModifierCost: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#4CAF50',
+  },
+  noModifiersText: {
+    fontSize: 12,
+    color: '#999',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    padding: 16,
+  },
 });
