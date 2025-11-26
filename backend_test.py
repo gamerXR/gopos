@@ -11,7 +11,7 @@ import sys
 import uuid
 
 # Configuration
-BASE_URL = "https://resto-orders.preview.emergentagent.com/api"
+BASE_URL = "https://resto-pos-hub-2.preview.emergentagent.com/api"
 SUPER_ADMIN_USER = {
     "phone": "6737165617",
     "password": "448613"
