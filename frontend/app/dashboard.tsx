@@ -1049,6 +1049,11 @@ export default function DashboardScreen() {
                 <Text style={styles.sidebarItemText}>Add Item</Text>
               </TouchableOpacity>
 
+              <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowAddModifier(true)}>
+                <Ionicons name="pricetag" size={24} color="#4CAF50" />
+                <Text style={styles.sidebarItemText}>Add Modifier</Text>
+              </TouchableOpacity>
+
               <TouchableOpacity style={styles.sidebarItem} onPress={() => setShowSettings(true)}>
                 <Ionicons name="settings" size={24} color="#4CAF50" />
                 <Text style={styles.sidebarItemText}>Settings</Text>
