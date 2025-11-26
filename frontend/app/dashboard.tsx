@@ -1500,6 +1500,191 @@ export default function DashboardScreen() {
         </View>
       </Modal>
 
+      {/* Add Modifier Modal */}
+      <Modal visible={showAddModifier} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Modifier</Text>
+            
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Modifier Name (e.g., Extra Ice, Less Sugar)"
+              value={modifierName}
+              onChangeText={setModifierName}
+            />
+            
+            <View style={styles.pickerContainer}>
+              <Text style={styles.pickerLabel}>Category:</Text>
+              <ScrollView horizontal style={styles.categoryPicker}>
+                {categories.map(cat => (
+                  <TouchableOpacity
+                    key={cat.id}
+                    style={[
+                      styles.categoryChip,
+                      modifierCategoryId === cat.id && styles.categoryChipSelected,
+                    ]}
+                    onPress={() => setModifierCategoryId(cat.id)}
+                  >
+                    <Text style={[
+                      styles.categoryChipText,
+                      modifierCategoryId === cat.id && styles.categoryChipTextSelected,
+                    ]}>
+                      {cat.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+            
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Cost (Additional price)"
+              value={modifierCost}
+              onChangeText={setModifierCost}
+              keyboardType="decimal-pad"
+            />
+
+            {/* Show existing modifiers for the selected category */}
+            {modifierCategoryId && (
+              <View style={styles.existingModifiersSection}>
+                <Text style={styles.existingModifiersTitle}>
+                  Existing modifiers for this category:
+                </Text>
+                <ScrollView style={styles.existingModifiersList}>
+                  {modifiers
+                    .filter(mod => mod.category_id === modifierCategoryId)
+                    .map(mod => (
+                      <TouchableOpacity 
+                        key={mod.id}
+                        style={styles.existingModifierItem}
+                        onLongPress={() => handleModifierLongPress(mod)}
+                      >
+                        <Text style={styles.existingModifierName}>{mod.name}</Text>
+                        <Text style={styles.existingModifierCost}>+${mod.cost.toFixed(2)}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  {modifiers.filter(mod => mod.category_id === modifierCategoryId).length === 0 && (
+                    <Text style={styles.noModifiersText}>No modifiers yet. Long press to edit.</Text>
+                  )}
+                </ScrollView>
+              </View>
+            )}
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => {
+                  setShowAddModifier(false);
+                  setModifierName('');
+                  setModifierCost('');
+                  setModifierCategoryId('');
+                }}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonSave]}
+                onPress={handleAddModifier}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>Save</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Edit Modifier Modal */}
+      <Modal visible={showEditModifier} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Modifier</Text>
+            
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Modifier Name"
+              value={modifierName}
+              onChangeText={setModifierName}
+            />
+            
+            <View style={styles.pickerContainer}>
+              <Text style={styles.pickerLabel}>Category:</Text>
+              <ScrollView horizontal style={styles.categoryPicker}>
+                {categories.map(cat => (
+                  <TouchableOpacity
+                    key={cat.id}
+                    style={[
+                      styles.categoryChip,
+                      modifierCategoryId === cat.id && styles.categoryChipSelected,
+                    ]}
+                    onPress={() => setModifierCategoryId(cat.id)}
+                  >
+                    <Text style={[
+                      styles.categoryChipText,
+                      modifierCategoryId === cat.id && styles.categoryChipTextSelected,
+                    ]}>
+                      {cat.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+            
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Cost"
+              value={modifierCost}
+              onChangeText={setModifierCost}
+              keyboardType="decimal-pad"
+            />
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonDelete]}
+                onPress={handleDeleteModifier}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>Delete</Text>
+                )}
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => {
+                  setShowEditModifier(false);
+                  setSelectedModifier(null);
+                  setModifierName('');
+                  setModifierCost('');
+                  setModifierCategoryId('');
+                }}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonSave]}
+                onPress={handleUpdateModifier}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={[styles.modalButtonText, { color: '#fff' }]}>Update</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Sales Report Modal */}
       <Modal visible={showSalesReport} transparent animationType="slide">
         <View style={styles.modalOverlay}>
