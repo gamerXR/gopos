@@ -1,0 +1,18 @@
+[
+  {
+    "content": "Fetch complete EAS job logs to identify the exact GraphQL error",
+    "status": "completed"
+  },
+  {
+    "content": "Check app.json configuration and Expo project settings",
+    "status": "in_progress"
+  },
+  {
+    "content": "Verify Expo token validity and permissions",
+    "status": "pending"
+  },
+  {
+    "content": "Provide diagnosis and recommended fixes",
+    "status": "pending"
+  }
+]
