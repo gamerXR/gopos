@@ -31,6 +31,7 @@ class GoPosTester:
         self.created_categories = []
         self.created_orders = []
         self.created_clients = []
+        self.created_modifiers = []
         self.session = requests.Session()
         
     def log_test(self, test_name, success, message="", details=None):
