@@ -85,7 +85,8 @@ def get_client_collections(user_id: str):
     return {
         'categories': f'categories_{user_id}',
         'items': f'items_{user_id}',
-        'orders': f'orders_{user_id}'
+        'orders': f'orders_{user_id}',
+        'modifiers': f'modifiers_{user_id}'
     }
 
 # Pydantic Models
