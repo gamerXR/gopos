@@ -395,6 +395,97 @@ async def delete_item(item_id: str, user = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Item not found")
     return {"message": "Item deleted"}
 
+# Modifier Routes
+@api_router.post("/modifiers", response_model=ModifierResponse)
+async def create_modifier(modifier: Modifier, user = Depends(get_current_user)):
+    """Create a new modifier for a specific category"""
+    collections = get_client_collections(str(user['_id']))
+    modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
+    categories_coll = db[collections['categories']]
+    
+    # Verify category exists
+    category = await categories_coll.find_one({"_id": ObjectId(modifier.category_id)})
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    # Check for duplicate modifier name in the same category
+    existing = await modifiers_coll.find_one({
+        "name": modifier.name,
+        "category_id": modifier.category_id
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Modifier name already exists for this category")
+    
+    modifier_dict = modifier.dict()
+    modifier_dict['created_at'] = datetime.utcnow()
+    result = await modifiers_coll.insert_one(modifier_dict)
+    
+    modifier_dict['id'] = str(result.inserted_id)
+    return ModifierResponse(**modifier_dict)
+
+@api_router.get("/modifiers", response_model=List[ModifierResponse])
+async def get_modifiers(category_id: Optional[str] = None, user = Depends(get_current_user)):
+    """Get all modifiers, optionally filtered by category"""
+    modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
+    
+    query = {}
+    if category_id:
+        query['category_id'] = category_id
+    
+    modifiers = await modifiers_coll.find(query).to_list(1000)
+    return [ModifierResponse(
+        id=str(mod['_id']),
+        name=mod['name'],
+        cost=mod['cost'],
+        category_id=mod['category_id'],
+        created_at=mod['created_at']
+    ) for mod in modifiers]
+
+@api_router.put("/modifiers/{modifier_id}")
+async def update_modifier(modifier_id: str, modifier: Modifier, user = Depends(get_current_user)):
+    """Update an existing modifier"""
+    collections = get_client_collections(str(user['_id']))
+    modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
+    categories_coll = db[collections['categories']]
+    
+    # Verify category exists
+    category = await categories_coll.find_one({"_id": ObjectId(modifier.category_id)})
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    # Check for duplicate name in the same category (excluding current modifier)
+    existing = await modifiers_coll.find_one({
+        "name": modifier.name,
+        "category_id": modifier.category_id,
+        "_id": {"$ne": ObjectId(modifier_id)}
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Modifier name already exists for this category")
+    
+    result = await modifiers_coll.update_one(
+        {"_id": ObjectId(modifier_id)},
+        {"$set": {
+            "name": modifier.name,
+            "cost": modifier.cost,
+            "category_id": modifier.category_id
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Modifier not found")
+    
+    return {"message": "Modifier updated successfully"}
+
+@api_router.delete("/modifiers/{modifier_id}")
+async def delete_modifier(modifier_id: str, user = Depends(get_current_user)):
+    """Delete a modifier"""
+    modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
+    
+    result = await modifiers_coll.delete_one({"_id": ObjectId(modifier_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Modifier not found")
+    return {"message": "Modifier deleted successfully"}
+
 # Order Routes
 @api_router.post("/orders", response_model=OrderResponse)
 async def create_order(order: Order, user = Depends(get_current_user)):
