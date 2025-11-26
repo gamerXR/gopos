@@ -119,6 +119,7 @@ export default function DashboardScreen() {
     } else {
       loadCategories();
       loadItems();
+      loadModifiers();
     }
   }, [user, isLoading]);
 
