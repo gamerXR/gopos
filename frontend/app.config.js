@@ -47,6 +47,9 @@ module.exports = {
   extra: {
     eas: {
       projectId: "5db1bef7-dfa4-4b66-b4de-a385efef27c4"
-    }
+    },
+    // Backend URL for APK builds - this ensures the URL is baked into the APK
+    backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL || 'https://resto-pos-hub-2.preview.emergentagent.com',
+    apiUrl: process.env.EXPO_PUBLIC_API_URL || 'https://resto-pos-hub-2.preview.emergentagent.com/api'
   }
 };
