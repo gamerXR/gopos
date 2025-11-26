@@ -497,6 +497,154 @@ class GoPosTester:
             error_msg = response.json().get("detail", "Unknown error") if response else "Connection failed"
             self.log_test("Sales Reports", False, f"Failed to get sales report: {error_msg}")
         return False
+
+    def test_modifier_management(self):
+        """Test Modifier Management API - NEW FEATURE"""
+        if not self.client_token or not self.created_categories:
+            self.log_test("Modifier Management", False, "No client token or categories available")
+            return False
+        
+        # Test 1: Create modifiers for different categories
+        test_modifiers = [
+            {
+                "name": "Extra Ice",
+                "cost": 0.5,
+                "category_id": self.created_categories[0]
+            },
+            {
+                "name": "Large Size",
+                "cost": 1.5,
+                "category_id": self.created_categories[0]
+            }
+        ]
+        
+        # Add second category modifier if we have multiple categories
+        if len(self.created_categories) > 1:
+            test_modifiers.append({
+                "name": "Extra Cheese",
+                "cost": 2.0,
+                "category_id": self.created_categories[1] if len(self.created_categories) > 1 else self.created_categories[0]
+            })
+        
+        success_count = 0
+        for modifier_data in test_modifiers:
+            response = self.make_request("POST", "/modifiers", modifier_data, token=self.client_token)
+            
+            if response and response.status_code == 200:
+                modifier = response.json()
+                self.created_modifiers.append(modifier["id"])
+                self.log_test(f"Create Modifier: {modifier_data['name']}", True, f"Created with ID: {modifier['id']}, Cost: ${modifier['cost']}")
+                success_count += 1
+            else:
+                error_msg = response.json().get("detail", "Unknown error") if response else "Connection failed"
+                self.log_test(f"Create Modifier: {modifier_data['name']}", False, f"Failed: {error_msg}")
+        
+        if success_count == 0:
+            return False
+        
+        # Test 2: Get all modifiers
+        response = self.make_request("GET", "/modifiers", token=self.client_token)
+        if response and response.status_code == 200:
+            modifiers = response.json()
+            self.log_test("Get All Modifiers", True, f"Retrieved {len(modifiers)} modifiers")
+        else:
+            self.log_test("Get All Modifiers", False, "Failed to retrieve modifiers")
+        
+        # Test 3: Get modifiers filtered by category
+        category_id = self.created_categories[0]
+        response = self.make_request("GET", f"/modifiers?category_id={category_id}", token=self.client_token)
+        if response and response.status_code == 200:
+            filtered_modifiers = response.json()
+            all_correct_category = all(mod["category_id"] == category_id for mod in filtered_modifiers)
+            if all_correct_category:
+                self.log_test("Get Modifiers by Category", True, f"Retrieved {len(filtered_modifiers)} modifiers for category")
+            else:
+                self.log_test("Get Modifiers by Category", False, "Some modifiers don't belong to specified category")
+        else:
+            self.log_test("Get Modifiers by Category", False, "Failed to filter modifiers by category")
+        
+        # Test 4: Update modifier
+        if self.created_modifiers:
+            modifier_id = self.created_modifiers[0]
+            updated_data = {
+                "name": "Updated Extra Ice",
+                "cost": 0.75,
+                "category_id": self.created_categories[0]
+            }
+            
+            response = self.make_request("PUT", f"/modifiers/{modifier_id}", updated_data, token=self.client_token)
+            if response and response.status_code == 200:
+                self.log_test("Update Modifier", True, "Successfully updated modifier")
+            else:
+                error_msg = response.json().get("detail", "Unknown error") if response else "Connection failed"
+                self.log_test("Update Modifier", False, f"Failed to update: {error_msg}")
+        
+        # Test 5: Test validation - invalid category
+        invalid_modifier = {
+            "name": "Invalid Category Modifier",
+            "cost": 1.0,
+            "category_id": "invalid_category_id"
+        }
+        
+        response = self.make_request("POST", "/modifiers", invalid_modifier, token=self.client_token)
+        if response and response.status_code == 404:
+            self.log_test("Modifier Validation - Invalid Category", True, "Correctly rejected invalid category_id")
+        else:
+            self.log_test("Modifier Validation - Invalid Category", False, f"Expected 404, got {response.status_code if response else 'No response'}")
+        
+        # Test 6: Test duplicate prevention
+        if self.created_modifiers:
+            # Try to create modifier with same name in same category
+            duplicate_modifier = {
+                "name": "Extra Ice",  # This should already exist
+                "cost": 3.0,
+                "category_id": self.created_categories[0]
+            }
+            
+            response = self.make_request("POST", "/modifiers", duplicate_modifier, token=self.client_token)
+            if response and response.status_code == 400:
+                self.log_test("Modifier Duplicate Prevention", True, "Correctly prevented duplicate modifier name in same category")
+            else:
+                self.log_test("Modifier Duplicate Prevention", False, f"Expected 400, got {response.status_code if response else 'No response'}")
+        
+        # Test 7: Delete modifier
+        if self.created_modifiers:
+            modifier_to_delete = self.created_modifiers[-1]
+            response = self.make_request("DELETE", f"/modifiers/{modifier_to_delete}", token=self.client_token)
+            if response and response.status_code == 200:
+                self.log_test("Delete Modifier", True, "Successfully deleted modifier")
+                self.created_modifiers.remove(modifier_to_delete)
+            else:
+                error_msg = response.json().get("detail", "Unknown error") if response else "Connection failed"
+                self.log_test("Delete Modifier", False, f"Failed to delete: {error_msg}")
+        
+        # Test 8: Delete non-existent modifier
+        response = self.make_request("DELETE", "/modifiers/non_existent_id", token=self.client_token)
+        if response and response.status_code == 404:
+            self.log_test("Delete Non-existent Modifier", True, "Correctly returned 404 for non-existent modifier")
+        else:
+            self.log_test("Delete Non-existent Modifier", False, f"Expected 404, got {response.status_code if response else 'No response'}")
+        
+        # Test 9: Authentication required
+        endpoints_to_test = [
+            ("POST", "/modifiers", {"name": "Test", "cost": 1.0, "category_id": "test"}),
+            ("GET", "/modifiers", None),
+            ("PUT", "/modifiers/test_id", {"name": "Test", "cost": 1.0, "category_id": "test"}),
+            ("DELETE", "/modifiers/test_id", None)
+        ]
+
+        auth_tests_passed = 0
+        for method, endpoint, data in endpoints_to_test:
+            response = self.make_request(method, endpoint, data)  # No token
+            if response and response.status_code in [401, 403]:
+                auth_tests_passed += 1
+        
+        if auth_tests_passed == len(endpoints_to_test):
+            self.log_test("Modifier Auth Required", True, "All modifier endpoints require authentication")
+        else:
+            self.log_test("Modifier Auth Required", False, f"Only {auth_tests_passed}/{len(endpoints_to_test)} endpoints require auth")
+        
+        return success_count > 0
     
     def cleanup(self):
         """Clean up created test data"""
