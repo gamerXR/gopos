@@ -2,7 +2,8 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+// Backend URL with fallback for APK builds
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://resto-pos-hub-2.preview.emergentagent.com';
 
 interface User {
   id: string;
