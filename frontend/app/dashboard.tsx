@@ -34,11 +34,25 @@ interface Item {
   price: number;
 }
 
+interface Modifier {
+  id: string;
+  name: string;
+  cost: number;
+  category_id: string;
+}
+
+interface CartItemModifier {
+  modifier_id: string;
+  name: string;
+  cost: number;
+}
+
 interface CartItem {
   item_id: string;
   name: string;
   price: number;
   quantity: number;
+  modifiers?: CartItemModifier[];
 }
 
 export default function DashboardScreen() {
