@@ -290,6 +290,113 @@ export default function DashboardScreen() {
     }
   };
 
+  const handleAddModifier = async () => {
+    if (!modifierName.trim() || !modifierCost || !modifierCategoryId) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.post(
+        `${BACKEND_URL}/api/modifiers`,
+        {
+          name: modifierName,
+          cost: parseFloat(modifierCost),
+          category_id: modifierCategoryId,
+        },
+        { headers: getAuthHeaders() }
+      );
+      Alert.alert('Success', 'Modifier added successfully');
+      setModifierName('');
+      setModifierCost('');
+      setModifierCategoryId('');
+      setShowAddModifier(false);
+      loadModifiers();
+    } catch (error: any) {
+      const message = error.response?.data?.detail || 'Failed to add modifier';
+      Alert.alert('Error', message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleModifierLongPress = (modifier: Modifier) => {
+    setSelectedModifier(modifier);
+    setModifierName(modifier.name);
+    setModifierCost(modifier.cost.toString());
+    setModifierCategoryId(modifier.category_id);
+    setShowEditModifier(true);
+  };
+
+  const handleUpdateModifier = async () => {
+    if (!selectedModifier || !modifierName.trim() || !modifierCost || !modifierCategoryId) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/modifiers/${selectedModifier.id}`,
+        {
+          name: modifierName,
+          cost: parseFloat(modifierCost),
+          category_id: modifierCategoryId,
+        },
+        { headers: getAuthHeaders() }
+      );
+      Alert.alert('Success', 'Modifier updated successfully');
+      setModifierName('');
+      setModifierCost('');
+      setModifierCategoryId('');
+      setSelectedModifier(null);
+      setShowEditModifier(false);
+      loadModifiers();
+    } catch (error: any) {
+      const message = error.response?.data?.detail || 'Failed to update modifier';
+      Alert.alert('Error', message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteModifier = () => {
+    if (!selectedModifier) return;
+
+    Alert.alert(
+      'Delete Modifier',
+      `Are you sure you want to delete "${selectedModifier.name}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            setLoading(true);
+            try {
+              await axios.delete(
+                `${BACKEND_URL}/api/modifiers/${selectedModifier.id}`,
+                { headers: getAuthHeaders() }
+              );
+              Alert.alert('Success', 'Modifier deleted successfully');
+              setModifierName('');
+              setModifierCost('');
+              setModifierCategoryId('');
+              setSelectedModifier(null);
+              setShowEditModifier(false);
+              loadModifiers();
+            } catch (error: any) {
+              Alert.alert('Error', error.response?.data?.detail || 'Failed to delete modifier');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const addToCart = (item: Item) => {
     const existingItem = cart.find(cartItem => cartItem.item_id === item.id);
     
@@ -305,6 +412,7 @@ export default function DashboardScreen() {
         name: item.name,
         price: item.price,
         quantity: 1,
+        modifiers: [],
       }]);
     }
   };
