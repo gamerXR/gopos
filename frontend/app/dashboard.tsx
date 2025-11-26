@@ -156,6 +156,17 @@ export default function DashboardScreen() {
     }
   };
 
+  const loadModifiers = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/modifiers`, {
+        headers: getAuthHeaders(),
+      });
+      setModifiers(response.data);
+    } catch (error) {
+      console.error('Error loading modifiers:', error);
+    }
+  };
+
   const handleAddCategory = async () => {
     if (!categoryName.trim()) {
       Alert.alert('Error', 'Please enter category name');
