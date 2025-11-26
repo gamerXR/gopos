@@ -136,11 +136,29 @@ class ItemResponse(BaseModel):
     price: float
     created_at: datetime
 
+class Modifier(BaseModel):
+    name: str
+    cost: float
+    category_id: str  # category-specific modifiers
+
+class ModifierResponse(BaseModel):
+    id: str
+    name: str
+    cost: float
+    category_id: str
+    created_at: datetime
+
+class OrderItemModifier(BaseModel):
+    modifier_id: str
+    name: str
+    cost: float
+
 class OrderItem(BaseModel):
     item_id: str
     name: str
     price: float
     quantity: int
+    modifiers: Optional[List[OrderItemModifier]] = []  # modifiers applied to this item
 
 class Order(BaseModel):
     items: List[OrderItem]
