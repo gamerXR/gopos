@@ -1725,6 +1725,109 @@ export default function DashboardScreen() {
         </View>
       </Modal>
 
+      {/* Item Customization Modal */}
+      <Modal visible={showItemCustomization} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, styles.customizationModal]}>
+            <View style={styles.customizationHeader}>
+              <Text style={styles.modalTitle}>
+                {selectedItemForCustomization?.name}
+              </Text>
+              <Text style={styles.customizationBasePrice}>
+                Base Price: ${selectedItemForCustomization?.price.toFixed(2)}
+              </Text>
+            </View>
+
+            {/* Modifiers Section */}
+            {selectedItemForCustomization && modifiers.filter(m => m.category_id === selectedItemForCustomization.category_id).length > 0 && (
+              <View style={styles.modifiersSection}>
+                <Text style={styles.modifiersSectionTitle}>Select Modifiers:</Text>
+                <ScrollView style={styles.modifiersList}>
+                  {modifiers
+                    .filter(m => m.category_id === selectedItemForCustomization.category_id)
+                    .map(modifier => (
+                      <TouchableOpacity
+                        key={modifier.id}
+                        style={[
+                          styles.modifierCheckboxItem,
+                          selectedModifiersForItem.includes(modifier.id) && styles.modifierCheckboxItemSelected
+                        ]}
+                        onPress={() => toggleModifierSelection(modifier.id)}
+                      >
+                        <View style={styles.modifierCheckboxRow}>
+                          <View style={[
+                            styles.checkbox,
+                            selectedModifiersForItem.includes(modifier.id) && styles.checkboxSelected
+                          ]}>
+                            {selectedModifiersForItem.includes(modifier.id) && (
+                              <Ionicons name="checkmark" size={16} color="#fff" />
+                            )}
+                          </View>
+                          <Text style={styles.modifierCheckboxName}>{modifier.name}</Text>
+                        </View>
+                        <Text style={styles.modifierCheckboxCost}>
+                          +${modifier.cost.toFixed(2)}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {/* Quantity Selector */}
+            <View style={styles.quantitySection}>
+              <Text style={styles.quantitySectionTitle}>Quantity:</Text>
+              <View style={styles.quantityControls}>
+                <TouchableOpacity
+                  style={styles.quantityButton}
+                  onPress={() => setCustomizationQuantity(Math.max(1, customizationQuantity - 1))}
+                >
+                  <Ionicons name="remove" size={20} color="#4CAF50" />
+                </TouchableOpacity>
+                <Text style={styles.quantityValue}>{customizationQuantity}</Text>
+                <TouchableOpacity
+                  style={styles.quantityButton}
+                  onPress={() => setCustomizationQuantity(customizationQuantity + 1)}
+                >
+                  <Ionicons name="add" size={20} color="#4CAF50" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Total Price */}
+            <View style={styles.customizationTotalSection}>
+              <Text style={styles.customizationTotalLabel}>Total:</Text>
+              <Text style={styles.customizationTotalValue}>
+                ${calculateCustomizationTotal().toFixed(2)}
+              </Text>
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => {
+                  setShowItemCustomization(false);
+                  setSelectedItemForCustomization(null);
+                  setSelectedModifiersForItem([]);
+                  setCustomizationQuantity(1);
+                }}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonSave, styles.addToCartButton]}
+                onPress={addCustomizedItemToCart}
+              >
+                <Ionicons name="cart" size={20} color="#fff" style={{ marginRight: 6 }} />
+                <Text style={[styles.modalButtonText, { color: '#fff' }]}>Add to Cart</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Sales Report Modal */}
       <Modal visible={showSalesReport} transparent animationType="slide">
         <View style={styles.modalOverlay}>
