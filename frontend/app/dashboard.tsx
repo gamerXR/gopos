@@ -1220,11 +1220,23 @@ export default function DashboardScreen() {
 
             {/* Cart Items */}
             <ScrollView style={styles.drawerItemsList}>
-              {cart.map(item => (
-                <View key={item.item_id} style={styles.drawerCartItem}>
+              {cart.map((item, index) => (
+                <View key={`${item.item_id}-${index}`} style={styles.drawerCartItem}>
                   <View style={styles.drawerItemInfo}>
                     <Text style={styles.drawerItemName}>{item.name}</Text>
-                    <Text style={styles.drawerItemPrice}>${item.price.toFixed(2)} x {item.quantity}</Text>
+                    {item.modifiers && item.modifiers.length > 0 && (
+                      <View style={styles.modifiersInCart}>
+                        {item.modifiers.map((mod, idx) => (
+                          <Text key={idx} style={styles.modifierInCartText}>
+                            + {mod.name} (+${mod.cost.toFixed(2)})
+                          </Text>
+                        ))}
+                      </View>
+                    )}
+                    <Text style={styles.drawerItemPrice}>
+                      ${item.price.toFixed(2)} x {item.quantity}
+                      {item.modifiers && item.modifiers.length > 0 && ` = $${(item.price + item.modifiers.reduce((sum, m) => sum + m.cost, 0)) * item.quantity}`}
+                    </Text>
                   </View>
                   
                   <View style={styles.drawerItemActions}>
