@@ -3898,4 +3898,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1.5,
   },
+  modifiersInCart: {
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  modifierInCartText: {
+    fontSize: 11,
+    color: '#666',
+    fontStyle: 'italic',
+  },
 });
