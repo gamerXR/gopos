@@ -68,6 +68,7 @@ export default function DashboardScreen() {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddModifier, setShowAddModifier] = useState(false);
+  const [showItemCustomization, setShowItemCustomization] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showEditItem, setShowEditItem] = useState(false);
   const [showEditModifier, setShowEditModifier] = useState(false);
