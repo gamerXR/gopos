@@ -403,24 +403,58 @@ export default function DashboardScreen() {
     );
   };
 
-  const addToCart = (item: Item) => {
-    const existingItem = cart.find(cartItem => cartItem.item_id === item.id);
-    
-    if (existingItem) {
-      setCart(cart.map(cartItem =>
-        cartItem.item_id === item.id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      ));
+  const openItemCustomization = (item: Item) => {
+    setSelectedItemForCustomization(item);
+    setSelectedModifiersForItem([]);
+    setCustomizationQuantity(1);
+    setShowItemCustomization(true);
+  };
+
+  const toggleModifierSelection = (modifierId: string) => {
+    if (selectedModifiersForItem.includes(modifierId)) {
+      setSelectedModifiersForItem(selectedModifiersForItem.filter(id => id !== modifierId));
     } else {
-      setCart([...cart, {
-        item_id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: 1,
-        modifiers: [],
-      }]);
+      setSelectedModifiersForItem([...selectedModifiersForItem, modifierId]);
     }
+  };
+
+  const calculateCustomizationTotal = () => {
+    if (!selectedItemForCustomization) return 0;
+    
+    const basePrice = selectedItemForCustomization.price;
+    const modifiersCost = selectedModifiersForItem.reduce((total, modifierId) => {
+      const modifier = modifiers.find(m => m.id === modifierId);
+      return total + (modifier?.cost || 0);
+    }, 0);
+    
+    return (basePrice + modifiersCost) * customizationQuantity;
+  };
+
+  const addCustomizedItemToCart = () => {
+    if (!selectedItemForCustomization) return;
+
+    const selectedModifierObjects: CartItemModifier[] = selectedModifiersForItem.map(modifierId => {
+      const modifier = modifiers.find(m => m.id === modifierId);
+      return {
+        modifier_id: modifier!.id,
+        name: modifier!.name,
+        cost: modifier!.cost,
+      };
+    });
+
+    const itemWithModifiers: CartItem = {
+      item_id: selectedItemForCustomization.id,
+      name: selectedItemForCustomization.name,
+      price: selectedItemForCustomization.price,
+      quantity: customizationQuantity,
+      modifiers: selectedModifierObjects,
+    };
+
+    setCart([...cart, itemWithModifiers]);
+    setShowItemCustomization(false);
+    setSelectedItemForCustomization(null);
+    setSelectedModifiersForItem([]);
+    setCustomizationQuantity(1);
   };
 
   const handleItemLongPress = (item: Item) => {
