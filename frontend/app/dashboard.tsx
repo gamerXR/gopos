@@ -1156,7 +1156,7 @@ export default function DashboardScreen() {
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.itemCardNew}
-                onPress={() => addToCart(item)}
+                onPress={() => openItemCustomization(item)}
                 onLongPress={() => handleItemLongPress(item)}
               >
                 <Text style={styles.itemNameNew} numberOfLines={2}>
