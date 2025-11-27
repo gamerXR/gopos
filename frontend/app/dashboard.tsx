@@ -104,6 +104,11 @@ export default function DashboardScreen() {
   const [modifierCategoryId, setModifierCategoryId] = useState('');
   const [selectedModifier, setSelectedModifier] = useState<Modifier | null>(null);
   
+  // Item customization states
+  const [selectedItemForCustomization, setSelectedItemForCustomization] = useState<Item | null>(null);
+  const [selectedModifiersForItem, setSelectedModifiersForItem] = useState<string[]>([]);
+  const [customizationQuantity, setCustomizationQuantity] = useState(1);
+  
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'qr'>('cash');
   const [cashAmount, setCashAmount] = useState('');
   const [discountPercent, setDiscountPercent] = useState('');
