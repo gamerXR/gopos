@@ -101,7 +101,7 @@ export default function DashboardScreen() {
   const [modifiers, setModifiers] = useState<Modifier[]>([]);
   const [modifierName, setModifierName] = useState('');
   const [modifierCost, setModifierCost] = useState('');
-  const [modifierCategoryId, setModifierCategoryId] = useState('');
+  const [modifierCategoryIds, setModifierCategoryIds] = useState<string[]>([]);
   const [selectedModifier, setSelectedModifier] = useState<Modifier | null>(null);
   
   // Item customization states
