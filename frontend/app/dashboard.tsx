@@ -1673,20 +1673,20 @@ export default function DashboardScreen() {
             />
             
             <View style={styles.pickerContainer}>
-              <Text style={styles.pickerLabel}>Category:</Text>
+              <Text style={styles.pickerLabel}>Categories (select multiple):</Text>
               <ScrollView horizontal style={styles.categoryPicker}>
                 {categories.map(cat => (
                   <TouchableOpacity
                     key={cat.id}
                     style={[
                       styles.categoryChip,
-                      modifierCategoryId === cat.id && styles.categoryChipSelected,
+                      modifierCategoryIds.includes(cat.id) && styles.categoryChipSelected,
                     ]}
-                    onPress={() => setModifierCategoryId(cat.id)}
+                    onPress={() => toggleModifierCategorySelection(cat.id)}
                   >
                     <Text style={[
                       styles.categoryChipText,
-                      modifierCategoryId === cat.id && styles.categoryChipTextSelected,
+                      modifierCategoryIds.includes(cat.id) && styles.categoryChipTextSelected,
                     ]}>
                       {cat.name}
                     </Text>
