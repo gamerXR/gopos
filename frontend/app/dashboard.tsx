@@ -1759,12 +1759,12 @@ export default function DashboardScreen() {
             </View>
 
             {/* Modifiers Section */}
-            {selectedItemForCustomization && modifiers.filter(m => m.category_id === selectedItemForCustomization.category_id).length > 0 && (
+            {selectedItemForCustomization && modifiers.filter(m => m.category_ids.includes(selectedItemForCustomization.category_id)).length > 0 && (
               <View style={styles.modifiersSection}>
                 <Text style={styles.modifiersSectionTitle}>Select Modifiers:</Text>
                 <ScrollView style={styles.modifiersList}>
                   {modifiers
-                    .filter(m => m.category_id === selectedItemForCustomization.category_id)
+                    .filter(m => m.category_ids.includes(selectedItemForCustomization.category_id))
                     .map(modifier => (
                       <TouchableOpacity
                         key={modifier.id}
