@@ -2161,6 +2161,21 @@ export default function DashboardScreen() {
                   <Text style={styles.printerActionTextNew}>Test Print</Text>
                 </TouchableOpacity>
 
+                {Platform.OS === 'android' && (
+                  <TouchableOpacity
+                    style={[styles.printerActionButtonNew, { flex: 1 }]}
+                    onPress={testPrinter}
+                    disabled={detectingPrinter}
+                  >
+                    {detectingPrinter ? (
+                      <ActivityIndicator size="small" color="#4CAF50" />
+                    ) : (
+                      <Ionicons name="hardware-chip-outline" size={20} color="#4CAF50" />
+                    )}
+                    <Text style={styles.printerActionTextNew}>SunMi Test</Text>
+                  </TouchableOpacity>
+                )}
+
                 <TouchableOpacity
                   style={[styles.printerSaveButton, { flex: 2 }]}
                   onPress={() => {
