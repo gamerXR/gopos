@@ -663,7 +663,35 @@ export default function DashboardScreen() {
   };
 
   const printReceipt = async (order: any) => {
-    const html = `
+    try {
+      // Try SunMi printer first (for Android devices)
+      if (Platform.OS === 'android') {
+        const receiptData = {
+          orderNumber: order.order_number,
+          items: order.items.map((item: any) => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            modifiers: item.modifiers || [],
+          })),
+          subtotal: order.total,
+          total: order.total,
+          paymentMethod: order.payment_method,
+          salesPerson: order.sales_person || 'Staff',
+          timestamp: order.timestamp || new Date(order.created_at).toLocaleString(),
+          companyName: companyName || 'GoPos POS',
+          companyAddress: companyAddress || '',
+        };
+
+        const printed = await SunmiPrinter.printReceipt(receiptData);
+        if (printed) {
+          console.log('Receipt printed via SunMi printer');
+          return;
+        }
+      }
+
+      // Fallback to expo-print for web/iOS or if SunMi fails
+      const html = `
       <html>
         <head>
           <style>
@@ -745,17 +773,17 @@ export default function DashboardScreen() {
           </div>
         </body>
       </html>
-    `;
+      `;
 
-    // Print directly without preview
-    try {
-      const printOptions: any = { html };
-      
+      const printOptions: any = {
+        html,
+      };
+
       // If a printer is selected, use it
       if (selectedPrinter?.url) {
         printOptions.printerUrl = selectedPrinter.url;
       }
-      
+
       await Print.printAsync(printOptions);
     } catch (error) {
       console.error('Print error:', error);
