@@ -140,7 +140,7 @@ class ItemResponse(BaseModel):
 class Modifier(BaseModel):
     name: str
     cost: float
-    category_id: str  # category-specific modifiers
+    category_ids: List[str]  # can belong to multiple categories
 
 class ModifierResponse(BaseModel):
     id: str
