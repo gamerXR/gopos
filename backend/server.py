@@ -447,26 +447,26 @@ async def update_modifier(modifier_id: str, modifier: Modifier, user = Depends(g
     modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
     categories_coll = db[collections['categories']]
     
-    # Verify category exists
-    category = await categories_coll.find_one({"_id": ObjectId(modifier.category_id)})
-    if not category:
-        raise HTTPException(status_code=404, detail="Category not found")
+    # Verify all categories exist
+    for category_id in modifier.category_ids:
+        category = await categories_coll.find_one({"_id": ObjectId(category_id)})
+        if not category:
+            raise HTTPException(status_code=404, detail=f"Category {category_id} not found")
     
-    # Check for duplicate name in the same category (excluding current modifier)
+    # Check for duplicate name (excluding current modifier)
     existing = await modifiers_coll.find_one({
         "name": modifier.name,
-        "category_id": modifier.category_id,
         "_id": {"$ne": ObjectId(modifier_id)}
     })
     if existing:
-        raise HTTPException(status_code=400, detail="Modifier name already exists for this category")
+        raise HTTPException(status_code=400, detail="Modifier name already exists")
     
     result = await modifiers_coll.update_one(
         {"_id": ObjectId(modifier_id)},
         {"$set": {
             "name": modifier.name,
             "cost": modifier.cost,
-            "category_id": modifier.category_id
+            "category_ids": modifier.category_ids
         }}
     )
     
