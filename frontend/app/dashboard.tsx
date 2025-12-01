@@ -1723,7 +1723,7 @@ export default function DashboardScreen() {
                   setSelectedModifier(null);
                   setModifierName('');
                   setModifierCost('');
-                  setModifierCategoryId('');
+                  setModifierCategoryIds([]);
                 }}
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>
