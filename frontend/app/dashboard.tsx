@@ -296,9 +296,17 @@ export default function DashboardScreen() {
     }
   };
 
+  const toggleModifierCategorySelection = (categoryId: string) => {
+    if (modifierCategoryIds.includes(categoryId)) {
+      setModifierCategoryIds(modifierCategoryIds.filter(id => id !== categoryId));
+    } else {
+      setModifierCategoryIds([...modifierCategoryIds, categoryId]);
+    }
+  };
+
   const handleAddModifier = async () => {
-    if (!modifierName.trim() || !modifierCost || !modifierCategoryId) {
-      Alert.alert('Error', 'Please fill all fields');
+    if (!modifierName.trim() || !modifierCost || modifierCategoryIds.length === 0) {
+      Alert.alert('Error', 'Please fill all fields and select at least one category');
       return;
     }
 
@@ -309,14 +317,14 @@ export default function DashboardScreen() {
         {
           name: modifierName,
           cost: parseFloat(modifierCost),
-          category_id: modifierCategoryId,
+          category_ids: modifierCategoryIds,
         },
         { headers: getAuthHeaders() }
       );
       Alert.alert('Success', 'Modifier added successfully');
       setModifierName('');
       setModifierCost('');
-      setModifierCategoryId('');
+      setModifierCategoryIds([]);
       setShowAddModifier(false);
       loadModifiers();
     } catch (error: any) {
