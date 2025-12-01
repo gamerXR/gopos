@@ -429,14 +429,14 @@ async def get_modifiers(category_id: Optional[str] = None, user = Depends(get_cu
     
     query = {}
     if category_id:
-        query['category_id'] = category_id
+        query['category_ids'] = category_id  # Check if category_id is in the array
     
     modifiers = await modifiers_coll.find(query).to_list(1000)
     return [ModifierResponse(
         id=str(mod['_id']),
         name=mod['name'],
         cost=mod['cost'],
-        category_id=mod['category_id'],
+        category_ids=mod['category_ids'],
         created_at=mod['created_at']
     ) for mod in modifiers]
 
