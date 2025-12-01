@@ -396,7 +396,7 @@ export default function DashboardScreen() {
               Alert.alert('Success', 'Modifier deleted successfully');
               setModifierName('');
               setModifierCost('');
-              setModifierCategoryId('');
+              setModifierCategoryIds([]);
               setSelectedModifier(null);
               setShowEditModifier(false);
               loadModifiers();
