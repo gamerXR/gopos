@@ -794,6 +794,27 @@ export default function DashboardScreen() {
   const printSalesReport = async (report: any) => {
     if (!report) return;
 
+    // Try SunMi printer first (for Android devices)
+    if (Platform.OS === 'android') {
+      const reportData = {
+        date: new Date().toLocaleDateString(),
+        totalOrders: report.total_orders || 0,
+        totalRevenue: report.total_sales || 0,
+        totalItems: report.total_items || 0,
+        paymentBreakdown: {
+          cash: report.cash_sales || 0,
+          qr: report.qr_sales || 0,
+        },
+      };
+
+      const printed = await SunmiPrinter.printSalesReport(reportData);
+      if (printed) {
+        console.log('Sales report printed via SunMi printer');
+        return;
+      }
+    }
+
+    // Fallback to expo-print
     const html = `
       <html>
         <head>
