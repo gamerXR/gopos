@@ -339,13 +339,13 @@ export default function DashboardScreen() {
     setSelectedModifier(modifier);
     setModifierName(modifier.name);
     setModifierCost(modifier.cost.toString());
-    setModifierCategoryId(modifier.category_id);
+    setModifierCategoryIds(modifier.category_ids);
     setShowEditModifier(true);
   };
 
   const handleUpdateModifier = async () => {
-    if (!selectedModifier || !modifierName.trim() || !modifierCost || !modifierCategoryId) {
-      Alert.alert('Error', 'Please fill all fields');
+    if (!selectedModifier || !modifierName.trim() || !modifierCost || modifierCategoryIds.length === 0) {
+      Alert.alert('Error', 'Please fill all fields and select at least one category');
       return;
     }
 
@@ -356,14 +356,14 @@ export default function DashboardScreen() {
         {
           name: modifierName,
           cost: parseFloat(modifierCost),
-          category_id: modifierCategoryId,
+          category_ids: modifierCategoryIds,
         },
         { headers: getAuthHeaders() }
       );
       Alert.alert('Success', 'Modifier updated successfully');
       setModifierName('');
       setModifierCost('');
-      setModifierCategoryId('');
+      setModifierCategoryIds([]);
       setSelectedModifier(null);
       setShowEditModifier(false);
       loadModifiers();
