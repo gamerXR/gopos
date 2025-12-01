@@ -146,7 +146,7 @@ class ModifierResponse(BaseModel):
     id: str
     name: str
     cost: float
-    category_id: str
+    category_ids: List[str]
     created_at: datetime
 
 class OrderItemModifier(BaseModel):
