@@ -1637,7 +1637,7 @@ export default function DashboardScreen() {
                   setShowAddModifier(false);
                   setModifierName('');
                   setModifierCost('');
-                  setModifierCategoryId('');
+                  setModifierCategoryIds([]);
                 }}
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>
