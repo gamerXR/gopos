@@ -1013,6 +1013,27 @@ export default function DashboardScreen() {
     }
   };
 
+  const testPrinter = async () => {
+    if (Platform.OS !== 'android') {
+      Alert.alert('Info', 'SunMi printer test is only available on Android devices');
+      return;
+    }
+
+    setDetectingPrinter(true);
+    try {
+      const success = await SunmiPrinter.testPrint();
+      if (success) {
+        Alert.alert('Success', 'Test print completed! Check your printer.');
+      } else {
+        Alert.alert('Error', 'Test print failed. Make sure you are on a SunMi device.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to test printer: ' + error);
+    } finally {
+      setDetectingPrinter(false);
+    }
+  };
+
   const generateReceiptPreview = () => {
     return `
       <html>
