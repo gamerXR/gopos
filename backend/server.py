@@ -399,23 +399,21 @@ async def delete_item(item_id: str, user = Depends(get_current_user)):
 # Modifier Routes
 @api_router.post("/modifiers", response_model=ModifierResponse)
 async def create_modifier(modifier: Modifier, user = Depends(get_current_user)):
-    """Create a new modifier for a specific category"""
+    """Create a new modifier for multiple categories"""
     collections = get_client_collections(str(user['_id']))
     modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
     categories_coll = db[collections['categories']]
     
-    # Verify category exists
-    category = await categories_coll.find_one({"_id": ObjectId(modifier.category_id)})
-    if not category:
-        raise HTTPException(status_code=404, detail="Category not found")
+    # Verify all categories exist
+    for category_id in modifier.category_ids:
+        category = await categories_coll.find_one({"_id": ObjectId(category_id)})
+        if not category:
+            raise HTTPException(status_code=404, detail=f"Category {category_id} not found")
     
-    # Check for duplicate modifier name in the same category
-    existing = await modifiers_coll.find_one({
-        "name": modifier.name,
-        "category_id": modifier.category_id
-    })
+    # Check for duplicate modifier name
+    existing = await modifiers_coll.find_one({"name": modifier.name})
     if existing:
-        raise HTTPException(status_code=400, detail="Modifier name already exists for this category")
+        raise HTTPException(status_code=400, detail="Modifier name already exists")
     
     modifier_dict = modifier.dict()
     modifier_dict['created_at'] = datetime.utcnow()
