@@ -38,7 +38,7 @@ interface Modifier {
   id: string;
   name: string;
   cost: number;
-  category_id: string;
+  category_ids: string[];
 }
 
 interface CartItemModifier {
