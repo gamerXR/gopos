@@ -1604,15 +1604,15 @@ export default function DashboardScreen() {
               keyboardType="decimal-pad"
             />
 
-            {/* Show existing modifiers for the selected category */}
-            {modifierCategoryId && (
+            {/* Show existing modifiers for the selected categories */}
+            {modifierCategoryIds.length > 0 && (
               <View style={styles.existingModifiersSection}>
                 <Text style={styles.existingModifiersTitle}>
-                  Existing modifiers for this category:
+                  Existing modifiers for selected categories:
                 </Text>
                 <ScrollView style={styles.existingModifiersList}>
                   {modifiers
-                    .filter(mod => mod.category_id === modifierCategoryId)
+                    .filter(mod => mod.category_ids.some(catId => modifierCategoryIds.includes(catId)))
                     .map(mod => (
                       <TouchableOpacity 
                         key={mod.id}
@@ -1623,7 +1623,7 @@ export default function DashboardScreen() {
                         <Text style={styles.existingModifierCost}>+${mod.cost.toFixed(2)}</Text>
                       </TouchableOpacity>
                     ))}
-                  {modifiers.filter(mod => mod.category_id === modifierCategoryId).length === 0 && (
+                  {modifiers.filter(mod => mod.category_ids.some(catId => modifierCategoryIds.includes(catId))).length === 0 && (
                     <Text style={styles.noModifiersText}>No modifiers yet. Long press to edit.</Text>
                   )}
                 </ScrollView>
