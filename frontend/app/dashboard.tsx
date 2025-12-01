@@ -913,41 +913,8 @@ export default function DashboardScreen() {
   const detectPrinters = async () => {
     setDetectingPrinter(true);
     try {
-      // Real printer detection using expo-print
-      const printers = await Print.selectPrinterAsync();
-      
-      const detectedPrinters = printers.map((printer: any, index: number) => ({
-        id: printer.name || `printer_${index}`,
-        name: printer.name || `Printer ${index + 1}`,
-        type: printer.url?.includes('bluetooth') ? 'Bluetooth' : 
-              printer.url?.includes('network') || printer.url?.includes('http') ? 'Network' : 'Internal',
-        status: 'Online',
-        url: printer.url,
-      }));
-      
-      // If no printers found via API, try to detect system default
-      if (detectedPrinters.length === 0) {
-        // Add system default printer option
-        const systemPrinter = {
-          id: 'system_default',
-          name: 'System Default Printer',
-          type: 'Internal',
-          status: 'Online',
-          url: null,
-        };
-        detectedPrinters.push(systemPrinter);
-      }
-      
-      setPrinterDevices(detectedPrinters);
-      if (detectedPrinters.length > 0) {
-        setSelectedPrinter(detectedPrinters[0]);
-        Alert.alert('Success', `Found ${detectedPrinters.length} printer(s)`);
-      } else {
-        Alert.alert('No Printers', 'No printers detected. Please ensure your printer is turned on and connected.');
-      }
-    } catch (error: any) {
-      console.error('Printer detection error:', error);
-      // Fallback: add system default option
+      // For expo-print, we'll use a simpler approach
+      // Add system default printer option
       const systemPrinter = {
         id: 'system_default',
         name: 'System Default Printer',
@@ -955,9 +922,13 @@ export default function DashboardScreen() {
         status: 'Available',
         url: null,
       };
+      
       setPrinterDevices([systemPrinter]);
       setSelectedPrinter(systemPrinter);
-      Alert.alert('Info', 'Using system default printer. Make sure your Bluetooth printer is paired in device settings first.');
+      Alert.alert('Success', 'System default printer configured. Make sure your Bluetooth printer is paired in device settings first.');
+    } catch (error: any) {
+      console.error('Printer detection error:', error);
+      Alert.alert('Error', 'Failed to configure printer settings.');
     } finally {
       setDetectingPrinter(false);
     }
