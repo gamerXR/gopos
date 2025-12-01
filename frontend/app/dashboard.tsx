@@ -914,7 +914,7 @@ export default function DashboardScreen() {
     setDetectingPrinter(true);
     try {
       // Real printer detection using expo-print
-      const { printers } = await Print.getPrintersAsync();
+      const printers = await Print.selectPrinterAsync();
       
       const detectedPrinters = printers.map((printer: any, index: number) => ({
         id: printer.name || `printer_${index}`,
