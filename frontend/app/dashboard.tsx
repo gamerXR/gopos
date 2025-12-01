@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
