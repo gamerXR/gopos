@@ -436,7 +436,8 @@ async def get_modifiers(category_id: Optional[str] = None, user = Depends(get_cu
         id=str(mod['_id']),
         name=mod['name'],
         cost=mod['cost'],
-        category_ids=mod['category_ids'],
+        # Handle both old (category_id) and new (category_ids) format
+        category_ids=mod.get('category_ids', [mod['category_id']] if 'category_id' in mod else []),
         created_at=mod['created_at']
     ) for mod in modifiers]
 
