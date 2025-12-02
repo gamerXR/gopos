@@ -3,14 +3,15 @@ import { Platform } from 'react-native';
 // SunMi printer service
 let SunmiPrinter: any = null;
 
-// Only import on Android
-if (Platform.OS === 'android') {
-  try {
-    SunmiPrinter = require('react-native-sunmi-inner-printer').default;
-  } catch (error) {
-    console.log('SunMi printer module not available:', error);
-  }
-}
+// Temporarily disabled for APK build - library has compatibility issues
+// To re-enable: uncomment below and run yarn add react-native-sunmi-inner-printer
+// if (Platform.OS === 'android') {
+//   try {
+//     SunmiPrinter = require('react-native-sunmi-inner-printer').default;
+//   } catch (error) {
+//     console.log('SunMi printer module not available:', error);
+//   }
+// }
 
 export interface ReceiptItem {
   name: string;
