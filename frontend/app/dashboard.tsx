@@ -4353,4 +4353,31 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
   },
+  statsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    gap: 10,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#f9f9f9',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+  },
 });
