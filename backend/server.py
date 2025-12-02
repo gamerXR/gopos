@@ -710,6 +710,57 @@ async def reset_client_password(client_id: str, user = Depends(get_current_user)
     return {"message": "Password reset to 123456 successfully"}
 
 # Sales Report Route
+@api_router.get("/orders-list")
+async def get_orders_list(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    status: Optional[str] = None,
+    user = Depends(get_current_user)
+):
+    """Get detailed list of orders with filter options"""
+    collections = get_client_collections(str(user['_id']))
+    orders_coll = db[collections['orders']]
+    
+    # Determine date range
+    if start_date and end_date:
+        start_of_period = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
+        end_of_period = datetime.fromisoformat(end_date.replace('Z', '+00:00'))
+    else:
+        report_date = datetime.utcnow()
+        start_of_period = report_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_period = report_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+    
+    # Build query
+    query = {"created_at": {"$gte": start_of_period, "$lte": end_of_period}}
+    
+    # Filter by status if provided
+    if status and status != 'all':
+        if status == 'completed':
+            query['status'] = {'$ne': 'refunded'}
+        elif status == 'refunded':
+            query['status'] = 'refunded'
+    
+    # Get orders
+    orders = await orders_coll.find(query).sort('created_at', -1).to_list(1000)
+    
+    # Format response
+    orders_list = []
+    for order in orders:
+        orders_list.append({
+            'id': str(order['_id']),
+            'order_number': order['order_number'],
+            'items': order['items'],
+            'subtotal': order['subtotal'],
+            'total': order.get('total', order['subtotal']),
+            'payment_method': order['payment_method'],
+            'sales_person': order.get('sales_person_name', 'Staff'),
+            'status': order.get('status', 'completed'),
+            'created_at': order['created_at'].isoformat(),
+            'refunded_at': order.get('refunded_at').isoformat() if order.get('refunded_at') else None
+        })
+    
+    return orders_list
+
 @api_router.get("/sales-report")
 async def get_sales_report(
     date: Optional[str] = None,
