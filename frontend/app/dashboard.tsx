@@ -580,6 +580,31 @@ export default function DashboardScreen() {
   };
 
   const loadSalesReport = async () => {
+    // Day Closing Report - Only today's data, no filters
+    setLoading(true);
+    try {
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+      
+      const response = await axios.get(`${BACKEND_URL}/api/sales-report`, {
+        headers: getAuthHeaders(),
+        params: {
+          start_date: startOfDay.toISOString(),
+          end_date: endOfDay.toISOString()
+        }
+      });
+      setSalesReport(response.data);
+      setShowSalesReport(true);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to load day closing report');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadSalesDetails = async () => {
+    // Sales Details - With date filters
     setLoading(true);
     try {
       const { startDate, endDate } = getDateRangeForFilter();
@@ -592,10 +617,10 @@ export default function DashboardScreen() {
           filter_type: salesTypeFilter
         }
       });
-      setSalesReport(response.data);
-      setShowSalesReport(true);
+      setSalesDetailsReport(response.data);
+      setShowSalesDetails(true);
     } catch (error) {
-      Alert.alert('Error', 'Failed to load sales report');
+      Alert.alert('Error', 'Failed to load sales details');
     } finally {
       setLoading(false);
     }
