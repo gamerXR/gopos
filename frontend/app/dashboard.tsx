@@ -2278,6 +2278,67 @@ export default function DashboardScreen() {
         </View>
       </Modal>
 
+      {/* Return Confirmation Modal */}
+      <Modal visible={showReturnConfirm} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, styles.returnConfirmModal]}>
+            <Ionicons name="alert-circle" size={48} color="#FF5722" style={{ alignSelf: 'center', marginBottom: 16 }} />
+            <Text style={styles.returnConfirmTitle}>Confirm Return</Text>
+            <Text style={styles.returnConfirmText}>
+              {returnType === 'full' 
+                ? `Return full order #${selectedOrderForReturn?.order_number}?`
+                : 'Return selected items?'}
+            </Text>
+            <Text style={styles.returnConfirmAmount}>
+              Amount: ${selectedOrderForReturn?.total.toFixed(2)}
+            </Text>
+
+            <View style={styles.returnConfirmButtons}>
+              <TouchableOpacity
+                style={[styles.returnConfirmButton, styles.returnConfirmCancel]}
+                onPress={() => {
+                  setShowReturnConfirm(false);
+                  setSelectedOrderForReturn(null);
+                  setItemsToReturn([]);
+                }}
+              >
+                <Text style={styles.returnConfirmButtonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.returnConfirmButton, styles.returnConfirmProceed]}
+                onPress={async () => {
+                  setShowReturnConfirm(false);
+                  
+                  // Show print confirmation
+                  Alert.alert(
+                    'Print Return Receipt?',
+                    'Would you like to print the return receipt?',
+                    [
+                      {
+                        text: 'No',
+                        style: 'cancel',
+                        onPress: async () => {
+                          await processReturn(false);
+                        }
+                      },
+                      {
+                        text: 'Yes, Print',
+                        onPress: async () => {
+                          await processReturn(true);
+                        }
+                      }
+                    ]
+                  );
+                }}
+              >
+                <Text style={[styles.returnConfirmButtonText, { color: '#fff' }]}>Confirm Return</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Day Closing Report Modal - No Date Filters */}
       {/* Sales Report Modal */}
       <Modal visible={showSalesReport} transparent animationType="slide">
