@@ -4889,21 +4889,39 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   orderActions: {
-    marginTop: 8,
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
   },
-  returnButton: {
+  actionButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FF5722',
     paddingVertical: 10,
     borderRadius: 6,
     gap: 6,
   },
-  returnButtonText: {
+  actionButtonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
+  },
+  actionButtonDisabled: {
+    opacity: 0.5,
+  },
+  actionButtonTextDisabled: {
+    color: '#ccc',
+  },
+  returnSelectedButton: {
+    backgroundColor: '#FF9800',
+  },
+  returnFullButton: {
+    backgroundColor: '#FF5722',
+  },
+  reprintButton: {
+    backgroundColor: '#2196F3',
+    flex: 0.5,
   },
   emptyState: {
     alignItems: 'center',
