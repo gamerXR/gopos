@@ -1939,7 +1939,148 @@ export default function DashboardScreen() {
       <Modal visible={showSalesReport} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, styles.salesModalContent]}>
-            <Text style={styles.modalTitle}>Daily Sales Report</Text>
+            <Text style={styles.modalTitle}>Sales Report</Text>
+            
+            {/* Date Filter Buttons */}
+            <View style={styles.dateFilterContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.dateFilterButton,
+                  salesDateFilter === 'today' && styles.dateFilterButtonActive
+                ]}
+                onPress={() => {
+                  setSalesDateFilter('today');
+                  loadSalesReport();
+                }}
+              >
+                <Text style={[
+                  styles.dateFilterText,
+                  salesDateFilter === 'today' && styles.dateFilterTextActive
+                ]}>Today</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.dateFilterButton,
+                  salesDateFilter === 'yesterday' && styles.dateFilterButtonActive
+                ]}
+                onPress={() => {
+                  setSalesDateFilter('yesterday');
+                  loadSalesReport();
+                }}
+              >
+                <Text style={[
+                  styles.dateFilterText,
+                  salesDateFilter === 'yesterday' && styles.dateFilterTextActive
+                ]}>Yesterday</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.dateFilterButton,
+                  salesDateFilter === 'week' && styles.dateFilterButtonActive
+                ]}
+                onPress={() => {
+                  setSalesDateFilter('week');
+                  loadSalesReport();
+                }}
+              >
+                <Text style={[
+                  styles.dateFilterText,
+                  salesDateFilter === 'week' && styles.dateFilterTextActive
+                ]}>This Week</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.dateFilterButton,
+                  salesDateFilter === 'custom' && styles.dateFilterButtonActive
+                ]}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Ionicons 
+                  name="calendar" 
+                  size={16} 
+                  color={salesDateFilter === 'custom' ? '#fff' : '#4CAF50'} 
+                />
+                <Text style={[
+                  styles.dateFilterText,
+                  salesDateFilter === 'custom' && styles.dateFilterTextActive,
+                  { marginLeft: 4 }
+                ]}>Custom</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Custom Date Range Picker */}
+            {showDatePicker && (
+              <View style={styles.customDateContainer}>
+                <View style={styles.dateInputRow}>
+                  <Text style={styles.dateLabel}>From:</Text>
+                  <TextInput
+                    style={styles.dateInput}
+                    value={customStartDate.toLocaleDateString()}
+                    placeholder="Start Date"
+                    editable={false}
+                  />
+                  <TouchableOpacity
+                    style={styles.datePickerIcon}
+                    onPress={() => {
+                      // For simplicity, using prompt. In production, use a proper date picker
+                      Alert.prompt(
+                        'Start Date',
+                        'Enter date (MM/DD/YYYY)',
+                        (text) => {
+                          const date = new Date(text);
+                          if (!isNaN(date.getTime())) {
+                            setCustomStartDate(date);
+                          }
+                        }
+                      );
+                    }}
+                  >
+                    <Ionicons name="calendar-outline" size={20} color="#4CAF50" />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.dateInputRow}>
+                  <Text style={styles.dateLabel}>To:</Text>
+                  <TextInput
+                    style={styles.dateInput}
+                    value={customEndDate.toLocaleDateString()}
+                    placeholder="End Date"
+                    editable={false}
+                  />
+                  <TouchableOpacity
+                    style={styles.datePickerIcon}
+                    onPress={() => {
+                      Alert.prompt(
+                        'End Date',
+                        'Enter date (MM/DD/YYYY)',
+                        (text) => {
+                          const date = new Date(text);
+                          if (!isNaN(date.getTime())) {
+                            setCustomEndDate(date);
+                          }
+                        }
+                      );
+                    }}
+                  >
+                    <Ionicons name="calendar-outline" size={20} color="#4CAF50" />
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.applyDateButton}
+                  onPress={() => {
+                    setSalesDateFilter('custom');
+                    setShowDatePicker(false);
+                    loadSalesReport();
+                  }}
+                >
+                  <Text style={styles.applyDateButtonText}>Apply</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             
             {salesReport && (
               <ScrollView style={styles.salesReportScroll}>
@@ -1982,7 +2123,10 @@ export default function DashboardScreen() {
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.modalButtonCancel]}
-                onPress={() => setShowSalesReport(false)}
+                onPress={() => {
+                  setShowSalesReport(false);
+                  setShowDatePicker(false);
+                }}
               >
                 <Text style={styles.modalButtonText}>Close</Text>
               </TouchableOpacity>
