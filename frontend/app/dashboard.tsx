@@ -4577,4 +4577,192 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
+  filterTabs: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  filterTab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  filterTabActive: {
+    backgroundColor: '#4CAF50',
+  },
+  filterTabText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '600',
+  },
+  filterTabTextActive: {
+    color: '#fff',
+  },
+  transactionsTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
+  },
+  orderCard: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  orderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  orderHeaderLeft: {
+    flex: 1,
+  },
+  orderNumber: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  orderDate: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+  },
+  orderHeaderRight: {
+    alignItems: 'flex-end',
+  },
+  orderTotal: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+  },
+  refundedBadge: {
+    backgroundColor: '#FF5722',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginTop: 4,
+  },
+  refundedBadgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  orderItems: {
+    marginBottom: 12,
+  },
+  orderItemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f5f5f5',
+  },
+  orderItemInfo: {
+    flex: 1,
+  },
+  orderItemName: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+  },
+  orderItemModifiers: {
+    marginTop: 4,
+  },
+  orderItemModifierText: {
+    fontSize: 11,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  orderItemQty: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 2,
+  },
+  orderItemPrice: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+  orderActions: {
+    marginTop: 8,
+  },
+  returnButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF5722',
+    paddingVertical: 10,
+    borderRadius: 6,
+    gap: 6,
+  },
+  returnButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 12,
+  },
+  returnConfirmModal: {
+    width: '80%',
+    maxWidth: 400,
+  },
+  returnConfirmTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  returnConfirmText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  returnConfirmAmount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FF5722',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  returnConfirmButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  returnConfirmButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  returnConfirmCancel: {
+    backgroundColor: '#e0e0e0',
+  },
+  returnConfirmProceed: {
+    backgroundColor: '#FF5722',
+  },
+  returnConfirmButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
 });
