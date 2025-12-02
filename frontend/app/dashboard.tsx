@@ -128,6 +128,7 @@ export default function DashboardScreen() {
   const [showReturnConfirm, setShowReturnConfirm] = useState(false);
   const [returnType, setReturnType] = useState<'full' | 'partial'>('full');
   const [itemsToReturn, setItemsToReturn] = useState<string[]>([]);
+  const [expandedOrders, setExpandedOrders] = useState<string[]>([]);
   
   const [loading, setLoading] = useState(false);
 
