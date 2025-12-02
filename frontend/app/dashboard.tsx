@@ -1194,7 +1194,7 @@ export default function DashboardScreen() {
                     <Text style={styles.sidebarSubItemText}>Day Closing</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.sidebarSubItem} onPress={() => router.push('/sales-details')}>
+                  <TouchableOpacity style={styles.sidebarSubItem} onPress={loadSalesDetails}>
                     <Ionicons name="receipt" size={20} color="#666" />
                     <Text style={styles.sidebarSubItemText}>Sales Details</Text>
                   </TouchableOpacity>
