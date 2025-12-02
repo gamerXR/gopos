@@ -123,6 +123,11 @@ export default function DashboardScreen() {
   const [customEndDate, setCustomEndDate] = useState(new Date());
   const [salesTypeFilter, setSalesTypeFilter] = useState<'all' | 'sales' | 'returns'>('all');
   const [salesDetailsReport, setSalesDetailsReport] = useState<any>(null);
+  const [ordersList, setOrdersList] = useState<any[]>([]);
+  const [selectedOrderForReturn, setSelectedOrderForReturn] = useState<any>(null);
+  const [showReturnConfirm, setShowReturnConfirm] = useState(false);
+  const [returnType, setReturnType] = useState<'full' | 'partial'>('full');
+  const [itemsToReturn, setItemsToReturn] = useState<string[]>([]);
   
   const [loading, setLoading] = useState(false);
 
