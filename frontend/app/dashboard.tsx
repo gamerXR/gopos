@@ -545,11 +545,50 @@ export default function DashboardScreen() {
     );
   };
 
+  const getDateRangeForFilter = () => {
+    const now = new Date();
+    let startDate, endDate;
+
+    switch (salesDateFilter) {
+      case 'today':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+        break;
+      case 'yesterday':
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        startDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+        endDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59);
+        break;
+      case 'week':
+        startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - 7);
+        endDate = now;
+        break;
+      case 'custom':
+        startDate = customStartDate;
+        endDate = customEndDate;
+        break;
+      default:
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+    }
+
+    return { startDate, endDate };
+  };
+
   const loadSalesReport = async () => {
     setLoading(true);
     try {
+      const { startDate, endDate } = getDateRangeForFilter();
+      
       const response = await axios.get(`${BACKEND_URL}/api/sales-report`, {
         headers: getAuthHeaders(),
+        params: {
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
+          filter_type: salesTypeFilter
+        }
       });
       setSalesReport(response.data);
       setShowSalesReport(true);
