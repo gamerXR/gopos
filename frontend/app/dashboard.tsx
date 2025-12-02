@@ -2246,68 +2246,101 @@ export default function DashboardScreen() {
                     <Text style={styles.emptyStateText}>No transactions found</Text>
                   </View>
                 ) : (
-                  ordersList.map((order) => (
-                    <View key={order.id} style={styles.orderCard}>
-                      {/* Order Header */}
-                      <View style={styles.orderHeader}>
-                        <View style={styles.orderHeaderLeft}>
-                          <Text style={styles.orderNumber}>#{order.order_number}</Text>
-                          <Text style={styles.orderDate}>
-                            {new Date(order.created_at).toLocaleString()}
-                          </Text>
-                        </View>
-                        <View style={styles.orderHeaderRight}>
-                          <Text style={styles.orderTotal}>${order.total.toFixed(2)}</Text>
-                          {order.status === 'refunded' && (
-                            <View style={styles.refundedBadge}>
-                              <Text style={styles.refundedBadgeText}>REFUNDED</Text>
+                  ordersList.map((order) => {
+                    const isExpanded = expandedOrders.includes(order.id);
+                    return (
+                      <View key={order.id} style={styles.orderCard}>
+                        {/* Compact Order Summary */}
+                        <TouchableOpacity
+                          style={styles.orderSummaryRow}
+                          onPress={() => toggleOrderExpanded(order.id)}
+                          activeOpacity={0.7}
+                        >
+                          <View style={styles.orderSummaryInfo}>
+                            <Text style={styles.orderNumber}>#{order.order_number}</Text>
+                            <View style={styles.paymentMethodBadge}>
+                              <Ionicons 
+                                name={order.payment_method === 'cash' ? 'cash' : 'qr-code'} 
+                                size={14} 
+                                color="#666" 
+                              />
+                              <Text style={styles.paymentMethodText}>
+                                {order.payment_method === 'cash' ? 'Cash' : 'QR Code'}
+                              </Text>
                             </View>
-                          )}
-                        </View>
-                      </View>
+                            {order.status === 'refunded' && (
+                              <View style={styles.refundedBadgeSmall}>
+                                <Text style={styles.refundedBadgeText}>REFUNDED</Text>
+                              </View>
+                            )}
+                          </View>
+                          
+                          <View style={styles.orderSummaryRight}>
+                            <Text style={styles.orderTotal}>${order.total.toFixed(2)}</Text>
+                            <Ionicons 
+                              name={isExpanded ? 'chevron-up' : 'chevron-down'} 
+                              size={24} 
+                              color="#4CAF50" 
+                            />
+                          </View>
+                        </TouchableOpacity>
 
-                      {/* Order Items */}
-                      <View style={styles.orderItems}>
-                        {order.items.map((item: any, idx: number) => (
-                          <View key={idx} style={styles.orderItemRow}>
-                            <View style={styles.orderItemInfo}>
-                              <Text style={styles.orderItemName}>{item.name}</Text>
-                              {item.modifiers && item.modifiers.length > 0 && (
-                                <View style={styles.orderItemModifiers}>
-                                  {item.modifiers.map((mod: any, midx: number) => (
-                                    <Text key={midx} style={styles.orderItemModifierText}>
-                                      + {mod.name} (+${mod.cost.toFixed(2)})
+                        {/* Expanded Order Details */}
+                        {isExpanded && (
+                          <>
+                            <View style={styles.orderDivider} />
+                            <View style={styles.orderExpandedContent}>
+                              <Text style={styles.orderDate}>
+                                {new Date(order.created_at).toLocaleString()}
+                              </Text>
+                              <Text style={styles.orderDetailsTitle}>Items:</Text>
+                              
+                              {/* Order Items */}
+                              <View style={styles.orderItems}>
+                                {order.items.map((item: any, idx: number) => (
+                                  <View key={idx} style={styles.orderItemRow}>
+                                    <View style={styles.orderItemInfo}>
+                                      <Text style={styles.orderItemName}>{item.name}</Text>
+                                      {item.modifiers && item.modifiers.length > 0 && (
+                                        <View style={styles.orderItemModifiers}>
+                                          {item.modifiers.map((mod: any, midx: number) => (
+                                            <Text key={midx} style={styles.orderItemModifierText}>
+                                              + {mod.name} (+${mod.cost.toFixed(2)})
+                                            </Text>
+                                          ))}
+                                        </View>
+                                      )}
+                                      <Text style={styles.orderItemQty}>Qty: {item.quantity}</Text>
+                                    </View>
+                                    <Text style={styles.orderItemPrice}>
+                                      ${(item.price * item.quantity).toFixed(2)}
                                     </Text>
-                                  ))}
+                                  </View>
+                                ))}
+                              </View>
+
+                              {/* Order Actions */}
+                              {order.status !== 'refunded' && (
+                                <View style={styles.orderActions}>
+                                  <TouchableOpacity
+                                    style={styles.returnButton}
+                                    onPress={() => {
+                                      setSelectedOrderForReturn(order);
+                                      setReturnType('full');
+                                      setShowReturnConfirm(true);
+                                    }}
+                                  >
+                                    <Ionicons name="return-down-back" size={16} color="#fff" />
+                                    <Text style={styles.returnButtonText}>Return Full Order</Text>
+                                  </TouchableOpacity>
                                 </View>
                               )}
-                              <Text style={styles.orderItemQty}>Qty: {item.quantity}</Text>
                             </View>
-                            <Text style={styles.orderItemPrice}>
-                              ${(item.price * item.quantity).toFixed(2)}
-                            </Text>
-                          </View>
-                        ))}
+                          </>
+                        )}
                       </View>
-
-                      {/* Order Actions */}
-                      {order.status !== 'refunded' && (
-                        <View style={styles.orderActions}>
-                          <TouchableOpacity
-                            style={styles.returnButton}
-                            onPress={() => {
-                              setSelectedOrderForReturn(order);
-                              setReturnType('full');
-                              setShowReturnConfirm(true);
-                            }}
-                          >
-                            <Ionicons name="return-down-back" size={16} color="#fff" />
-                            <Text style={styles.returnButtonText}>Return Full Order</Text>
-                          </TouchableOpacity>
-                        </View>
-                      )}
-                    </View>
-                  ))
+                    );
+                  })
                 )}
               </ScrollView>
             )}
