@@ -17,7 +17,6 @@ module.exports = {
       foregroundImage: "https://customer-assets.emergentagent.com/job_gopos-app/artifacts/lsx46vaz_gopos%20green%202.jpg",
       backgroundColor: "#FFFFFF"
     },
-    edgeToEdgeEnabled: true,
     permissions: [
       "CAMERA",
       "READ_EXTERNAL_STORAGE",
