@@ -4653,51 +4653,81 @@ const styles = StyleSheet.create({
   orderCard: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 16,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#e0e0e0',
+    overflow: 'hidden',
   },
-  orderHeader: {
+  orderSummaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    alignItems: 'center',
+    padding: 16,
   },
-  orderHeaderLeft: {
+  orderSummaryInfo: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   orderNumber: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
   },
-  orderDate: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
+  paymentMethodBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
   },
-  orderHeaderRight: {
-    alignItems: 'flex-end',
+  paymentMethodText: {
+    fontSize: 11,
+    color: '#666',
+    fontWeight: '500',
+  },
+  refundedBadgeSmall: {
+    backgroundColor: '#FF5722',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  refundedBadgeText: {
+    color: '#fff',
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
+  orderSummaryRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   orderTotal: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#4CAF50',
   },
-  refundedBadge: {
-    backgroundColor: '#FF5722',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginTop: 4,
+  orderDivider: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
   },
-  refundedBadgeText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
+  orderExpandedContent: {
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+  },
+  orderDate: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 12,
+  },
+  orderDetailsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
   },
   orderItems: {
     marginBottom: 12,
