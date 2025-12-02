@@ -1073,6 +1073,54 @@ export default function DashboardScreen() {
     }
   };
 
+  const processReturn = async (printReceipt: boolean) => {
+    if (!selectedOrderForReturn) return;
+
+    setLoading(true);
+    try {
+      // Call return API
+      await axios.post(
+        `${BACKEND_URL}/api/orders/${selectedOrderForReturn.id}/return`,
+        {},
+        { headers: getAuthHeaders() }
+      );
+
+      Alert.alert('Success', 'Order returned successfully');
+
+      // Print receipt if requested
+      if (printReceipt) {
+        const returnReceiptData = {
+          orderNumber: selectedOrderForReturn.order_number,
+          items: selectedOrderForReturn.items,
+          subtotal: selectedOrderForReturn.total,
+          total: selectedOrderForReturn.total,
+          paymentMethod: selectedOrderForReturn.payment_method,
+          salesPerson: selectedOrderForReturn.sales_person,
+          timestamp: new Date().toLocaleString(),
+          companyName: companyName || 'GoPos POS',
+          companyAddress: companyAddress || '',
+          isReturn: true,
+        };
+
+        if (Platform.OS === 'android') {
+          await SunmiPrinter.printReceipt(returnReceiptData);
+        } else {
+          // Fallback to expo-print for web/iOS
+          printReceipt(returnReceiptData);
+        }
+      }
+
+      // Reload sales details
+      setSelectedOrderForReturn(null);
+      setItemsToReturn([]);
+      loadSalesDetails();
+    } catch (error: any) {
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to process return');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const testPrinter = async () => {
     if (Platform.OS !== 'android') {
       Alert.alert('Info', 'SunMi printer test is only available on Android devices');
