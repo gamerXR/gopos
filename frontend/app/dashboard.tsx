@@ -2110,6 +2110,27 @@ export default function DashboardScreen() {
             
             {salesDetailsReport && (
               <ScrollView style={styles.salesReportScroll}>
+                {/* Stats Header - Key Metrics */}
+                <View style={styles.statsHeader}>
+                  <View style={styles.statCard}>
+                    <Ionicons name="cart" size={24} color="#4CAF50" />
+                    <Text style={styles.statValue}>{salesDetailsReport.qty_sold || 0}</Text>
+                    <Text style={styles.statLabel}>Qty Sold</Text>
+                  </View>
+
+                  <View style={styles.statCard}>
+                    <Ionicons name="cash" size={24} color="#4CAF50" />
+                    <Text style={styles.statValue}>${(salesDetailsReport.total_sales || 0).toFixed(2)}</Text>
+                    <Text style={styles.statLabel}>Total Sales</Text>
+                  </View>
+
+                  <View style={styles.statCard}>
+                    <Ionicons name="return-down-back" size={24} color="#FF5722" />
+                    <Text style={[styles.statValue, { color: '#FF5722' }]}>${(salesDetailsReport.return_sales || 0).toFixed(2)}</Text>
+                    <Text style={styles.statLabel}>Return Sales</Text>
+                  </View>
+                </View>
+
                 <View style={styles.salesSummary}>
                   <View style={styles.salesRow}>
                     <Text style={styles.salesLabel}>Total Sales:</Text>
