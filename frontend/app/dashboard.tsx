@@ -2149,39 +2149,109 @@ export default function DashboardScreen() {
                   </View>
                 </View>
 
-                <View style={styles.salesSummary}>
-                  <View style={styles.salesRow}>
-                    <Text style={styles.salesLabel}>Total Sales:</Text>
-                    <Text style={styles.salesValue}>${salesDetailsReport.total_sales.toFixed(2)}</Text>
-                  </View>
-                  <View style={styles.salesRow}>
-                    <Text style={styles.salesLabel}>Total Orders:</Text>
-                    <Text style={styles.salesValue}>{salesDetailsReport.total_orders}</Text>
-                  </View>
-                  <View style={styles.salesRow}>
-                    <Text style={styles.salesLabel}>Cash Sales:</Text>
-                    <Text style={styles.salesValue}>${salesDetailsReport.cash_sales.toFixed(2)}</Text>
-                  </View>
-                  <View style={styles.salesRow}>
-                    <Text style={styles.salesLabel}>QR Sales:</Text>
-                    <Text style={styles.salesValue}>${salesDetailsReport.qr_sales.toFixed(2)}</Text>
-                  </View>
-                  <View style={styles.salesRow}>
-                    <Text style={styles.salesLabel}>Total Discount:</Text>
-                    <Text style={styles.salesValue}>${salesDetailsReport.total_discount.toFixed(2)}</Text>
-                  </View>
+                {/* Filter Tabs */}
+                <View style={styles.filterTabs}>
+                  <TouchableOpacity
+                    style={[styles.filterTab, salesTypeFilter === 'all' && styles.filterTabActive]}
+                    onPress={() => {
+                      setSalesTypeFilter('all');
+                      setTimeout(() => loadSalesDetails(), 100);
+                    }}
+                  >
+                    <Text style={[styles.filterTabText, salesTypeFilter === 'all' && styles.filterTabTextActive]}>All</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.filterTab, salesTypeFilter === 'completed' && styles.filterTabActive]}
+                    onPress={() => {
+                      setSalesTypeFilter('completed');
+                      setTimeout(() => loadSalesDetails(), 100);
+                    }}
+                  >
+                    <Text style={[styles.filterTabText, salesTypeFilter === 'completed' && styles.filterTabTextActive]}>Sales Only</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.filterTab, salesTypeFilter === 'refunded' && styles.filterTabActive]}
+                    onPress={() => {
+                      setSalesTypeFilter('refunded');
+                      setTimeout(() => loadSalesDetails(), 100);
+                    }}
+                  >
+                    <Text style={[styles.filterTabText, salesTypeFilter === 'refunded' && styles.filterTabTextActive]}>Returns Only</Text>
+                  </TouchableOpacity>
                 </View>
 
-                <Text style={styles.topItemsTitle}>Top Items:</Text>
-                {salesDetailsReport.top_items.map((item: any, index: number) => (
-                  <View key={index} style={styles.topItemRow}>
-                    <Text style={styles.topItemName}>{item.name}</Text>
-                    <View style={styles.topItemStats}>
-                      <Text style={styles.topItemQty}>Qty: {item.quantity}</Text>
-                      <Text style={styles.topItemRevenue}>${item.revenue.toFixed(2)}</Text>
-                    </View>
+                {/* Transaction List */}
+                <Text style={styles.transactionsTitle}>Transactions ({ordersList.length})</Text>
+                
+                {ordersList.length === 0 ? (
+                  <View style={styles.emptyState}>
+                    <Ionicons name="receipt-outline" size={48} color="#ccc" />
+                    <Text style={styles.emptyStateText}>No transactions found</Text>
                   </View>
-                ))}
+                ) : (
+                  ordersList.map((order) => (
+                    <View key={order.id} style={styles.orderCard}>
+                      {/* Order Header */}
+                      <View style={styles.orderHeader}>
+                        <View style={styles.orderHeaderLeft}>
+                          <Text style={styles.orderNumber}>#{order.order_number}</Text>
+                          <Text style={styles.orderDate}>
+                            {new Date(order.created_at).toLocaleString()}
+                          </Text>
+                        </View>
+                        <View style={styles.orderHeaderRight}>
+                          <Text style={styles.orderTotal}>${order.total.toFixed(2)}</Text>
+                          {order.status === 'refunded' && (
+                            <View style={styles.refundedBadge}>
+                              <Text style={styles.refundedBadgeText}>REFUNDED</Text>
+                            </View>
+                          )}
+                        </View>
+                      </View>
+
+                      {/* Order Items */}
+                      <View style={styles.orderItems}>
+                        {order.items.map((item: any, idx: number) => (
+                          <View key={idx} style={styles.orderItemRow}>
+                            <View style={styles.orderItemInfo}>
+                              <Text style={styles.orderItemName}>{item.name}</Text>
+                              {item.modifiers && item.modifiers.length > 0 && (
+                                <View style={styles.orderItemModifiers}>
+                                  {item.modifiers.map((mod: any, midx: number) => (
+                                    <Text key={midx} style={styles.orderItemModifierText}>
+                                      + {mod.name} (+${mod.cost.toFixed(2)})
+                                    </Text>
+                                  ))}
+                                </View>
+                              )}
+                              <Text style={styles.orderItemQty}>Qty: {item.quantity}</Text>
+                            </View>
+                            <Text style={styles.orderItemPrice}>
+                              ${(item.price * item.quantity).toFixed(2)}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
+
+                      {/* Order Actions */}
+                      {order.status !== 'refunded' && (
+                        <View style={styles.orderActions}>
+                          <TouchableOpacity
+                            style={styles.returnButton}
+                            onPress={() => {
+                              setSelectedOrderForReturn(order);
+                              setReturnType('full');
+                              setShowReturnConfirm(true);
+                            }}
+                          >
+                            <Ionicons name="return-down-back" size={16} color="#fff" />
+                            <Text style={styles.returnButtonText}>Return Full Order</Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    </View>
+                  ))
+                )}
               </ScrollView>
             )}
             
