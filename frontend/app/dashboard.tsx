@@ -1074,6 +1074,14 @@ export default function DashboardScreen() {
     }
   };
 
+  const toggleOrderExpanded = (orderId: string) => {
+    if (expandedOrders.includes(orderId)) {
+      setExpandedOrders(expandedOrders.filter(id => id !== orderId));
+    } else {
+      setExpandedOrders([...expandedOrders, orderId]);
+    }
+  };
+
   const processReturn = async (printReceipt: boolean) => {
     if (!selectedOrderForReturn) return;
 
