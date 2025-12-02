@@ -609,12 +609,13 @@ export default function DashboardScreen() {
   };
 
   const loadSalesDetails = async () => {
-    // Sales Details - With date filters
+    // Sales Details - Load orders list with date filters
     setLoading(true);
     try {
       const { startDate, endDate } = getDateRangeForFilter();
       
-      const response = await axios.get(`${BACKEND_URL}/api/sales-report`, {
+      // Load summary stats
+      const statsResponse = await axios.get(`${BACKEND_URL}/api/sales-report`, {
         headers: getAuthHeaders(),
         params: {
           start_date: startDate.toISOString(),
@@ -622,7 +623,19 @@ export default function DashboardScreen() {
           filter_type: salesTypeFilter
         }
       });
-      setSalesDetailsReport(response.data);
+      setSalesDetailsReport(statsResponse.data);
+
+      // Load detailed orders list
+      const ordersResponse = await axios.get(`${BACKEND_URL}/api/orders-list`, {
+        headers: getAuthHeaders(),
+        params: {
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
+          status: salesTypeFilter
+        }
+      });
+      setOrdersList(ordersResponse.data);
+      
       setShowSalesDetails(true);
     } catch (error) {
       Alert.alert('Error', 'Failed to load sales details');
