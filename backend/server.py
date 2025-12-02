@@ -711,47 +711,68 @@ async def reset_client_password(client_id: str, user = Depends(get_current_user)
 
 # Sales Report Route
 @api_router.get("/sales-report")
-async def get_sales_report(date: Optional[str] = None, user = Depends(get_current_user)):
+async def get_sales_report(
+    date: Optional[str] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    filter_type: Optional[str] = 'all',
+    user = Depends(get_current_user)
+):
     collections = get_client_collections(str(user['_id']))
     orders_coll = db[collections['orders']]
     
-    # If date not provided, use today
-    if date:
+    # Determine date range
+    if start_date and end_date:
+        start_of_period = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
+        end_of_period = datetime.fromisoformat(end_date.replace('Z', '+00:00'))
+    elif date:
         report_date = datetime.fromisoformat(date)
+        start_of_period = report_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_period = report_date.replace(hour=23, minute=59, second=59, microsecond=999999)
     else:
         report_date = datetime.utcnow()
+        start_of_period = report_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_period = report_date.replace(hour=23, minute=59, second=59, microsecond=999999)
     
-    # Get start and end of the day
-    start_of_day = report_date.replace(hour=0, minute=0, second=0, microsecond=0)
-    end_of_day = report_date.replace(hour=23, minute=59, second=59, microsecond=999999)
-    
-    # Get all orders for the day
+    # Get all orders for the period
     orders = await orders_coll.find({
-        "created_at": {"$gte": start_of_day, "$lte": end_of_day}
-    }).to_list(1000)
+        "created_at": {"$gte": start_of_period, "$lte": end_of_period}
+    }).to_list(10000)
     
     if not orders:
         return {
-            "date": report_date.isoformat(),
             "total_sales": 0,
             "total_orders": 0,
+            "qty_sold": 0,
+            "return_sales": 0,
             "cash_sales": 0,
             "qr_sales": 0,
             "total_discount": 0,
             "top_items": []
         }
     
+    # Separate orders by status
+    completed_orders = [o for o in orders if o.get('status') != 'refunded']
+    refunded_orders = [o for o in orders if o.get('status') == 'refunded']
+    
     # Calculate totals
-    total_sales = sum(order.get('total', order['subtotal']) for order in orders)
-    total_discount = sum(order.get('discount_amount', 0) for order in orders)
+    total_sales = sum(order.get('total', order['subtotal']) for order in completed_orders)
+    return_sales = sum(order.get('total', order['subtotal']) for order in refunded_orders)
+    total_discount = sum(order.get('discount_amount', 0) for order in completed_orders)
     
-    # Sales by payment method
-    cash_sales = sum(order.get('total', order['subtotal']) for order in orders if order['payment_method'] == 'cash')
-    qr_sales = sum(order.get('total', order['subtotal']) for order in orders if order['payment_method'] == 'qr')
+    # Calculate quantity sold
+    qty_sold = sum(
+        sum(item['quantity'] for item in order['items'])
+        for order in completed_orders
+    )
     
-    # Top items
+    # Sales by payment method (only completed orders)
+    cash_sales = sum(order.get('total', order['subtotal']) for order in completed_orders if order['payment_method'] == 'cash')
+    qr_sales = sum(order.get('total', order['subtotal']) for order in completed_orders if order['payment_method'] == 'qr')
+    
+    # Top items (only completed orders)
     item_sales = {}
-    for order in orders:
+    for order in completed_orders:
         for item in order['items']:
             item_id = item['item_id']
             item_name = item['name']
@@ -777,9 +798,10 @@ async def get_sales_report(date: Optional[str] = None, user = Depends(get_curren
     )[:10]
     
     return {
-        "date": report_date.isoformat(),
         "total_sales": total_sales,
-        "total_orders": len(orders),
+        "total_orders": len(completed_orders),
+        "qty_sold": qty_sold,
+        "return_sales": return_sales,
         "cash_sales": cash_sales,
         "qr_sales": qr_sales,
         "total_discount": total_discount,
