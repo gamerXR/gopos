@@ -116,6 +116,11 @@ export default function DashboardScreen() {
   const [discountPercent, setDiscountPercent] = useState('');
   
   const [salesReport, setSalesReport] = useState<any>(null);
+  const [salesDateFilter, setSalesDateFilter] = useState<'today' | 'yesterday' | 'week' | 'custom'>('today');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [customStartDate, setCustomStartDate] = useState(new Date());
+  const [customEndDate, setCustomEndDate] = useState(new Date());
+  const [salesTypeFilter, setSalesTypeFilter] = useState<'all' | 'sales' | 'returns'>('all');
   
   const [loading, setLoading] = useState(false);
 
