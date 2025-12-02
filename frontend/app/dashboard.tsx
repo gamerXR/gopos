@@ -4821,15 +4821,46 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 8,
   },
+  selectItemsHint: {
+    fontSize: 12,
+    color: '#666',
+    fontStyle: 'italic',
+    marginBottom: 8,
+  },
   orderItems: {
     marginBottom: 12,
   },
   orderItemRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 8,
+    paddingHorizontal: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#f5f5f5',
+  },
+  orderItemRowSelectable: {
+    borderRadius: 6,
+    marginBottom: 4,
+  },
+  orderItemRowSelected: {
+    backgroundColor: '#E8F5E9',
+    borderColor: '#4CAF50',
+    borderWidth: 1,
+  },
+  itemCheckbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    marginRight: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemCheckboxSelected: {
+    backgroundColor: '#4CAF50',
+    borderColor: '#4CAF50',
   },
   orderItemInfo: {
     flex: 1,
