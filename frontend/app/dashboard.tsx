@@ -2293,48 +2293,140 @@ export default function DashboardScreen() {
                               <Text style={styles.orderDate}>
                                 {new Date(order.created_at).toLocaleString()}
                               </Text>
-                              <Text style={styles.orderDetailsTitle}>Items:</Text>
                               
-                              {/* Order Items */}
+                              {order.status !== 'refunded' && (
+                                <Text style={styles.selectItemsHint}>
+                                  Tap items to select for return:
+                                </Text>
+                              )}
+                              
+                              {/* Order Items with Checkboxes */}
                               <View style={styles.orderItems}>
-                                {order.items.map((item: any, idx: number) => (
-                                  <View key={idx} style={styles.orderItemRow}>
-                                    <View style={styles.orderItemInfo}>
-                                      <Text style={styles.orderItemName}>{item.name}</Text>
-                                      {item.modifiers && item.modifiers.length > 0 && (
-                                        <View style={styles.orderItemModifiers}>
-                                          {item.modifiers.map((mod: any, midx: number) => (
-                                            <Text key={midx} style={styles.orderItemModifierText}>
-                                              + {mod.name} (+${mod.cost.toFixed(2)})
-                                            </Text>
-                                          ))}
+                                {order.items.map((item: any, idx: number) => {
+                                  const itemKey = `${order.id}-${idx}`;
+                                  const isSelected = itemsToReturn.includes(itemKey);
+                                  
+                                  return (
+                                    <TouchableOpacity
+                                      key={idx}
+                                      style={[
+                                        styles.orderItemRow,
+                                        order.status !== 'refunded' && styles.orderItemRowSelectable,
+                                        isSelected && styles.orderItemRowSelected
+                                      ]}
+                                      onPress={() => {
+                                        if (order.status !== 'refunded') {
+                                          if (isSelected) {
+                                            setItemsToReturn(itemsToReturn.filter(k => k !== itemKey));
+                                          } else {
+                                            setItemsToReturn([...itemsToReturn, itemKey]);
+                                          }
+                                        }
+                                      }}
+                                      disabled={order.status === 'refunded'}
+                                    >
+                                      {order.status !== 'refunded' && (
+                                        <View style={[
+                                          styles.itemCheckbox,
+                                          isSelected && styles.itemCheckboxSelected
+                                        ]}>
+                                          {isSelected && (
+                                            <Ionicons name="checkmark" size={14} color="#fff" />
+                                          )}
                                         </View>
                                       )}
-                                      <Text style={styles.orderItemQty}>Qty: {item.quantity}</Text>
-                                    </View>
-                                    <Text style={styles.orderItemPrice}>
-                                      ${(item.price * item.quantity).toFixed(2)}
-                                    </Text>
-                                  </View>
-                                ))}
+                                      
+                                      <View style={styles.orderItemInfo}>
+                                        <Text style={styles.orderItemName}>{item.name}</Text>
+                                        {item.modifiers && item.modifiers.length > 0 && (
+                                          <View style={styles.orderItemModifiers}>
+                                            {item.modifiers.map((mod: any, midx: number) => (
+                                              <Text key={midx} style={styles.orderItemModifierText}>
+                                                + {mod.name} (+${mod.cost.toFixed(2)})
+                                              </Text>
+                                            ))}
+                                          </View>
+                                        )}
+                                        <Text style={styles.orderItemQty}>Qty: {item.quantity}</Text>
+                                      </View>
+                                      <Text style={styles.orderItemPrice}>
+                                        ${(item.price * item.quantity).toFixed(2)}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  );
+                                })}
                               </View>
 
                               {/* Order Actions */}
-                              {order.status !== 'refunded' && (
-                                <View style={styles.orderActions}>
-                                  <TouchableOpacity
-                                    style={styles.returnButton}
-                                    onPress={() => {
-                                      setSelectedOrderForReturn(order);
-                                      setReturnType('full');
-                                      setShowReturnConfirm(true);
-                                    }}
-                                  >
-                                    <Ionicons name="return-down-back" size={16} color="#fff" />
-                                    <Text style={styles.returnButtonText}>Return Full Order</Text>
-                                  </TouchableOpacity>
-                                </View>
-                              )}
+                              <View style={styles.orderActions}>
+                                {order.status !== 'refunded' ? (
+                                  <>
+                                    <TouchableOpacity
+                                      style={[
+                                        styles.actionButton,
+                                        styles.returnSelectedButton,
+                                        itemsToReturn.length === 0 && styles.actionButtonDisabled
+                                      ]}
+                                      onPress={() => {
+                                        if (itemsToReturn.length > 0) {
+                                          setSelectedOrderForReturn(order);
+                                          setReturnType('partial');
+                                          setShowReturnConfirm(true);
+                                        }
+                                      }}
+                                      disabled={itemsToReturn.length === 0}
+                                    >
+                                      <Ionicons name="checkbox" size={16} color={itemsToReturn.length > 0 ? '#fff' : '#ccc'} />
+                                      <Text style={[
+                                        styles.actionButtonText,
+                                        itemsToReturn.length === 0 && styles.actionButtonTextDisabled
+                                      ]}>
+                                        Return Selected ({itemsToReturn.length})
+                                      </Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                      style={[styles.actionButton, styles.returnFullButton]}
+                                      onPress={() => {
+                                        setSelectedOrderForReturn(order);
+                                        setReturnType('full');
+                                        setItemsToReturn([]);
+                                        setShowReturnConfirm(true);
+                                      }}
+                                    >
+                                      <Ionicons name="return-down-back" size={16} color="#fff" />
+                                      <Text style={styles.actionButtonText}>Return Full Order</Text>
+                                    </TouchableOpacity>
+                                  </>
+                                ) : null}
+
+                                <TouchableOpacity
+                                  style={[styles.actionButton, styles.reprintButton]}
+                                  onPress={() => {
+                                    // Reprint receipt
+                                    const receiptData = {
+                                      orderNumber: order.order_number,
+                                      items: order.items,
+                                      subtotal: order.total,
+                                      total: order.total,
+                                      paymentMethod: order.payment_method,
+                                      salesPerson: order.sales_person,
+                                      timestamp: order.created_at,
+                                      companyName: companyName || 'GoPos POS',
+                                      companyAddress: companyAddress || '',
+                                    };
+                                    
+                                    if (Platform.OS === 'android') {
+                                      SunmiPrinter.printReceipt(receiptData);
+                                    } else {
+                                      printReceipt(receiptData);
+                                    }
+                                  }}
+                                >
+                                  <Ionicons name="print" size={16} color="#fff" />
+                                  <Text style={styles.actionButtonText}>Reprint</Text>
+                                </TouchableOpacity>
+                              </View>
                             </View>
                           </>
                         )}
