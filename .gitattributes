@@ -1,0 +1,10 @@
+# Gradle wrapper JAR should be treated as binary
+*.jar binary
+gradle-wrapper.jar binary
+
+# Android specific
+*.ap_ binary
+*.dex binary
+*.class binary
+*.apk binary
+*.keystore binary
