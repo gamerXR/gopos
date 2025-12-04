@@ -47,8 +47,8 @@ module.exports = {
     eas: {
       projectId: "3b2e9503-ffcd-46a7-9b1c-e16bb818b17d"
     },
-    // Backend URL for APK builds - MUST be set via environment variables
-    backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL,
-    apiUrl: process.env.EXPO_PUBLIC_API_URL
+    // Backend URL for APK builds - with production fallback
+    backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL || 'https://pos-foodbev.emergent.host',
+    apiUrl: process.env.EXPO_PUBLIC_API_URL || 'https://pos-foodbev.emergent.host/api'
   }
 };
