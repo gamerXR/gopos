@@ -18,7 +18,7 @@ import { useRouter } from 'expo-router';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://pos-foodbev.emergent.host';
 
 interface Client {
   id: string;
