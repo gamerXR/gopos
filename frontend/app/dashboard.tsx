@@ -2551,8 +2551,20 @@ export default function DashboardScreen() {
               <ScrollView style={styles.salesReportScroll}>
                 <View style={styles.salesSummary}>
                   <View style={styles.salesRow}>
-                    <Text style={styles.salesLabel}>Total Sales:</Text>
+                    <Text style={styles.salesLabel}>Gross Sales:</Text>
                     <Text style={styles.salesValue}>${salesReport.total_sales.toFixed(2)}</Text>
+                  </View>
+                  {salesReport.return_sales > 0 && (
+                    <View style={styles.salesRow}>
+                      <Text style={[styles.salesLabel, { color: '#FF5722' }]}>Return Sales:</Text>
+                      <Text style={[styles.salesValue, { color: '#FF5722' }]}>-${salesReport.return_sales.toFixed(2)}</Text>
+                    </View>
+                  )}
+                  <View style={[styles.salesRow, { borderTopWidth: 1, borderTopColor: '#ddd', paddingTop: 8, marginTop: 8 }]}>
+                    <Text style={[styles.salesLabel, { fontWeight: 'bold', fontSize: 16 }]}>Net Sales:</Text>
+                    <Text style={[styles.salesValue, { fontWeight: 'bold', fontSize: 16, color: '#4CAF50' }]}>
+                      ${(salesReport.total_sales - (salesReport.return_sales || 0)).toFixed(2)}
+                    </Text>
                   </View>
                   <View style={styles.salesRow}>
                     <Text style={styles.salesLabel}>Total Orders:</Text>
