@@ -1088,14 +1088,31 @@ export default function DashboardScreen() {
 
     setLoading(true);
     try {
-      // Call return API
-      await axios.post(
-        `${BACKEND_URL}/api/orders/${selectedOrderForReturn.id}/return`,
-        {},
-        { headers: getAuthHeaders() }
-      );
+      let returnResponse;
 
-      Alert.alert('Success', 'Order returned successfully');
+      if (returnType === 'partial' && itemsToReturn.length > 0) {
+        // Partial return - return specific items
+        const itemsToReturnData = itemsToReturn.map(itemKey => {
+          const parts = itemKey.split('-');
+          const idx = parseInt(parts[parts.length - 1]);
+          return selectedOrderForReturn.items[idx];
+        });
+
+        returnResponse = await axios.post(
+          `${BACKEND_URL}/api/orders/${selectedOrderForReturn.id}/return-item`,
+          { items: itemsToReturnData },
+          { headers: getAuthHeaders() }
+        );
+      } else {
+        // Full return - return entire order
+        returnResponse = await axios.post(
+          `${BACKEND_URL}/api/orders/${selectedOrderForReturn.id}/return`,
+          {},
+          { headers: getAuthHeaders() }
+        );
+      }
+
+      Alert.alert('Success', `${returnType === 'partial' ? 'Items' : 'Order'} returned successfully`);
 
       // Print receipt if requested
       if (printReceipt) {
