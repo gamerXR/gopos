@@ -14,7 +14,7 @@ module.exports = {
   android: {
     package: "com.gopos.app",
     adaptiveIcon: {
-      foregroundImage: "https://customer-assets.emergentagent.com/job_gopos-app/artifacts/lsx46vaz_gopos%20green%202.jpg",
+      foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#FFFFFF"
     },
     permissions: [
