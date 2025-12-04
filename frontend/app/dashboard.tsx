@@ -2370,6 +2370,22 @@ export default function DashboardScreen() {
                                       ]}
                                       onPress={() => {
                                         if (itemsToReturn.length > 0) {
+                                          // Calculate return amount for selected items
+                                          let amount = 0;
+                                          itemsToReturn.forEach(itemKey => {
+                                            const item = order.items.find((i: any, idx: number) => 
+                                              `${order.id}-${i.item_id}-${idx}` === itemKey
+                                            );
+                                            if (item) {
+                                              const itemTotal = item.price * item.quantity;
+                                              const modifiersTotal = (item.modifiers || []).reduce(
+                                                (sum: number, mod: any) => sum + mod.cost, 
+                                                0
+                                              );
+                                              amount += itemTotal + modifiersTotal;
+                                            }
+                                          });
+                                          setReturnAmount(amount);
                                           setSelectedOrderForReturn(order);
                                           setReturnType('partial');
                                           setShowReturnConfirm(true);
