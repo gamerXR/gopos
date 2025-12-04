@@ -1145,9 +1145,12 @@ export default function DashboardScreen() {
         }
       }
 
-      // Reload sales details
+      // Reload sales details and reset state
       setSelectedOrderForReturn(null);
       setItemsToReturn([]);
+      setReturnType('full');
+      setReturnAmount(0);
+      setShowReturnConfirm(false);
       loadSalesDetails();
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to process return');
