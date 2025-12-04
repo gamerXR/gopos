@@ -2,11 +2,12 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-// Backend URL - MUST be set via environment variables
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+// Backend URL - with fallback for production APK builds
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://pos-foodbev.emergent.host';
 
-if (!BACKEND_URL) {
-  throw new Error('EXPO_PUBLIC_BACKEND_URL environment variable is required');
+// Log for debugging (removed in production)
+if (__DEV__) {
+  console.log('Backend URL:', BACKEND_URL);
 }
 
 interface User {
