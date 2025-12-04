@@ -905,6 +905,20 @@ async def health_check():
         logging.error(f"Health check failed: {str(e)}")
         raise HTTPException(status_code=503, detail="Service unavailable")
 
+# Root-level health check for Kubernetes (without /api prefix)
+@app.get("/health")
+async def root_health_check():
+    """Health check endpoint for Kubernetes liveness/readiness probes"""
+    try:
+        # Quick health check without DB ping for faster response
+        return {
+            "status": "healthy",
+            "service": "gopos-backend"
+        }
+    except Exception as e:
+        logging.error(f"Health check failed: {str(e)}")
+        raise HTTPException(status_code=503, detail="Service unavailable")
+
 # Include the router in the main app
 app.include_router(api_router)
 
