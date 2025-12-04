@@ -2405,6 +2405,7 @@ export default function DashboardScreen() {
                                     <TouchableOpacity
                                       style={[styles.actionButton, styles.returnFullButton]}
                                       onPress={() => {
+                                        setReturnAmount(order.total);
                                         setSelectedOrderForReturn(order);
                                         setReturnType('full');
                                         setItemsToReturn([]);
