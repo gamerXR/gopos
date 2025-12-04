@@ -2373,9 +2373,11 @@ export default function DashboardScreen() {
                                           // Calculate return amount for selected items
                                           let amount = 0;
                                           itemsToReturn.forEach(itemKey => {
-                                            const item = order.items.find((i: any, idx: number) => 
-                                              `${order.id}-${i.item_id}-${idx}` === itemKey
-                                            );
+                                            // Extract index from itemKey format: "orderId-idx"
+                                            const parts = itemKey.split('-');
+                                            const idx = parseInt(parts[parts.length - 1]);
+                                            const item = order.items[idx];
+                                            
                                             if (item) {
                                               const itemTotal = item.price * item.quantity;
                                               const modifiersTotal = (item.modifiers || []).reduce(
