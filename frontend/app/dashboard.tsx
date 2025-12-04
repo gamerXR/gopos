@@ -1116,11 +1116,19 @@ export default function DashboardScreen() {
 
       // Print receipt if requested
       if (printReceipt) {
+        const itemsToPrint = returnType === 'partial' && itemsToReturn.length > 0
+          ? itemsToReturn.map(itemKey => {
+              const parts = itemKey.split('-');
+              const idx = parseInt(parts[parts.length - 1]);
+              return selectedOrderForReturn.items[idx];
+            })
+          : selectedOrderForReturn.items;
+
         const returnReceiptData = {
           orderNumber: selectedOrderForReturn.order_number,
-          items: selectedOrderForReturn.items,
-          subtotal: selectedOrderForReturn.total,
-          total: selectedOrderForReturn.total,
+          items: itemsToPrint,
+          subtotal: returnAmount,
+          total: returnAmount,
           paymentMethod: selectedOrderForReturn.payment_method,
           salesPerson: selectedOrderForReturn.sales_person,
           timestamp: new Date().toLocaleString(),
