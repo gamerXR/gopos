@@ -42,6 +42,7 @@
     "react-native-reanimated": "~3.19.3",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-usb-thermal-printer": "^1.0.7",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5"
   },
