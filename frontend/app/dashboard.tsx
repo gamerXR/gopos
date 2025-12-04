@@ -21,7 +21,7 @@ import * as Print from 'expo-print';
 import SunmiPrinter from '../utils/SunmiPrinter';
 import * as ImagePicker from 'expo-image-picker';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://pos-foodbev.emergent.host';
 
 interface Category {
   id: string;
