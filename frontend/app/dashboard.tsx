@@ -2490,7 +2490,7 @@ export default function DashboardScreen() {
                 : 'Return selected items?'}
             </Text>
             <Text style={styles.returnConfirmAmount}>
-              Amount: ${selectedOrderForReturn?.total.toFixed(2)}
+              Amount: ${returnAmount.toFixed(2)}
             </Text>
 
             <View style={styles.returnConfirmButtons}>
