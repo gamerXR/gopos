@@ -3907,8 +3907,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 20,
-    width: '100%',
-    maxWidth: 500,
+    width: '90%',
+    maxWidth: 700,
     alignSelf: 'center',
   },
   checkoutTitle: {
