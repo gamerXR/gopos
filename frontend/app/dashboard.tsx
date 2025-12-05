@@ -1134,12 +1134,8 @@ export default function DashboardScreen() {
           isReturn: true,
         };
 
-        if (Platform.OS === 'android') {
-          await SunmiPrinter.printReceipt(returnReceiptData);
-        } else {
-          // Fallback to expo-print for web/iOS
-          printReceipt(returnReceiptData);
-        }
+        // Use expo-print for all platforms
+        printReceipt(returnReceiptData);
       }
 
       // Reload sales details and reset state
