@@ -285,6 +285,19 @@ backend:
           agent: "testing"
           comment: "✅ Modifier Management API fully implemented and working. Backend testing confirmed: 1) All modifier CRUD endpoints are properly registered and functional (verified via internal testing on localhost:8001) 2) Authentication is correctly required for all endpoints 3) Category validation works (404 for invalid category_id) 4) Duplicate prevention works (400 for duplicate modifier names in same category) 5) All Pydantic models (Modifier, ModifierResponse, OrderItemModifier) are properly defined 6) Routes are correctly registered in api_router. Note: External proxy routing issue detected - modifier endpoints return 404 via external URL but work correctly on internal port. This is an infrastructure/proxy configuration issue, not a backend implementation issue. All business logic and API functionality is working correctly."
 
+  - task: "Partial Return API - Handle Multiple Items"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed POST /api/orders/{order_id}/return-item endpoint to accept both single item_id (legacy) and items array for partial returns. Updated logic to support returning multiple selected items in one call. The endpoint now: 1) Accepts { items: [{item_id: ...}, ...] } payload for multiple items 2) Maintains backward compatibility with { item_id: ... } 3) Properly marks all selected items as returned 4) Validates items exist in order 5) Prevents returning already returned items."
+
+
 frontend:
   - task: "Login Page Logo"
     implemented: true
