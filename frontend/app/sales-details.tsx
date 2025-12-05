@@ -103,7 +103,7 @@ export default function SalesDetailsScreen() {
             try {
               await axios.post(
                 `${BACKEND_URL}/api/orders/${orderId}/return-item`,
-                { item_id: itemId },
+                { items: [{ item_id: itemId }] },
                 { headers: getAuthHeaders() }
               );
               Alert.alert('Success', 'Item returned successfully');
