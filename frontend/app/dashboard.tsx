@@ -1108,11 +1108,6 @@ export default function DashboardScreen() {
   };
 
   const testPrinter = async () => {
-    if (Platform.OS !== 'android') {
-      Alert.alert('Info', 'Printer test is only available on Android devices');
-      return;
-    }
-
     if (!selectedPrinter) {
       Alert.alert('Error', 'Please detect and select a printer first');
       return;
@@ -1120,49 +1115,20 @@ export default function DashboardScreen() {
 
     setDetectingPrinter(true);
     try {
-      // Check if it's a USB thermal printer
-      if (selectedPrinter.type === 'USB Thermal') {
-        const ThermalPrinter = require('../utils/ThermalPrinter');
-        
-        // Connect to the USB printer
-        const connected = await ThermalPrinter.connectPrinter(
-          selectedPrinter.vendorId, 
-          selectedPrinter.productId
-        );
-        
-        if (!connected) {
-          Alert.alert('Error', 'Failed to connect to USB printer. Please check USB connection and permissions.');
-          return;
-        }
+      // Create test receipt using expo-print
+      const testOrder = {
+        order_number: 'TEST-001',
+        items: [
+          { name: 'Test Item', quantity: 1, price: 10.00, modifiers: [] }
+        ],
+        total: 10.00,
+        payment_method: 'cash',
+        sales_person: 'Test User',
+        created_at: new Date().toISOString(),
+      };
 
-        // Print test receipt using ThermalPrinter
-        const testReceiptData = {
-          receipt_no: 'TEST-001',
-          items: [
-            { name: 'Test Item', quantity: 1, price: 10.00, modifiers: [] }
-          ],
-          total: 10.00,
-          discount: 0,
-          payment_method: 'cash',
-          created_at: new Date().toISOString(),
-        };
-
-        const companyInfo = {
-          company_name: companyName || 'GoPos POS',
-          address: companyAddress || '',
-          phone: '',
-        };
-
-        const success = await ThermalPrinter.printReceipt(testReceiptData, companyInfo);
-        
-        if (success) {
-          Alert.alert('Success', 'Test print completed! Check your USB thermal printer.');
-        } else {
-          Alert.alert('Error', 'Test print failed. Check printer connection.');
-        }
-      } else {
-        Alert.alert('Info', 'Only USB thermal printers are supported.');
-      }
+      await printReceipt(testOrder);
+      Alert.alert('Success', 'Test receipt sent to printer!');
     } catch (error: any) {
       Alert.alert('Error', `Failed to test printer: ${error.message || error}`);
     } finally {
