@@ -2499,11 +2499,8 @@ export default function DashboardScreen() {
                                       companyAddress: companyAddress || '',
                                     };
                                     
-                                    if (Platform.OS === 'android') {
-                                      SunmiPrinter.printReceipt(receiptData);
-                                    } else {
-                                      printReceipt(receiptData);
-                                    }
+                                    // Use expo-print for all platforms
+                                    printReceipt(receiptData);
                                   }}
                                 >
                                   <Ionicons name="print" size={16} color="#fff" />
