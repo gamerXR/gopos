@@ -545,10 +545,14 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 12,
     padding: 20,
+    minHeight: 200,
+    maxWidth: 450,
     width: '90%',
     maxHeight: '85%',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   modalHeader: {
     flexDirection: 'row',
