@@ -845,7 +845,22 @@ async def get_sales_report(
     
     # Calculate totals
     total_sales = sum(order.get('total', order['subtotal']) for order in completed_orders)
+    
+    # Calculate return_sales: Full refunds + partial returns
+    # Full refunds
     return_sales = sum(order.get('total', order['subtotal']) for order in refunded_orders)
+    
+    # Add partial returns (returned items from completed orders)
+    for order in completed_orders:
+        for item in order.get('items', []):
+            if item.get('returned'):
+                # Calculate item value including modifiers
+                item_value = item['price'] * item['quantity']
+                if 'modifiers' in item and item['modifiers']:
+                    for modifier in item['modifiers']:
+                        item_value += modifier.get('cost', 0) * item['quantity']
+                return_sales += item_value
+    
     total_discount = sum(order.get('discount_amount', 0) for order in completed_orders)
     
     # Calculate quantity sold
