@@ -13,8 +13,10 @@ module.exports = {
   },
   android: {
     package: "com.gopos.app",
+    versionCode: 2,
+    icon: "./assets/icon.png",
     adaptiveIcon: {
-      foregroundImage: "./assets/adaptive-icon.png",
+      foregroundImage: "./assets/icon.png",
       backgroundColor: "#FFFFFF"
     },
     permissions: [
