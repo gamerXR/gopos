@@ -546,13 +546,19 @@ async def get_orders(user = Depends(get_current_user)):
 
 @api_router.post("/orders/{order_id}/return-item")
 async def return_item(order_id: str, request: dict, user = Depends(get_current_user)):
-    """Return a specific item from an order"""
+    """Return specific items from an order"""
     collections = get_client_collections(str(user['_id']))
     orders_coll = db[collections['orders']]
     
-    item_id = request.get('item_id')
-    if not item_id:
-        raise HTTPException(status_code=400, detail="item_id is required")
+    # Support both single item_id and multiple items array
+    items_to_return = request.get('items', [])
+    single_item_id = request.get('item_id')
+    
+    if single_item_id:
+        # Legacy support: single item_id
+        items_to_return = [{'item_id': single_item_id}]
+    elif not items_to_return:
+        raise HTTPException(status_code=400, detail="item_id or items array is required")
     
     # Get the order
     order = await orders_coll.find_one({"_id": ObjectId(order_id)})
@@ -562,18 +568,19 @@ async def return_item(order_id: str, request: dict, user = Depends(get_current_u
     if order.get('status') == 'refunded':
         raise HTTPException(status_code=400, detail="Cannot return items from refunded order")
     
-    # Find the item in the order
-    item_found = False
-    for item in order['items']:
-        if item['item_id'] == item_id:
-            if item.get('returned'):
-                raise HTTPException(status_code=400, detail="Item already returned")
-            item['returned'] = True
-            item_found = True
-            break
+    # Mark specified items as returned
+    item_ids_to_return = [item['item_id'] for item in items_to_return]
+    items_marked = 0
     
-    if not item_found:
-        raise HTTPException(status_code=404, detail="Item not found in order")
+    for order_item in order['items']:
+        if order_item['item_id'] in item_ids_to_return:
+            if order_item.get('returned'):
+                raise HTTPException(status_code=400, detail=f"Item {order_item['name']} already returned")
+            order_item['returned'] = True
+            items_marked += 1
+    
+    if items_marked == 0:
+        raise HTTPException(status_code=404, detail="No matching items found in order")
     
     # Update the order
     await orders_coll.update_one(
@@ -581,7 +588,7 @@ async def return_item(order_id: str, request: dict, user = Depends(get_current_u
         {"$set": {"items": order['items']}}
     )
     
-    return {"message": "Item returned successfully"}
+    return {"message": f"{items_marked} item(s) returned successfully"}
 
 @api_router.post("/orders/{order_id}/refund")
 async def refund_order(order_id: str, user = Depends(get_current_user)):
