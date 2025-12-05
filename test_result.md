@@ -335,6 +335,31 @@ frontend:
           agent: "main"
           comment: "Implemented UI for returning individual items and refunding entire orders. Shows returned items with strikethrough styling, displays refunded badge on refunded orders, and prevents returns/refunds on already refunded orders."
 
+
+  - task: "Checkout Modal Layout Fix"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/dashboard.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed checkout modal layout with uneven padding issue. Changed checkoutScrollContent to use paddingVertical instead of padding, and added alignItems: 'center' for proper centering. Removed alignSelf from checkoutModalContent as centering is now handled by parent. This ensures equal visual spacing on all sides."
+
+  - task: "USB Thermal Printer Detection"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/dashboard.tsx, frontend/utils/ThermalPrinter.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented real USB thermal printer detection using react-native-usb-thermal-printer library. Updated detectPrinters function to: 1) Initialize USB printer system 2) Get list of connected USB printers with vendor/product IDs 3) Format devices for display with connection info 4) Provide clear error messages if no printers found or permissions denied. Updated testPrinter function to connect to selected USB printer and print test receipt using ThermalPrinter utility. Supports both USB thermal printers and legacy SunMi printers."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
