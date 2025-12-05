@@ -1210,13 +1210,7 @@ export default function DashboardScreen() {
           Alert.alert('Error', 'Test print failed. Check printer connection.');
         }
       } else {
-        // SunMi printer test
-        const success = await SunmiPrinter.testPrint();
-        if (success) {
-          Alert.alert('Success', 'Test print completed! Check your printer.');
-        } else {
-          Alert.alert('Error', 'Test print failed. Make sure you are on a SunMi device.');
-        }
+        Alert.alert('Info', 'Only USB thermal printers are supported.');
       }
     } catch (error: any) {
       Alert.alert('Error', `Failed to test printer: ${error.message || error}`);
