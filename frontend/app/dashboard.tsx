@@ -3929,7 +3929,8 @@ const styles = StyleSheet.create({
   checkoutScrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: 16,
+    alignItems: 'center',
+    paddingVertical: 16,
   },
   checkoutModalContent: {
     backgroundColor: '#fff',
@@ -3937,7 +3938,6 @@ const styles = StyleSheet.create({
     padding: 20,
     width: '90%',
     maxWidth: 700,
-    alignSelf: 'center',
   },
   checkoutTitle: {
     fontSize: 22,
