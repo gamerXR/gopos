@@ -1004,22 +1004,66 @@ export default function DashboardScreen() {
   const detectPrinters = async () => {
     setDetectingPrinter(true);
     try {
-      // For expo-print, we'll use a simpler approach
-      // Add system default printer option
-      const systemPrinter = {
-        id: 'system_default',
-        name: 'System Default Printer',
-        type: 'Internal',
-        status: 'Available',
-        url: null,
-      };
+      if (Platform.OS !== 'android') {
+        Alert.alert('Info', 'USB Thermal Printer detection is only available on Android devices. Using system default printer instead.');
+        const systemPrinter = {
+          id: 'system_default',
+          name: 'System Default Printer',
+          type: 'Internal',
+          status: 'Available',
+          url: null,
+        };
+        setPrinterDevices([systemPrinter]);
+        setSelectedPrinter(systemPrinter);
+        return;
+      }
+
+      // Import ThermalPrinter utilities dynamically
+      const ThermalPrinter = require('../utils/ThermalPrinter');
       
-      setPrinterDevices([systemPrinter]);
-      setSelectedPrinter(systemPrinter);
-      Alert.alert('Success', 'System default printer configured. Make sure your Bluetooth printer is paired in device settings first.');
+      // Initialize USB printer
+      const initialized = await ThermalPrinter.initPrinter();
+      if (!initialized) {
+        Alert.alert('Error', 'Failed to initialize USB printer system.');
+        return;
+      }
+
+      // Get connected USB printers
+      const devices = await ThermalPrinter.getConnectedPrinters();
+      
+      if (devices && devices.length > 0) {
+        // Format devices for display
+        const formattedDevices = devices.map((device: any, index: number) => ({
+          id: `usb_${device.vendorId}_${device.productId}`,
+          name: device.deviceName || `USB Printer ${index + 1}`,
+          type: 'USB Thermal',
+          status: 'Connected',
+          vendorId: device.vendorId,
+          productId: device.productId,
+          deviceInfo: device,
+        }));
+        
+        setPrinterDevices(formattedDevices);
+        setSelectedPrinter(formattedDevices[0]);
+        
+        Alert.alert(
+          'Success', 
+          `Found ${formattedDevices.length} USB printer(s). Please select one from the list.`
+        );
+      } else {
+        Alert.alert(
+          'No Printers Found', 
+          'No USB thermal printers detected. Please:\n\n1. Connect your USB printer to the device\n2. Grant USB permissions when prompted\n3. Try detecting again'
+        );
+        setPrinterDevices([]);
+        setSelectedPrinter(null);
+      }
     } catch (error: any) {
       console.error('Printer detection error:', error);
-      Alert.alert('Error', 'Failed to configure printer settings.');
+      Alert.alert(
+        'Error', 
+        `Failed to detect printers: ${error.message || 'Unknown error'}\n\nMake sure USB permissions are granted.`
+      );
     } finally {
       setDetectingPrinter(false);
     }
