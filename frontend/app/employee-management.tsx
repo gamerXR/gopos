@@ -362,6 +362,88 @@ export default function EmployeeManagementScreen() {
         </View>
       </Modal>
 
+
+      {/* Edit Employee Modal */}
+      <Modal
+        visible={showEditModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowEditModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Edit Employee</Text>
+              <TouchableOpacity onPress={() => setShowEditModal(false)}>
+                <Ionicons name="close" size={28} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView>
+              {/* Name Field */}
+              <Text style={styles.label}>Employee Name *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter full name"
+                value={employeeName}
+                onChangeText={setEmployeeName}
+                autoCapitalize="words"
+              />
+
+              {/* Phone Field (Read-only) */}
+              <Text style={styles.label}>Phone Number (Login ID)</Text>
+              <TextInput
+                style={[styles.input, styles.inputDisabled]}
+                placeholder="Phone number"
+                value={employeePhone}
+                editable={false}
+              />
+              <Text style={styles.helpTextSmall}>Phone number cannot be changed</Text>
+
+              {/* Password Field */}
+              <Text style={styles.label}>New Password (Leave blank to keep current)</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter new password"
+                value={employeePassword}
+                onChangeText={setEmployeePassword}
+                secureTextEntry
+              />
+
+              {/* Info Box */}
+              <View style={styles.infoBox}>
+                <Ionicons name="information-circle-outline" size={20} color="#2196F3" />
+                <Text style={styles.infoText}>
+                  Update employee name or password. Leave password blank if you don't want to change it.
+                </Text>
+              </View>
+
+              {/* Buttons */}
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={[styles.button, styles.cancelButton]}
+                  onPress={() => setShowEditModal(false)}
+                  disabled={submitting}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.saveButton, submitting && styles.saveButtonDisabled]}
+                  onPress={handleUpdateEmployee}
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.saveButtonText}>Update Employee</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>GoPos © 2024</Text>
