@@ -957,21 +957,68 @@ export default function DashboardScreen() {
   const detectPrinters = async () => {
     setDetectingPrinter(true);
     try {
-      // Use expo-print for all platforms
-      const systemPrinter = {
-        id: 'system_default',
-        name: 'System Default Printer',
-        type: 'Internal',
-        status: 'Available',
-        url: null,
-      };
+      if (Platform.OS !== 'android') {
+        Alert.alert('Info', 'Bluetooth printer detection is only available on Android devices');
+        return;
+      }
+
+      // Import Bluetooth printer library
+      const { BluetoothManager } = require('react-native-bluetooth-escpos-printer');
       
-      setPrinterDevices([systemPrinter]);
-      setSelectedPrinter(systemPrinter);
-      Alert.alert('Success', 'Printer configured. Receipts will be printed using the system default printer.');
+      // Check if Bluetooth is enabled
+      const isEnabled = await BluetoothManager.isBluetoothEnabled();
+      if (!isEnabled) {
+        Alert.alert(
+          'Bluetooth Disabled',
+          'Please enable Bluetooth to detect printers',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            {
+              text: 'Enable',
+              onPress: async () => {
+                await BluetoothManager.enableBluetooth();
+                detectPrinters(); // Retry after enabling
+              }
+            }
+          ]
+        );
+        return;
+      }
+
+      // Scan for paired Bluetooth devices
+      const pairedDevices = await BluetoothManager.list();
+      
+      if (pairedDevices && pairedDevices.length > 0) {
+        // Format devices for display
+        const formattedDevices = pairedDevices.map((device: any) => ({
+          id: device.address,
+          name: device.name || 'Unknown Printer',
+          type: 'Bluetooth Thermal',
+          status: 'Paired',
+          address: device.address,
+        }));
+        
+        setPrinterDevices(formattedDevices);
+        setSelectedPrinter(formattedDevices[0]);
+        
+        Alert.alert(
+          'Success',
+          `Found ${formattedDevices.length} paired Bluetooth device(s).\n\nNote: Make sure your thermal printer is paired in Bluetooth settings first.`
+        );
+      } else {
+        Alert.alert(
+          'No Printers Found',
+          'No paired Bluetooth devices found.\n\nPlease:\n1. Turn on your Bluetooth printer\n2. Pair it in Android Bluetooth settings\n3. Try detecting again'
+        );
+        setPrinterDevices([]);
+        setSelectedPrinter(null);
+      }
     } catch (error: any) {
       console.error('Printer detection error:', error);
-      Alert.alert('Error', 'Failed to configure printer settings.');
+      Alert.alert(
+        'Error',
+        `Failed to detect printers: ${error.message || 'Unknown error'}\n\nMake sure Bluetooth permission is granted in app settings.`
+      );
     } finally {
       setDetectingPrinter(false);
     }
