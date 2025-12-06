@@ -17,10 +17,6 @@ allprojects {
     google()
     mavenCentral()
     maven { url 'https://www.jitpack.io' }
-    maven {
-      url 'http://jcenter.bintray.com/'
-      allowInsecureProtocol = true
-    }
   }
 }
 
