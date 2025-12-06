@@ -191,10 +191,41 @@ export default function EmployeeManagementScreen() {
       </View>
 
       <ScrollView style={styles.content}>
+        {/* Admin/Client Info Card */}
+        <View style={styles.adminCard}>
+          <View style={styles.adminCardHeader}>
+            <Ionicons name="shield-checkmark" size={28} color="#4CAF50" />
+            <Text style={styles.adminCardTitle}>Admin Account</Text>
+          </View>
+          <View style={styles.adminInfo}>
+            <View style={styles.adminInfoRow}>
+              <Text style={styles.adminLabel}>Name:</Text>
+              <Text style={styles.adminValue}>{user?.name || 'Admin'}</Text>
+            </View>
+            <View style={styles.adminInfoRow}>
+              <Text style={styles.adminLabel}>Client ID:</Text>
+              <Text style={styles.adminValue}>{user?.phone || user?._id}</Text>
+            </View>
+            <View style={styles.adminInfoRow}>
+              <Text style={styles.adminLabel}>Company:</Text>
+              <Text style={styles.adminValue}>{user?.company_name || 'N/A'}</Text>
+            </View>
+            <View style={styles.adminInfoRow}>
+              <Text style={styles.adminLabel}>Role:</Text>
+              <Text style={[styles.adminValue, styles.adminRole]}>Administrator</Text>
+            </View>
+          </View>
+        </View>
+
         {/* Add Employee Button */}
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => setShowAddModal(true)}
+          onPress={() => {
+            setEmployeeName('');
+            setEmployeePhone('');
+            setEmployeePassword('');
+            setShowAddModal(true);
+          }}
         >
           <Ionicons name="add-circle" size={28} color="#fff" />
           <Text style={styles.addButtonText}>Add Employee</Text>
