@@ -81,7 +81,12 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 # Helper to get client-specific collections
 def get_client_collections(user_id: str):
-    """Get collection names specific to a client"""
+    """Get collection names specific to a client
+    
+    Note: This function is called with the logged-in user's ID.
+    For staff/employees, the collections should use their client_id instead.
+    This is handled by passing client_id to this function where needed.
+    """
     return {
         'categories': f'categories_{user_id}',
         'items': f'items_{user_id}',
