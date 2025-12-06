@@ -268,7 +268,7 @@ async def login(request: LoginRequest):
 # Category Routes
 @api_router.post("/categories", response_model=CategoryResponse)
 async def create_category(category: Category, user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     categories_coll = db[collections['categories']]
     
     # Check for duplicate
@@ -284,7 +284,7 @@ async def create_category(category: Category, user = Depends(get_current_user)):
 
 @api_router.get("/categories", response_model=List[CategoryResponse])
 async def get_categories(user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     categories_coll = db[collections['categories']]
     categories = await categories_coll.find().to_list(1000)
     return [CategoryResponse(
@@ -295,7 +295,7 @@ async def get_categories(user = Depends(get_current_user)):
 
 @api_router.delete("/categories/{category_id}")
 async def delete_category(category_id: str, user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     categories_coll = db[collections['categories']]
     items_coll = db[collections['items']]
     
@@ -309,7 +309,7 @@ async def delete_category(category_id: str, user = Depends(get_current_user)):
 # Item Routes
 @api_router.post("/items", response_model=ItemResponse)
 async def create_item(item: Item, user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     items_coll = db[collections['items']]
     categories_coll = db[collections['categories']]
     
@@ -338,7 +338,7 @@ async def create_item(item: Item, user = Depends(get_current_user)):
 
 @api_router.get("/items", response_model=List[ItemResponse])
 async def get_items(category_id: Optional[str] = None, user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     items_coll = db[collections['items']]
     categories_coll = db[collections['categories']]
     
@@ -369,7 +369,7 @@ async def get_items(category_id: Optional[str] = None, user = Depends(get_curren
 
 @api_router.put("/items/{item_id}")
 async def update_item(item_id: str, item: Item, user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     items_coll = db[collections['items']]
     categories_coll = db[collections['categories']]
     
@@ -399,7 +399,7 @@ async def update_item(item_id: str, item: Item, user = Depends(get_current_user)
 
 @api_router.delete("/items/{item_id}")
 async def delete_item(item_id: str, user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     items_coll = db[collections['items']]
     
     result = await items_coll.delete_one({"_id": ObjectId(item_id)})
@@ -411,7 +411,7 @@ async def delete_item(item_id: str, user = Depends(get_current_user)):
 @api_router.post("/modifiers", response_model=ModifierResponse)
 async def create_modifier(modifier: Modifier, user = Depends(get_current_user)):
     """Create a new modifier for multiple categories"""
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
     categories_coll = db[collections['categories']]
     
@@ -455,7 +455,7 @@ async def get_modifiers(category_id: Optional[str] = None, user = Depends(get_cu
 @api_router.put("/modifiers/{modifier_id}")
 async def update_modifier(modifier_id: str, modifier: Modifier, user = Depends(get_current_user)):
     """Update an existing modifier"""
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     modifiers_coll = db[f"modifiers_{str(user['_id'])}"]
     categories_coll = db[collections['categories']]
     
@@ -500,7 +500,7 @@ async def delete_modifier(modifier_id: str, user = Depends(get_current_user)):
 # Order Routes
 @api_router.post("/orders", response_model=OrderResponse)
 async def create_order(order: Order, user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     orders_coll = db[collections['orders']]
     
     # Get order number (count + 1)
@@ -533,7 +533,7 @@ async def create_order(order: Order, user = Depends(get_current_user)):
 
 @api_router.get("/orders", response_model=List[dict])
 async def get_orders(user = Depends(get_current_user)):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     orders_coll = db[collections['orders']]
     
     orders = await orders_coll.find().sort("created_at", -1).to_list(1000)
@@ -558,7 +558,7 @@ async def get_orders(user = Depends(get_current_user)):
 @api_router.post("/orders/{order_id}/return-item")
 async def return_item(order_id: str, request: dict, user = Depends(get_current_user)):
     """Return specific items from an order"""
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     orders_coll = db[collections['orders']]
     
     # Support both single item_id and multiple items array
@@ -608,7 +608,7 @@ async def return_item(order_id: str, request: dict, user = Depends(get_current_u
 @api_router.post("/orders/{order_id}/refund")
 async def refund_order(order_id: str, user = Depends(get_current_user)):
     """Refund an entire order"""
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     orders_coll = db[collections['orders']]
     
     # Get the order
@@ -638,7 +638,7 @@ async def refund_order(order_id: str, user = Depends(get_current_user)):
 @api_router.post("/orders/{order_id}/return")
 async def return_order(order_id: str, user = Depends(get_current_user)):
     """Return an entire order (same as refund)"""
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     orders_coll = db[collections['orders']]
     
     # Get the order
@@ -770,7 +770,7 @@ async def get_orders_list(
     user = Depends(get_current_user)
 ):
     """Get detailed list of orders with filter options"""
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     orders_coll = db[collections['orders']]
     
     # Determine date range
@@ -821,7 +821,7 @@ async def get_sales_report(
     filter_type: Optional[str] = 'all',
     user = Depends(get_current_user)
 ):
-    collections = get_client_collections(str(user['_id']))
+    collections = get_client_collections(get_effective_client_id(user))
     orders_coll = db[collections['orders']]
     
     # Determine date range
