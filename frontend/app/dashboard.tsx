@@ -1167,7 +1167,7 @@ export default function DashboardScreen() {
 
     setDetectingPrinter(true);
     try {
-      const { BluetoothManager, BluetoothEscposPrinter } = require('react-native-bluetooth-escpos-printer');
+      const { BluetoothManager, BluetoothEscposPrinter } = require('@vardrz/react-native-bluetooth-escpos-printer');
       
       // Connect to selected Bluetooth printer
       await BluetoothManager.connect(selectedPrinter.address);
