@@ -106,6 +106,54 @@ export default function EmployeeManagementScreen() {
     }
   };
 
+  const handleEditEmployee = (employee: Employee) => {
+    setEditingEmployee(employee);
+    setEmployeeName(employee.name);
+    setEmployeePhone(employee.phone);
+    setEmployeePassword(''); // Leave empty, user can update if needed
+    setShowEditModal(true);
+  };
+
+  const handleUpdateEmployee = async () => {
+    if (!editingEmployee) return;
+    
+    if (!employeeName.trim()) {
+      Alert.alert('Validation Error', 'Please enter employee name');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const updateData: any = {
+        name: employeeName,
+      };
+      
+      // Only include password if user entered a new one
+      if (employeePassword.trim()) {
+        updateData.password = employeePassword;
+      }
+
+      await axios.put(
+        `${BACKEND_URL}/api/employees/${editingEmployee._id}`,
+        updateData,
+        { headers: getAuthHeaders() }
+      );
+
+      Alert.alert('Success', 'Employee updated successfully');
+      setShowEditModal(false);
+      setEditingEmployee(null);
+      setEmployeeName('');
+      setEmployeePhone('');
+      setEmployeePassword('');
+      loadEmployees();
+    } catch (error: any) {
+      console.error('Error updating employee:', error);
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to update employee');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleDeleteEmployee = (employeeId: string, employeeName: string) => {
     Alert.alert(
       'Delete Employee',
