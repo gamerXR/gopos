@@ -101,20 +101,30 @@ export default function SalesDetailsScreen() {
           onPress: async () => {
             setLoading(true);
             try {
-              await axios.post(
+              console.log('🔄 Attempting to return item:', { orderId, itemId });
+              const response = await axios.post(
                 `${BACKEND_URL}/api/orders/${orderId}/return-item`,
                 { items: [{ item_id: itemId }] },
                 { headers: getAuthHeaders() }
               );
-              Alert.alert('Success', 'Item returned successfully');
+              console.log('✅ Return API response:', response.data);
+              
+              // Reload orders to get updated data
               await loadOrders();
-              // Update selected order
+              
+              // Update selected order with fresh data
               if (selectedOrder && selectedOrder.id === orderId) {
                 const updatedOrder = orders.find(o => o.id === orderId);
-                if (updatedOrder) setSelectedOrder(updatedOrder);
+                console.log('📦 Updated order:', updatedOrder);
+                if (updatedOrder) {
+                  setSelectedOrder(updatedOrder);
+                }
               }
+              
+              Alert.alert('Success', 'Item returned successfully! The item is now marked as returned and return sales have been updated.');
             } catch (error: any) {
-              Alert.alert('Error', error.response?.data?.detail || 'Failed to return item');
+              console.error('❌ Return error:', error);
+              Alert.alert('Error', error.response?.data?.detail || 'Failed to return item. Please try again.');
             } finally {
               setLoading(false);
             }
