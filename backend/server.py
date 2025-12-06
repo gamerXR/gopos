@@ -583,10 +583,14 @@ async def return_item(order_id: str, request: dict, user = Depends(get_current_u
         raise HTTPException(status_code=404, detail="No matching items found in order")
     
     # Update the order
-    await orders_coll.update_one(
+    update_result = await orders_coll.update_one(
         {"_id": ObjectId(order_id)},
         {"$set": {"items": order['items']}}
     )
+    
+    # Log for debugging
+    print(f"✅ Updated order {order_id}: {items_marked} item(s) marked as returned")
+    print(f"   Update matched: {update_result.matched_count}, modified: {update_result.modified_count}")
     
     return {"message": f"{items_marked} item(s) returned successfully"}
 
