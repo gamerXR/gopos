@@ -1002,6 +1002,49 @@ async def delete_employee(employee_id: str, user = Depends(get_current_user)):
     
     return {"message": "Employee deleted successfully"}
 
+
+class EmployeeUpdate(BaseModel):
+    name: Optional[str] = None
+    password: Optional[str] = None
+
+@api_router.put("/employees/{employee_id}")
+async def update_employee(employee_id: str, employee_update: EmployeeUpdate, user = Depends(get_current_user)):
+    """Update employee name and/or password"""
+    users_coll = db['users']
+    
+    # Verify the employee belongs to this client
+    employee = await users_coll.find_one({
+        "_id": ObjectId(employee_id),
+        "client_id": str(user['_id']),
+        "role": "staff"
+    })
+    
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    # Build update data
+    update_data = {}
+    
+    if employee_update.name:
+        update_data["name"] = employee_update.name
+    
+    if employee_update.password:
+        # Hash the new password
+        hashed_password = bcrypt.hashpw(employee_update.password.encode('utf-8'), bcrypt.gensalt())
+        update_data["password"] = hashed_password.decode('utf-8')
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    
+    # Update the employee
+    await users_coll.update_one(
+        {"_id": ObjectId(employee_id)},
+        {"$set": update_data}
+    )
+    
+    return {"message": "Employee updated successfully"}
+
+
 # Health check endpoint for deployment (must be before include_router)
 @api_router.get("/health")
 async def health_check():
