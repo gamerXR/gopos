@@ -79,14 +79,20 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="User not found")
     return user
 
+# Helper to get the effective client ID (for data access)
+def get_effective_client_id(user: dict) -> str:
+    """Get the client ID that should be used for data access
+    
+    - For admins/clients (role='client'): use their own _id
+    - For staff/employees (role='staff'): use their client_id (linked to admin)
+    """
+    if user.get('role') == 'staff' and user.get('client_id'):
+        return user['client_id']
+    return str(user['_id'])
+
 # Helper to get client-specific collections
 def get_client_collections(user_id: str):
-    """Get collection names specific to a client
-    
-    Note: This function is called with the logged-in user's ID.
-    For staff/employees, the collections should use their client_id instead.
-    This is handled by passing client_id to this function where needed.
-    """
+    """Get collection names specific to a client"""
     return {
         'categories': f'categories_{user_id}',
         'items': f'items_{user_id}',
