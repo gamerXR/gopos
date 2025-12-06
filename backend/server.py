@@ -1045,6 +1045,37 @@ async def update_employee(employee_id: str, employee_update: EmployeeUpdate, use
     return {"message": "Employee updated successfully"}
 
 
+# ===== USER PASSWORD CHANGE ENDPOINT =====
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+@api_router.put("/users/change-password")
+async def change_user_password(password_change: PasswordChange, user = Depends(get_current_user)):
+    """Change current user's password"""
+    users_coll = db['users']
+    
+    # Verify current password
+    if not bcrypt.checkpw(password_change.current_password.encode('utf-8'), user['password'].encode('utf-8')):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Validate new password
+    if len(password_change.new_password) < 6:
+        raise HTTPException(status_code=400, detail="New password must be at least 6 characters")
+    
+    # Hash the new password
+    hashed_password = bcrypt.hashpw(password_change.new_password.encode('utf-8'), bcrypt.gensalt())
+    
+    # Update the password
+    await users_coll.update_one(
+        {"_id": user['_id']},
+        {"$set": {"password": hashed_password.decode('utf-8')}}
+    )
+    
+    return {"message": "Password changed successfully"}
+
+
 # Health check endpoint for deployment (must be before include_router)
 @api_router.get("/health")
 async def health_check():
