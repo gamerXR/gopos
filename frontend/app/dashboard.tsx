@@ -1290,27 +1290,6 @@ export default function DashboardScreen() {
                 <Ionicons name="information-circle" size={24} color="#4CAF50" />
                 <Text style={styles.sidebarItemText}>About Us</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={[styles.sidebarItem, { borderTopWidth: 1, borderTopColor: '#e0e0e0', marginTop: 12, paddingTop: 20 }]} 
-                onPress={() => {
-                  Alert.alert(
-                    'Logout',
-                    'Are you sure you want to logout?',
-                    [
-                      { text: 'Cancel', style: 'cancel' },
-                      {
-                        text: 'Logout',
-                        style: 'destructive',
-                        onPress: () => logout()
-                      }
-                    ]
-                  );
-                }}
-              >
-                <Ionicons name="log-out" size={24} color="#f44336" />
-                <Text style={[styles.sidebarItemText, { color: '#f44336' }]}>Logout</Text>
-              </TouchableOpacity>
             </ScrollView>
           </View>
         )}
