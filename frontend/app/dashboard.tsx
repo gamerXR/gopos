@@ -4994,4 +4994,39 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  settingsModalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    width: '90%',
+    maxWidth: 500,
+  },
+  settingsMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: '#f5f5f5',
+    marginVertical: 8,
+  },
+  settingsMenuItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  settingsMenuItemText: {
+    flexDirection: 'column',
+  },
+  settingsMenuItemTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  settingsMenuItemSubtitle: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
+  },
 });
