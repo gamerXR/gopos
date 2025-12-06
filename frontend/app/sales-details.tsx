@@ -316,14 +316,21 @@ export default function SalesDetailsScreen() {
                     ]}
                   >
                     <View style={styles.itemInfo}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <Text style={[
+                          styles.itemName,
+                          item.returned && styles.itemNameReturned,
+                        ]}>
+                          {item.name}
+                        </Text>
+                        {item.returned && (
+                          <Text style={styles.returnedBadge}>Returned</Text>
+                        )}
+                      </View>
                       <Text style={[
-                        styles.itemName,
-                        item.returned && styles.itemNameReturned,
+                        styles.itemDetails,
+                        item.returned && styles.itemDetailsReturned,
                       ]}>
-                        {item.name}
-                        {item.returned && ' (Returned)'}
-                      </Text>
-                      <Text style={styles.itemDetails}>
                         ${item.price.toFixed(2)} × {item.quantity}
                       </Text>
                     </View>
