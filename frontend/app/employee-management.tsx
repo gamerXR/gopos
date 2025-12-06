@@ -896,4 +896,18 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontStyle: 'italic',
   },
+  editPasswordButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#2196F3',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  editPasswordButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#fff',
+  },
 });
