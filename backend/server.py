@@ -911,6 +911,97 @@ async def get_sales_report(
         "top_items": top_items
     }
 
+
+# ===== EMPLOYEE MANAGEMENT ENDPOINTS =====
+
+class EmployeeCreate(BaseModel):
+    name: str
+    phone: str
+    password: str
+
+class EmployeeResponse(BaseModel):
+    id: str = Field(alias='_id')
+    name: str
+    phone: str
+    role: str
+    client_id: str
+    created_at: str
+
+    class Config:
+        populate_by_name = True
+
+@api_router.post("/employees")
+async def create_employee(employee: EmployeeCreate, user = Depends(get_current_user)):
+    """Create a new employee/staff member linked to the current user's client"""
+    users_coll = db['users']
+    
+    # Check if phone already exists
+    existing_user = await users_coll.find_one({"phone": employee.phone})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Phone number already registered")
+    
+    # Hash password
+    hashed_password = bcrypt.hashpw(employee.password.encode('utf-8'), bcrypt.gensalt())
+    
+    # Create employee with same client_id as current user
+    new_employee = {
+        "name": employee.name,
+        "phone": employee.phone,
+        "password": hashed_password.decode('utf-8'),
+        "role": "staff",
+        "client_id": str(user['_id']),  # Link to the client who created this employee
+        "company_name": user.get('company_name', ''),
+        "created_at": datetime.utcnow().isoformat(),
+    }
+    
+    result = await users_coll.insert_one(new_employee)
+    new_employee['_id'] = str(result.inserted_id)
+    
+    return {"message": "Employee created successfully", "employee_id": str(result.inserted_id)}
+
+@api_router.get("/employees")
+async def list_employees(user = Depends(get_current_user)):
+    """List all employees linked to the current user's client"""
+    users_coll = db['users']
+    
+    # Get all staff members linked to this client
+    employees = await users_coll.find({
+        "client_id": str(user['_id']),
+        "role": "staff"
+    }).to_list(length=100)
+    
+    # Format response
+    formatted_employees = []
+    for emp in employees:
+        formatted_employees.append({
+            "_id": str(emp['_id']),
+            "name": emp['name'],
+            "phone": emp['phone'],
+            "role": emp['role'],
+            "created_at": emp.get('created_at', ''),
+        })
+    
+    return formatted_employees
+
+@api_router.delete("/employees/{employee_id}")
+async def delete_employee(employee_id: str, user = Depends(get_current_user)):
+    """Delete an employee"""
+    users_coll = db['users']
+    
+    # Verify the employee belongs to this client
+    employee = await users_coll.find_one({
+        "_id": ObjectId(employee_id),
+        "client_id": str(user['_id']),
+        "role": "staff"
+    })
+    
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    await users_coll.delete_one({"_id": ObjectId(employee_id)})
+    
+    return {"message": "Employee deleted successfully"}
+
 # Health check endpoint for deployment (must be before include_router)
 @api_router.get("/health")
 async def health_check():
