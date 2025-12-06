@@ -34,6 +34,17 @@ export default function EmployeeManagementScreen() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAdminPasswordModal, setShowAdminPasswordModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
+
+  // Check if user is staff - staff should not access this page
+  const isStaff = user?.role === 'staff';
+
+  useEffect(() => {
+    if (isStaff) {
+      Alert.alert('Access Denied', 'Staff members cannot access Employee Management', [
+        { text: 'OK', onPress: () => router.back() }
+      ]);
+    }
+  }, [isStaff]);
   
   // Form fields
   const [employeeName, setEmployeeName] = useState('');
