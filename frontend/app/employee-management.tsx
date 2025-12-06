@@ -240,8 +240,22 @@ export default function EmployeeManagementScreen() {
         {/* Admin/Client Info Card */}
         <View style={styles.adminCard}>
           <View style={styles.adminCardHeader}>
-            <Ionicons name="shield-checkmark" size={28} color="#4CAF50" />
-            <Text style={styles.adminCardTitle}>Admin Account</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+              <Ionicons name="shield-checkmark" size={28} color="#4CAF50" />
+              <Text style={styles.adminCardTitle}>Admin Account</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.editPasswordButton}
+              onPress={() => {
+                setAdminCurrentPassword('');
+                setAdminNewPassword('');
+                setAdminConfirmPassword('');
+                setShowAdminPasswordModal(true);
+              }}
+            >
+              <Ionicons name="key" size={18} color="#fff" />
+              <Text style={styles.editPasswordButtonText}>Edit Password</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.adminInfo}>
             <View style={styles.adminInfoRow}>
