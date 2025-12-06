@@ -963,7 +963,7 @@ export default function DashboardScreen() {
       }
 
       // Import Bluetooth printer library
-      const { BluetoothManager } = require('react-native-bluetooth-escpos-printer');
+      const { BluetoothManager } = require('@vardrz/react-native-bluetooth-escpos-printer');
       
       // Check if Bluetooth is enabled
       const isEnabled = await BluetoothManager.isBluetoothEnabled();
