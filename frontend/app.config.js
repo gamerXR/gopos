@@ -26,6 +26,9 @@ module.exports = {
       "BLUETOOTH",
       "BLUETOOTH_ADMIN",
       "BLUETOOTH_CONNECT",
+      "BLUETOOTH_SCAN",
+      "ACCESS_FINE_LOCATION",
+      "ACCESS_COARSE_LOCATION",
       "INTERNET"
     ]
   },
