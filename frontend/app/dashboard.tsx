@@ -2606,14 +2606,30 @@ export default function DashboardScreen() {
       {/* Settings Modal */}
       <Modal visible={showSettings} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Settings</Text>
-            <Text style={styles.modalText}>Settings configuration coming soon...</Text>
+          <View style={styles.settingsModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Settings</Text>
+              <TouchableOpacity onPress={() => setShowSettings(false)}>
+                <Ionicons name="close" size={28} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Settings Menu Items */}
             <TouchableOpacity
-              style={[styles.modalButton, styles.modalButtonSave]}
-              onPress={() => setShowSettings(false)}
+              style={styles.settingsMenuItem}
+              onPress={() => {
+                setShowSettings(false);
+                router.push('/data-sync');
+              }}
             >
-              <Text style={[styles.modalButtonText, { color: '#fff' }]}>Close</Text>
+              <View style={styles.settingsMenuItemLeft}>
+                <Ionicons name="sync" size={24} color="#4CAF50" />
+                <View style={styles.settingsMenuItemText}>
+                  <Text style={styles.settingsMenuItemTitle}>GoPos Data Sync</Text>
+                  <Text style={styles.settingsMenuItemSubtitle}>Synchronize and refresh data</Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="#999" />
             </TouchableOpacity>
           </View>
         </View>
