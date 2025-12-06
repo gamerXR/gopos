@@ -32,12 +32,16 @@ export default function EmployeeManagementScreen() {
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAdminPasswordModal, setShowAdminPasswordModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   
   // Form fields
   const [employeeName, setEmployeeName] = useState('');
   const [employeePhone, setEmployeePhone] = useState('');
   const [employeePassword, setEmployeePassword] = useState('');
+  const [adminCurrentPassword, setAdminCurrentPassword] = useState('');
+  const [adminNewPassword, setAdminNewPassword] = useState('');
+  const [adminConfirmPassword, setAdminConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
