@@ -31,6 +31,8 @@ export default function EmployeeManagementScreen() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   
   // Form fields
   const [employeeName, setEmployeeName] = useState('');
