@@ -504,6 +504,87 @@ export default function EmployeeManagementScreen() {
         </View>
       </Modal>
 
+      {/* Admin Password Change Modal */}
+      <Modal
+        visible={showAdminPasswordModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowAdminPasswordModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Change Admin Password</Text>
+              <TouchableOpacity onPress={() => setShowAdminPasswordModal(false)}>
+                <Ionicons name="close" size={28} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView>
+              {/* Current Password */}
+              <Text style={styles.label}>Current Password *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter current password"
+                value={adminCurrentPassword}
+                onChangeText={setAdminCurrentPassword}
+                secureTextEntry
+              />
+
+              {/* New Password */}
+              <Text style={styles.label}>New Password *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter new password (min 6 characters)"
+                value={adminNewPassword}
+                onChangeText={setAdminNewPassword}
+                secureTextEntry
+              />
+
+              {/* Confirm New Password */}
+              <Text style={styles.label}>Confirm New Password *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Re-enter new password"
+                value={adminConfirmPassword}
+                onChangeText={setAdminConfirmPassword}
+                secureTextEntry
+              />
+
+              {/* Info Box */}
+              <View style={styles.infoBox}>
+                <Ionicons name="information-circle-outline" size={20} color="#FF9800" />
+                <Text style={styles.infoText}>
+                  Make sure to remember your new password. You'll need it to login to your admin account.
+                </Text>
+              </View>
+
+              {/* Buttons */}
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={[styles.button, styles.cancelButton]}
+                  onPress={() => setShowAdminPasswordModal(false)}
+                  disabled={submitting}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.saveButton, submitting && styles.saveButtonDisabled]}
+                  onPress={handleUpdateAdminPassword}
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.saveButtonText}>Change Password</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>GoPos © 2024</Text>
