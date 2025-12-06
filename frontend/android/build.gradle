@@ -4,6 +4,10 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+    maven {
+      url 'http://jcenter.bintray.com/'
+      allowInsecureProtocol = true
+    }
   }
   dependencies {
     classpath('com.android.tools.build:gradle')
