@@ -2632,22 +2632,25 @@ export default function DashboardScreen() {
               <Ionicons name="chevron-forward" size={24} color="#999" />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.settingsMenuItem}
-              onPress={() => {
-                setShowSettings(false);
-                router.push('/employee-management');
-              }}
-            >
-              <View style={styles.settingsMenuItemLeft}>
-                <Ionicons name="people" size={24} color="#2196F3" />
-                <View style={styles.settingsMenuItemText}>
-                  <Text style={styles.settingsMenuItemTitle}>Employee Management</Text>
-                  <Text style={styles.settingsMenuItemSubtitle}>Add and manage staff members</Text>
+            {/* Only show Employee Management for admins/clients, not staff */}
+            {user?.role !== 'staff' && (
+              <TouchableOpacity
+                style={styles.settingsMenuItem}
+                onPress={() => {
+                  setShowSettings(false);
+                  router.push('/employee-management');
+                }}
+              >
+                <View style={styles.settingsMenuItemLeft}>
+                  <Ionicons name="people" size={24} color="#2196F3" />
+                  <View style={styles.settingsMenuItemText}>
+                    <Text style={styles.settingsMenuItemTitle}>Employee Management</Text>
+                    <Text style={styles.settingsMenuItemSubtitle}>Add and manage staff members</Text>
+                  </View>
                 </View>
-              </View>
-              <Ionicons name="chevron-forward" size={24} color="#999" />
-            </TouchableOpacity>
+                <Ionicons name="chevron-forward" size={24} color="#999" />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </Modal>
