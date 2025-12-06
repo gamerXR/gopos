@@ -158,6 +158,48 @@ export default function EmployeeManagementScreen() {
     }
   };
 
+  const handleUpdateAdminPassword = async () => {
+    if (!adminCurrentPassword.trim()) {
+      Alert.alert('Validation Error', 'Please enter current password');
+      return;
+    }
+    if (!adminNewPassword.trim()) {
+      Alert.alert('Validation Error', 'Please enter new password');
+      return;
+    }
+    if (adminNewPassword.length < 6) {
+      Alert.alert('Validation Error', 'New password must be at least 6 characters');
+      return;
+    }
+    if (adminNewPassword !== adminConfirmPassword) {
+      Alert.alert('Validation Error', 'New passwords do not match');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/users/change-password`,
+        {
+          current_password: adminCurrentPassword,
+          new_password: adminNewPassword,
+        },
+        { headers: getAuthHeaders() }
+      );
+
+      Alert.alert('Success', 'Password changed successfully');
+      setShowAdminPasswordModal(false);
+      setAdminCurrentPassword('');
+      setAdminNewPassword('');
+      setAdminConfirmPassword('');
+    } catch (error: any) {
+      console.error('Error changing password:', error);
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to change password');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleDeleteEmployee = (employeeId: string, employeeName: string) => {
     Alert.alert(
       'Delete Employee',
