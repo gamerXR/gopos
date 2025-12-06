@@ -688,4 +688,71 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
+  adminCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#E8F5E9',
+  },
+  adminCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#E8F5E9',
+  },
+  adminCardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+  },
+  adminInfo: {
+    gap: 12,
+  },
+  adminInfoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  adminLabel: {
+    fontSize: 15,
+    color: '#666',
+    fontWeight: '500',
+  },
+  adminValue: {
+    fontSize: 15,
+    color: '#333',
+    fontWeight: '600',
+  },
+  adminRole: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
+  },
+  employeeActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  editButton: {
+    padding: 8,
+  },
+  inputDisabled: {
+    backgroundColor: '#e0e0e0',
+    color: '#999',
+  },
+  helpTextSmall: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
 });
