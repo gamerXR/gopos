@@ -1160,24 +1160,48 @@ export default function DashboardScreen() {
       return;
     }
 
+    if (Platform.OS !== 'android') {
+      Alert.alert('Info', 'Bluetooth printer test is only available on Android devices');
+      return;
+    }
+
     setDetectingPrinter(true);
     try {
-      // Create test receipt using expo-print
-      const testOrder = {
-        order_number: 'TEST-001',
-        items: [
-          { name: 'Test Item', quantity: 1, price: 10.00, modifiers: [] }
-        ],
-        total: 10.00,
-        payment_method: 'cash',
-        sales_person: 'Test User',
-        created_at: new Date().toISOString(),
-      };
-
-      await printReceipt(testOrder);
-      Alert.alert('Success', 'Test receipt sent to printer!');
+      const { BluetoothManager, BluetoothEscposPrinter } = require('react-native-bluetooth-escpos-printer');
+      
+      // Connect to selected Bluetooth printer
+      await BluetoothManager.connect(selectedPrinter.address);
+      
+      // Print test receipt
+      await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+      await BluetoothEscposPrinter.setBlob(0);
+      await BluetoothEscposPrinter.printText(`${companyName || 'GoPos POS'}\n`, {
+        encoding: 'UTF-8',
+        codepage: 0,
+        widthtimes: 1,
+        heigthtimes: 1,
+        fonttype: 1
+      });
+      
+      await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+      await BluetoothEscposPrinter.printText('TEST RECEIPT\n', {});
+      await BluetoothEscposPrinter.printText('------------------------\n', {});
+      
+      await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.LEFT);
+      await BluetoothEscposPrinter.printText('Test Item x1      $10.00\n', {});
+      await BluetoothEscposPrinter.printText('------------------------\n', {});
+      await BluetoothEscposPrinter.printText('TOTAL:            $10.00\n', {});
+      await BluetoothEscposPrinter.printText('------------------------\n', {});
+      await BluetoothEscposPrinter.printText(`${new Date().toLocaleString()}\n`, {});
+      await BluetoothEscposPrinter.printText('\n\n\n', {});
+      
+      Alert.alert('Success', 'Test receipt printed successfully! Check your Bluetooth printer.');
     } catch (error: any) {
-      Alert.alert('Error', `Failed to test printer: ${error.message || error}`);
+      console.error('Printer test error:', error);
+      Alert.alert(
+        'Error',
+        `Failed to print: ${error.message || 'Unknown error'}\n\nMake sure:\n1. Bluetooth printer is turned on\n2. Printer is paired in Bluetooth settings\n3. Printer is within range`
+      );
     } finally {
       setDetectingPrinter(false);
     }
