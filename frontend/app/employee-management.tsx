@@ -261,12 +261,20 @@ export default function EmployeeManagementScreen() {
                     <Text style={styles.employeeRole}>{employee.role}</Text>
                   </View>
                 </View>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => handleDeleteEmployee(employee._id, employee.name)}
-                >
-                  <Ionicons name="trash-outline" size={22} color="#f44336" />
-                </TouchableOpacity>
+                <View style={styles.employeeActions}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => handleEditEmployee(employee)}
+                  >
+                    <Ionicons name="create-outline" size={22} color="#2196F3" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteEmployee(employee._id, employee.name)}
+                  >
+                    <Ionicons name="trash-outline" size={22} color="#f44336" />
+                  </TouchableOpacity>
+                </View>
               </View>
             ))}
           </View>
