@@ -624,9 +624,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f0f0f0',
   },
   itemRowReturned: {
-    backgroundColor: '#ffebee',
+    backgroundColor: '#f5f5f5',
     paddingHorizontal: 8,
     borderRadius: 6,
+    opacity: 0.6,
   },
   itemInfo: {
     flex: 1,
@@ -639,11 +640,24 @@ const styles = StyleSheet.create({
   },
   itemNameReturned: {
     color: '#999',
-    textDecorationLine: 'line-through',
+  },
+  returnedBadge: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#f44336',
+    backgroundColor: '#ffebee',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#f44336',
   },
   itemDetails: {
     fontSize: 13,
     color: '#666',
+  },
+  itemDetailsReturned: {
+    color: '#999',
   },
   itemRight: {
     alignItems: 'flex-end',
